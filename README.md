@@ -16,6 +16,6 @@ also rips parts of Tharki's 1BunnyLib.. just minimize that region lowkey it does
 
 [Raw](https://raw.githubusercontent.com/AceLikesGhosts/bd-plugins/master/dist/FriendInvites.plugin.js)
 
-| Create                                            | View                                          | Delete                                            |
-| ------------------------------------------------- | --------------------------------------------- | ------------------------------------------------- |
-| ![FriendCodeCreate](images/FriendCode-Create.png) | ![FriendCodeView](images/FriendCode-View.png) | ![FriendCodeDelete](images/FriendCode-Delete.png) |
+| Create                                            | View                                          | Delete                                            | All                                         |
+| ------------------------------------------------- | --------------------------------------------- | ------------------------------------------------- | ------------------------------------------- |
+| ![FriendCodeCreate](images/FriendCode-Create.png) | ![FriendCodeView](images/FriendCode-View.png) | ![FriendCodeDelete](images/FriendCode-Delete.png) | ![FriendCodeAll](images/FriendCode-All.png) |
