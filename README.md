@@ -15,3 +15,7 @@ Basically [vencord's](https://github.com/Vendicated/Vencord) friend-invites plug
 also rips parts of Tharki's 1BunnyLib.. just minimize that region lowkey it doesn't have to be discussed
 
 [Raw](https://raw.githubusercontent.com/AceLikesGhosts/bd-plugins/master/dist/FriendInvites.plugin.js)
+
+| Create                                            | View                                          | Delete                                            |
+| ------------------------------------------------- | --------------------------------------------- | ------------------------------------------------- |
+| ![FriendCodeCreate](images/FriendCode-Create.png) | ![FriendCodeView](images/FriendCode-View.png) | ![FriendCodeDelete](images/FriendCode-Delete.png) |
