@@ -139,9 +139,9 @@ module.exports = (Plugin, Library) => {
         }
 
         register(name, command) {
-            (command.applicationId = this.CurrentUserSection.id),
-                (command.id = `${this.CurrentUserSection.name}_${this.commands.size + 1
-                    }`.toLowerCase());
+            command.applicationId = '-1';
+            (command.id = `${this.CurrentUserSection.name}_${this.commands.size + 1
+                }`.toLowerCase());
             this.commands.set(name, command);
             ApplicationCommandStore.ZP.shouldResetAll = true;
         }
@@ -206,7 +206,7 @@ module.exports = (Plugin, Library) => {
                 description: 'View your active friend invites',
                 displayDescription: 'View your active friend invites',
                 description_localizations: undefined,
-                inputType: 3,
+                inputType: 0,
                 options: [],
                 execute: async (_, { channel }) => {
                     try {
@@ -251,7 +251,7 @@ module.exports = (Plugin, Library) => {
                 description: 'Create a new friend invite',
                 displayDescription: 'Create a new friend invite',
                 description_localizations: undefined,
-                inputType: 3,
+                inputType: 0,
                 options: [],
                 execute: async (_, { channel }) => {
                     try {
@@ -291,7 +291,7 @@ module.exports = (Plugin, Library) => {
                 description: 'Delete all active friend invites',
                 displayDescription: 'Delete all active friend invites',
                 description_localizations: undefined,
-                inputType: 3,
+                inputType: 0,
                 options: [],
                 execute: async (_, { channel }) => {
                     try {

@@ -212,9 +212,9 @@ module.exports = !global.ZeresPluginLibrary ? Dummy : (([Plugin, Api]) => {
         }
 
         register(name, command) {
-            (command.applicationId = this.CurrentUserSection.id),
-                (command.id = `${this.CurrentUserSection.name}_${this.commands.size + 1
-                    }`.toLowerCase());
+            command.applicationId = '-1';
+            (command.id = `${this.CurrentUserSection.name}_${this.commands.size + 1
+                }`.toLowerCase());
             this.commands.set(name, command);
             ApplicationCommandStore.ZP.shouldResetAll = true;
         }
@@ -279,7 +279,7 @@ module.exports = !global.ZeresPluginLibrary ? Dummy : (([Plugin, Api]) => {
                 description: 'View your active friend invites',
                 displayDescription: 'View your active friend invites',
                 description_localizations: undefined,
-                inputType: 3,
+                inputType: 0,
                 options: [],
                 execute: async (_, { channel }) => {
                     try {
@@ -324,7 +324,7 @@ module.exports = !global.ZeresPluginLibrary ? Dummy : (([Plugin, Api]) => {
                 description: 'Create a new friend invite',
                 displayDescription: 'Create a new friend invite',
                 description_localizations: undefined,
-                inputType: 3,
+                inputType: 0,
                 options: [],
                 execute: async (_, { channel }) => {
                     try {
@@ -364,7 +364,7 @@ module.exports = !global.ZeresPluginLibrary ? Dummy : (([Plugin, Api]) => {
                 description: 'Delete all active friend invites',
                 displayDescription: 'Delete all active friend invites',
                 description_localizations: undefined,
-                inputType: 3,
+                inputType: 0,
                 options: [],
                 execute: async (_, { channel }) => {
                     try {
