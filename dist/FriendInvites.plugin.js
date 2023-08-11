@@ -79,8 +79,6 @@ module.exports = !global.ZeresPluginLibrary ? Dummy : (([Plugin, Api]) => {
      const plugin = (Plugin, Library) => {
     const { Logger, Patcher, WebpackModules } = Library;
 
-    //#region gracefully stolen from Tharki <3
-    // https://github.com/Tharki-God/BetterDiscordPlugins
     const UserStore = WebpackModules.getByProps("getCurrentUser", "getUser");
     const ApplicationCommandStore = WebpackModules.getModule(
         (m) => m?.ZP?.getApplicationSections
@@ -91,6 +89,8 @@ module.exports = !global.ZeresPluginLibrary ? Dummy : (([Plugin, Api]) => {
 
     const IconUtils = WebpackModules.getByProps("getApplicationIconURL");
 
+    //#region gracefully stolen from Tharki <3
+    // https://github.com/Tharki-God/BetterDiscordPlugins
     function FakeMessage(channelId, content, embeds) {
         return {
             id: TimestampUtils.fromTimestamp(Date.now()),
@@ -238,8 +238,8 @@ module.exports = !global.ZeresPluginLibrary ? Dummy : (([Plugin, Api]) => {
              *  getAllFriendInvites(): Promise<string>;
              * }}
              */
-            const iis = WebpackModules.getByProps('createFriendInvite');
-            const channelModuleThingIg = BdApi.findModuleByProps('sendBotMessage');
+            const InstantInviteStore = WebpackModules.getByProps('createFriendInvite');
+            const MessageModule = BdApi.findModuleByProps('sendBotMessage');
 
             Logger.log('Patching XMLHttpRequest to stop from sending requests for client-side slash commands.');
 
@@ -251,7 +251,7 @@ module.exports = !global.ZeresPluginLibrary ? Dummy : (([Plugin, Api]) => {
             });
 
             function showErrorHappened(err, id) {
-                channelModuleThingIg.receiveMessage(
+                MessageModule.receiveMessage(
                     id,
                     FakeMessage(
                         id,
@@ -283,7 +283,7 @@ module.exports = !global.ZeresPluginLibrary ? Dummy : (([Plugin, Api]) => {
                 options: [],
                 execute: async (_, { channel }) => {
                     try {
-                        iis.getAllFriendInvites().then((/** @type {{  code: string; created_at: string; expires_at: string; max_uses: number; uses: number }[]} */ codes) => {
+                        InstantInviteStore.getAllFriendInvites().then((/** @type {{  code: string; created_at: string; expires_at: string; max_uses: number; uses: number }[]} */ codes) => {
                             const invitesString = codes.map((code) =>
                                 `
                                 **discord.gg/${code.code}**
@@ -295,7 +295,7 @@ module.exports = !global.ZeresPluginLibrary ? Dummy : (([Plugin, Api]) => {
 
                             const TITLE = `You have ${codes.length < 1 ? 'no active friend invites!' : `${codes.length.toLocaleString()} active ${codes.length > 1 ? 'invites' : 'invite'}`}`
 
-                            channelModuleThingIg.receiveMessage(
+                            MessageModule.receiveMessage(
                                 channel.id,
                                 FakeMessage(
                                     channel.id,
@@ -329,8 +329,8 @@ module.exports = !global.ZeresPluginLibrary ? Dummy : (([Plugin, Api]) => {
                 execute: async (_, { channel }) => {
                     try {
 
-                        iis.createFriendInvite().then(( /** @type {{ code: string; expires_at: string; max_uses: number }} */ code) => {
-                            channelModuleThingIg.receiveMessage(
+                        InstantInviteStore.createFriendInvite().then(( /** @type {{ code: string; expires_at: string; max_uses: number }} */ code) => {
+                            MessageModule.receiveMessage(
                                 channel.id,
                                 FakeMessage(
                                     channel.id,
@@ -368,8 +368,8 @@ module.exports = !global.ZeresPluginLibrary ? Dummy : (([Plugin, Api]) => {
                 options: [],
                 execute: async (_, { channel }) => {
                     try {
-                        iis.revokeFriendInvites().then(() => {
-                            channelModuleThingIg.receiveMessage(
+                        InstantInviteStore.revokeFriendInvites().then(() => {
+                            MessageModule.receiveMessage(
                                 channel.id,
                                 FakeMessage(
                                     channel.id,
