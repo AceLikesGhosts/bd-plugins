@@ -138,6 +138,11 @@ module.exports = (Plugin, Library) => {
             );
         }
 
+        /**
+         * 
+         * @param {string} name 
+         * @param {Record<string, unknown>} command 
+         */
         register(name, command) {
             command.applicationId = '-1';
             (command.id = `${this.CurrentUserSection.name}_${this.commands.size + 1
@@ -145,6 +150,7 @@ module.exports = (Plugin, Library) => {
             this.commands.set(name, command);
             ApplicationCommandStore.ZP.shouldResetAll = true;
         }
+
         unregister() {
             this.commands.clear();
             ApplicationCommandStore.ZP.shouldResetAll = true;
@@ -167,7 +173,7 @@ module.exports = (Plugin, Library) => {
             const InstantInviteStore = WebpackModules.getByProps('createFriendInvite');
             /**
              * @type {{
-             *  receiveMessage(id: string, content: Record<string, unknown>): void;
+             *  receiveMessage(id: string, content: Record<string, unknown>): Promise<void> | void;
              * }}
              */
             const MessageModule = BdApi.findModuleByProps('sendBotMessage');
@@ -212,7 +218,7 @@ module.exports = (Plugin, Library) => {
                 description_localizations: undefined,
                 inputType: 0,
                 options: [],
-                execute: async (_, { channel }) => {
+                execute: async (_, /** @type { { channel: { id: string } } } */ { channel }) => {
                     try {
                         InstantInviteStore.getAllFriendInvites().then((/** @type {{  code: string; created_at: string; expires_at: string; max_uses: number; uses: number }[]} */ codes) => {
                             const invitesString = codes.map((code) =>
@@ -255,7 +261,7 @@ module.exports = (Plugin, Library) => {
                 description_localizations: undefined,
                 inputType: 0,
                 options: [],
-                execute: async (_, { channel }) => {
+                execute: async (_, /** @type { { channel: { id: string } } } */ { channel }) => {
                     try {
                         InstantInviteStore.createFriendInvite().then(( /** @type {{ code: string; expires_at: string; max_uses: number }} */ code) => {
                             MessageModule.receiveMessage(
@@ -294,7 +300,7 @@ module.exports = (Plugin, Library) => {
                 description_localizations: undefined,
                 inputType: 0,
                 options: [],
-                execute: async (_, { channel }) => {
+                execute: async (_, /** @type { { channel: { id: string } } } */ { channel }) => {
                     try {
                         InstantInviteStore.revokeFriendInvites().then(() => {
                             MessageModule.receiveMessage(
