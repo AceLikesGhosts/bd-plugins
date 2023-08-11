@@ -238,6 +238,11 @@ module.exports = !global.ZeresPluginLibrary ? Dummy : (([Plugin, Api]) => {
              * }}
              */
             const InstantInviteStore = WebpackModules.getByProps('createFriendInvite');
+            /**
+             * @type {{
+             *  receiveMessage(id: string, content: Record<string, unknown>): void;
+             * }}
+             */
             const MessageModule = BdApi.findModuleByProps('sendBotMessage');
 
             Logger.log('Patching XMLHttpRequest to stop from sending requests for client-side slash commands.');
@@ -325,7 +330,6 @@ module.exports = !global.ZeresPluginLibrary ? Dummy : (([Plugin, Api]) => {
                 options: [],
                 execute: async (_, { channel }) => {
                     try {
-
                         InstantInviteStore.createFriendInvite().then(( /** @type {{ code: string; expires_at: string; max_uses: number }} */ code) => {
                             MessageModule.receiveMessage(
                                 channel.id,
