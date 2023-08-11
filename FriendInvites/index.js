@@ -13,10 +13,12 @@ module.exports = (Plugin, Library) => {
         (m) => m?.ZP?.getApplicationSections
     );
 
-    function FakeMessage(channelId, content, embeds) {
-        const TimestampUtils = WebpackModules.getByProps("fromTimestamp");
-        const DiscordConstants = WebpackModules.getModule((m) => m?.Plq?.ADMINISTRATOR == 8n);
+    const TimestampUtils = WebpackModules.getByProps("fromTimestamp");
+    const DiscordConstants = WebpackModules.getModule((m) => m?.Plq?.ADMINISTRATOR == 8n);
 
+    const IconUtils = WebpackModules.getByProps("getApplicationIconURL");
+
+    function FakeMessage(channelId, content, embeds) {
         return {
             id: TimestampUtils.fromTimestamp(Date.now()),
             type: DiscordConstants.uaV.DEFAULT,
@@ -125,7 +127,6 @@ module.exports = (Plugin, Library) => {
             });
         }
         #patchIconUtils() {
-            const IconUtils = WebpackModules.getByProps("getApplicationIconURL");
             Patcher.instead(
                 IconUtils,
                 "getApplicationIconURL",
