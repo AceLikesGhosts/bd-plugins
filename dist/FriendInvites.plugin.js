@@ -285,10 +285,10 @@ module.exports = !global.ZeresPluginLibrary ? Dummy : (([Plugin, Api]) => {
             ApplicationCommandAPI.register('invites view', {
                 name: 'invites view',
                 displayName: 'invites view',
-                name_localizations: undefined,
+                name_localizations: void 0,
                 description: 'View your active friend invites',
                 displayDescription: 'View your active friend invites',
-                description_localizations: undefined,
+                description_localizations: void 0,
                 inputType: 0,
                 options: [],
                 execute: async (_, /** @type { { channel: { id: string } } } */ { channel }) => {
@@ -328,10 +328,10 @@ module.exports = !global.ZeresPluginLibrary ? Dummy : (([Plugin, Api]) => {
             ApplicationCommandAPI.register('invites create', {
                 name: 'invites create',
                 displayName: 'invites create',
-                name_localizations: undefined,
+                name_localizations: void 0,
                 description: 'Create a new friend invite',
                 displayDescription: 'Create a new friend invite',
-                description_localizations: undefined,
+                description_localizations: void 0,
                 inputType: 0,
                 options: [],
                 execute: async (_, /** @type { { channel: { id: string } } } */ { channel }) => {
@@ -367,10 +367,10 @@ module.exports = !global.ZeresPluginLibrary ? Dummy : (([Plugin, Api]) => {
             ApplicationCommandAPI.register('invites delete', {
                 name: 'invites delete',
                 displayName: 'invites delete',
-                name_localizations: undefined,
+                name_localizations: void 0,
                 description: 'Delete all active friend invites',
                 displayDescription: 'Delete all active friend invites',
-                description_localizations: undefined,
+                description_localizations: void 0,
                 inputType: 0,
                 options: [],
                 execute: async (_, /** @type { { channel: { id: string } } } */ { channel }) => {
