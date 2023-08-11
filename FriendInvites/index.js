@@ -165,8 +165,8 @@ module.exports = (Plugin, Library) => {
              *  getAllFriendInvites(): Promise<string>;
              * }}
              */
-            const iis = WebpackModules.getByProps('createFriendInvite');
-            const channelModuleThingIg = BdApi.findModuleByProps('sendBotMessage');
+            const InstantInviteStore = WebpackModules.getByProps('createFriendInvite');
+            const MessageModule = BdApi.findModuleByProps('sendBotMessage');
 
             Logger.log('Patching XMLHttpRequest to stop from sending requests for client-side slash commands.');
 
@@ -178,7 +178,7 @@ module.exports = (Plugin, Library) => {
             });
 
             function showErrorHappened(err, id) {
-                channelModuleThingIg.receiveMessage(
+                MessageModule.receiveMessage(
                     id,
                     FakeMessage(
                         id,
@@ -210,7 +210,7 @@ module.exports = (Plugin, Library) => {
                 options: [],
                 execute: async (_, { channel }) => {
                     try {
-                        iis.getAllFriendInvites().then((/** @type {{  code: string; created_at: string; expires_at: string; max_uses: number; uses: number }[]} */ codes) => {
+                        InstantInviteStore.getAllFriendInvites().then((/** @type {{  code: string; created_at: string; expires_at: string; max_uses: number; uses: number }[]} */ codes) => {
                             const invitesString = codes.map((code) =>
                                 `
                                 **discord.gg/${code.code}**
@@ -222,7 +222,7 @@ module.exports = (Plugin, Library) => {
 
                             const TITLE = `You have ${codes.length < 1 ? 'no active friend invites!' : `${codes.length.toLocaleString()} active ${codes.length > 1 ? 'invites' : 'invite'}`}`
 
-                            channelModuleThingIg.receiveMessage(
+                            MessageModule.receiveMessage(
                                 channel.id,
                                 FakeMessage(
                                     channel.id,
@@ -256,8 +256,8 @@ module.exports = (Plugin, Library) => {
                 execute: async (_, { channel }) => {
                     try {
 
-                        iis.createFriendInvite().then(( /** @type {{ code: string; expires_at: string; max_uses: number }} */ code) => {
-                            channelModuleThingIg.receiveMessage(
+                        InstantInviteStore.createFriendInvite().then(( /** @type {{ code: string; expires_at: string; max_uses: number }} */ code) => {
+                            MessageModule.receiveMessage(
                                 channel.id,
                                 FakeMessage(
                                     channel.id,
@@ -295,8 +295,8 @@ module.exports = (Plugin, Library) => {
                 options: [],
                 execute: async (_, { channel }) => {
                     try {
-                        iis.revokeFriendInvites().then(() => {
-                            channelModuleThingIg.receiveMessage(
+                        InstantInviteStore.revokeFriendInvites().then(() => {
+                            MessageModule.receiveMessage(
                                 channel.id,
                                 FakeMessage(
                                     channel.id,
