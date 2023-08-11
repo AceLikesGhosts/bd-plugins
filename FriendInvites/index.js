@@ -1,20 +1,20 @@
 /**
- * @param {import("zerespluginlibrary").Plugin} Plugin 
- * @param {import("zerespluginlibrary").BoundAPI} Library 
+ * @param {import('zerespluginlibrary').Plugin} Plugin 
+ * @param {import('zerespluginlibrary').BoundAPI} Library 
  * @returns 
  */
 module.exports = (Plugin, Library) => {
     const { Logger, Patcher, WebpackModules } = Library;
 
-    const UserStore = WebpackModules.getByProps("getCurrentUser", "getUser");
+    const UserStore = WebpackModules.getByProps('getCurrentUser', 'getUser');
     const ApplicationCommandStore = WebpackModules.getModule(
         (m) => m?.ZP?.getApplicationSections
     );
 
-    const TimestampUtils = WebpackModules.getByProps("fromTimestamp");
+    const TimestampUtils = WebpackModules.getByProps('fromTimestamp');
     const DiscordConstants = WebpackModules.getModule((m) => m?.Plq?.ADMINISTRATOR == 8n);
 
-    const IconUtils = WebpackModules.getByProps("getApplicationIconURL");
+    const IconUtils = WebpackModules.getByProps('getApplicationIconURL');
 
     //#region gracefully stolen from Tharki <3
     // https://github.com/Tharki-God/BetterDiscordPlugins
@@ -57,10 +57,10 @@ module.exports = (Plugin, Library) => {
 
         #patchApplicationCommands() {
             const BuiltInCommands = WebpackModules.getModule((m) =>
-                m?.Kh?.toString?.()?.includes?.("BUILT_IN_TEXT")
+                m?.Kh?.toString?.()?.includes?.('BUILT_IN_TEXT')
             );
 
-            Patcher.after(ApplicationCommandStore, "JK", (_, args, res) => {
+            Patcher.after(ApplicationCommandStore, 'JK', (_, args, res) => {
                 if(!res || !this.commands.size) return;
 
                 if(
@@ -91,7 +91,7 @@ module.exports = (Plugin, Library) => {
             });
             Patcher.after(
                 ApplicationCommandStore.ZP,
-                "getChannelState",
+                'getChannelState',
                 (_, args, res) => {
                     if(!res || !this.commands.size) return;
                     if(
@@ -114,7 +114,7 @@ module.exports = (Plugin, Library) => {
                         return res;
                 }
             );
-            Patcher.after(BuiltInCommands, "Kh", (_, args, res) => {
+            Patcher.after(BuiltInCommands, 'Kh', (_, args, res) => {
                 return Array.isArray(res)
                     ? [
                         ...res.filter(
@@ -129,7 +129,7 @@ module.exports = (Plugin, Library) => {
         #patchIconUtils() {
             Patcher.instead(
                 IconUtils,
-                "getApplicationIconURL",
+                'getApplicationIconURL',
                 (_, args, res) => {
                     if(args[0].id !== this.CurrentUserSection.id)
                         return res(...args);
@@ -153,9 +153,8 @@ module.exports = (Plugin, Library) => {
     //#endregion
 
     return class extends Plugin {
-
         onStart() {
-            Logger.info("Plugin enabled!");
+            Logger.info('Plugin enabled!');
 
             /**
              * @type {{
@@ -220,8 +219,6 @@ module.exports = (Plugin, Library) => {
                                 `
                             );
 
-                            const TITLE = `You have ${codes.length < 1 ? 'no active friend invites!' : `${codes.length.toLocaleString()} active ${codes.length > 1 ? 'invites' : 'invite'}`}`
-
                             MessageModule.receiveMessage(
                                 channel.id,
                                 FakeMessage(
@@ -230,12 +227,12 @@ module.exports = (Plugin, Library) => {
                                     [
                                         {
                                             type: 'rich',
-                                            title: TITLE,
+                                            title: `You have ${codes.length < 1 ? 'no active friend invites!' : `${codes.length.toLocaleString()} active ${codes.length > 1 ? 'invites' : 'invite'}`}`,
                                             description: codes.length >= 1 ? invitesString.join('\n') : 'N/A',
                                         }
                                     ]
                                 )
-                            )
+                            );
                         }).catch((err) => showErrorHappened(err, channel.id));
                     } catch(e) {
                         showErrorHappened(e, channel.id);
@@ -255,7 +252,6 @@ module.exports = (Plugin, Library) => {
                 options: [],
                 execute: async (_, { channel }) => {
                     try {
-
                         InstantInviteStore.createFriendInvite().then(( /** @type {{ code: string; expires_at: string; max_uses: number }} */ code) => {
                             MessageModule.receiveMessage(
                                 channel.id,
@@ -275,10 +271,10 @@ module.exports = (Plugin, Library) => {
                                         }
                                     ]
                                 )
-                            )
+                            );
                         }).catch(err => showErrorHappened(err, channel.id));
                     } catch(e) {
-                        showErrorHappened(e, channel.id)
+                        showErrorHappened(e, channel.id);
                         Logger.err(e);
                     }
                 }
@@ -309,10 +305,10 @@ module.exports = (Plugin, Library) => {
                                         }
                                     ]
                                 )
-                            )
+                            );
                         }).catch((err) => showErrorHappened(err, channel.id));
                     } catch(e) {
-                        showErrorHappened(e, channel.id)
+                        showErrorHappened(e, channel.id);
                         Logger.err(e);
                     }
                 }
@@ -320,7 +316,7 @@ module.exports = (Plugin, Library) => {
         }
 
         onStop() {
-            Logger.info("Plugin disabled!");
+            Logger.info('Plugin disabled!');
             ApplicationCommandAPI.unregister();
             Patcher.unpatchAll();
         }
