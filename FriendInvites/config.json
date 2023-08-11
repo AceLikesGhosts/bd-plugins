@@ -12,7 +12,7 @@
         "version": "0.0.1",
         "description": "Simple friend-invites.",
         "github": "https://github.com/acelikesghosts/bd-plugins",
-        "github_raw": ""
+        "github_raw": "https://raw.githubusercontent.com/AceLikesGhosts/bd-plugins/master/dist/FriendInvites.plugin.js"
     },
     "main": "index.js"
 }
