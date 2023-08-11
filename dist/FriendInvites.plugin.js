@@ -4,6 +4,8 @@
  * @version 0.0.1
  * @author ace.
  * @authorId 249746236008169473
+ * @website https://github.com/acelikesghosts/bd-plugins
+ * @source https://raw.githubusercontent.com/AceLikesGhosts/bd-plugins/master/dist/FriendInvites.plugin.js
  */
 /*@cc_on
 @if (@_jscript)
@@ -41,8 +43,8 @@ const config = {
         ],
         version: "0.0.1",
         description: "Simple friend-invites.",
-        github: "",
-        github_raw: ""
+        github: "https://github.com/acelikesghosts/bd-plugins",
+        github_raw: "https://raw.githubusercontent.com/AceLikesGhosts/bd-plugins/master/dist/FriendInvites.plugin.js"
     },
     main: "index.js"
 };
@@ -75,7 +77,7 @@ if (!global.ZeresPluginLibrary) {
  
 module.exports = !global.ZeresPluginLibrary ? Dummy : (([Plugin, Api]) => {
      const plugin = (Plugin, Library) => {
-    const { Logger, Patcher, WebpackModules, DiscordModules } = Library;
+    const { Logger, Patcher, WebpackModules } = Library;
 
     //#region gracefully stolen from Tharki <3
     // https://github.com/Tharki-God/BetterDiscordPlugins
@@ -238,6 +240,9 @@ module.exports = !global.ZeresPluginLibrary ? Dummy : (([Plugin, Api]) => {
             const iis = WebpackModules.getByProps('createFriendInvite');
             const channelModuleThingIg = BdApi.findModuleByProps('sendBotMessage');
 
+            Logger.log('Patching XMLHttpRequest to stop from sending requests for client-side slash commands.');
+
+            // Prevent slashies registered on client side by this from hitting Discord's servers (yayyy.)
             Patcher.before(XMLHttpRequest.prototype, 'open', (data) => {
                 if(data[0] === 'GET' && data[1].toLowerCase().includes('application-commands/search?type=1&query=invites')) {
                     return;
@@ -387,8 +392,7 @@ module.exports = !global.ZeresPluginLibrary ? Dummy : (([Plugin, Api]) => {
         }
 
         onStop() {
-            const b =
-                Logger.info("Plugin disabled!");
+            Logger.info("Plugin disabled!");
             ApplicationCommandAPI.unregister();
             Patcher.unpatchAll();
         }
