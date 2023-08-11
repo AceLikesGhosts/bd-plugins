@@ -1,0 +1,16 @@
+{
+  "name": "better-discord-plugins-oh-no-god-oh-god-please-no-please-no-dad-no-stop-beating-me-please-no",
+  "version": "0.0.1",
+  "description": "stuff",
+  "main": "index.js",
+  "scripts": {
+    "build": "zpl build",
+    "init": "zpl init"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "zerespluginlibrary": "^2.0.6"
+  }
+}

@@ -1,0 +1,18 @@
+{
+    "info": {
+        "name": "FriendInvites",
+        "authors": [
+            {
+                "name": "ace.",
+                "discord_id": "249746236008169473",
+                "github_username": "acelikesghosts",
+                "twitter_username": "uncarcrashable"
+            }
+        ],
+        "version": "0.0.1",
+        "description": "Simple friend-invites.",
+        "github": "https://github.com/acelikesghosts/bd-plugins",
+        "github_raw": ""
+    },
+    "main": "index.js"
+}
