@@ -3,8 +3,6 @@
 a collection of poorly written BetterDiscord plugins, or something; who knows.
 might be a one-and-done type beat
 
-## the goods
-
 ### FriendInvites
 
 Basically [vencord's](https://github.com/Vendicated/Vencord) friend-invites plugin, but for BetterDiscord.
