@@ -6,8 +6,6 @@
 module.exports = (Plugin, Library) => {
     const { Logger, Patcher, WebpackModules } = Library;
 
-    //#region gracefully stolen from Tharki <3
-    // https://github.com/Tharki-God/BetterDiscordPlugins
     const UserStore = WebpackModules.getByProps("getCurrentUser", "getUser");
     const ApplicationCommandStore = WebpackModules.getModule(
         (m) => m?.ZP?.getApplicationSections
@@ -18,6 +16,8 @@ module.exports = (Plugin, Library) => {
 
     const IconUtils = WebpackModules.getByProps("getApplicationIconURL");
 
+    //#region gracefully stolen from Tharki <3
+    // https://github.com/Tharki-God/BetterDiscordPlugins
     function FakeMessage(channelId, content, embeds) {
         return {
             id: TimestampUtils.fromTimestamp(Date.now()),
