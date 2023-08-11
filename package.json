@@ -7,8 +7,12 @@
     "build": "zpl build",
     "init": "zpl init"
   },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/acelikesghosts/bd-plugins"
+  },
   "keywords": [],
-  "author": "",
+  "author": "AceLikesGhosts",
   "license": "MIT",
   "dependencies": {
     "zerespluginlibrary": "^2.0.6"
