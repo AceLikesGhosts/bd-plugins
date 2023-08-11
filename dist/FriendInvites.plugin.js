@@ -1,7 +1,7 @@
 /**
  * @name FriendInvites
  * @description Simple friend-invites.
- * @version 0.0.1
+ * @version 1.0.0
  * @author ace.
  * @authorId 249746236008169473
  * @website https://github.com/acelikesghosts/bd-plugins
@@ -41,7 +41,7 @@ const config = {
                 twitter_username: "uncarcrashable"
             }
         ],
-        version: "0.0.1",
+        version: "1.0.0",
         description: "Simple friend-invites.",
         github: "https://github.com/acelikesghosts/bd-plugins",
         github_raw: "https://raw.githubusercontent.com/AceLikesGhosts/bd-plugins/master/dist/FriendInvites.plugin.js"
