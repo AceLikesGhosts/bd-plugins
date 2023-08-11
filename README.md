@@ -3,10 +3,6 @@
 a collection of poorly written BetterDiscord plugins, or something; who knows.
 might be a one-and-done type beat
 
-> [!WARNING]  
-> BetterDiscord is against Discord's Terms of Service; alongside that I will not provide support for anything uploaded here.
-> deal with it.
-
 ## the goods
 
 ### FriendInvites
