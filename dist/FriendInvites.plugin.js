@@ -289,7 +289,7 @@ module.exports = !global.ZeresPluginLibrary ? Dummy : (([Plugin, Api]) => {
                 description: 'View your active friend invites',
                 displayDescription: 'View your active friend invites',
                 description_localizations: void 0,
-                inputType: 0,
+                type: 1,
                 options: [],
                 execute: async (_, /** @type { { channel: { id: string } } } */ { channel }) => {
                     try {
@@ -332,7 +332,7 @@ module.exports = !global.ZeresPluginLibrary ? Dummy : (([Plugin, Api]) => {
                 description: 'Create a new friend invite',
                 displayDescription: 'Create a new friend invite',
                 description_localizations: void 0,
-                inputType: 0,
+                type: 1,
                 options: [],
                 execute: async (_, /** @type { { channel: { id: string } } } */ { channel }) => {
                     try {
@@ -371,7 +371,7 @@ module.exports = !global.ZeresPluginLibrary ? Dummy : (([Plugin, Api]) => {
                 description: 'Delete all active friend invites',
                 displayDescription: 'Delete all active friend invites',
                 description_localizations: void 0,
-                inputType: 0,
+                type: 1,
                 options: [],
                 execute: async (_, /** @type { { channel: { id: string } } } */ { channel }) => {
                     try {
