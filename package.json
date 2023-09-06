@@ -1,20 +1,23 @@
 {
-  "name": "better-discord-plugins-oh-no-god-oh-god-please-no-please-no-dad-no-stop-beating-me-please-no",
-  "version": "0.0.1",
-  "description": "stuff",
-  "main": "index.js",
+  "name": "bd-plugins",
+  "version": "1.0.0",
+  "description": "a collection of poorly written BetterDiscord plugins, or something; who knows.\r might be a one-and-done type beat",
   "scripts": {
-    "build": "zpl build",
-    "init": "zpl init"
-  },
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/acelikesghosts/bd-plugins"
+    "build": "node ./scripts/build.js"
   },
   "keywords": [],
-  "author": "AceLikesGhosts",
+  "author": "",
   "license": "MIT",
   "dependencies": {
-    "zerespluginlibrary": "^2.0.6"
+    "@types/betterdiscord": "github:zerthox/betterdiscord-types",
+    "@vercel/ncc": "^0.36.1"
+  },
+  "devDependencies": {
+    "@biased-ts/eslint-config": "^2.0.0",
+    "@types/node": "^20.5.9",
+    "@typescript-eslint/eslint-plugin": "^6.6.0",
+    "@typescript-eslint/parser": "^6.6.0",
+    "eslint": "8.2.0",
+    "typescript": "^5.2.2"
   }
 }

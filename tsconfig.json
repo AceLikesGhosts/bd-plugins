@@ -1,0 +1,42 @@
+{
+    "compilerOptions": {
+        "target": "ES2020",
+        "module": "commonjs",
+        "lib": [
+            "es6",
+            "es2017",
+            "esnext.asynciterable",
+            "DOM"
+        ],
+        "sourceMap": true,
+        "outDir": "./dist",
+        "strict": true,
+        "skipDefaultLibCheck": true,
+        "moduleResolution": "node",
+        "removeComments": false,
+        "noImplicitAny": true,
+        "strictNullChecks": true,
+        "strictFunctionTypes": true,
+        "noImplicitThis": true,
+        "noUnusedLocals": true,
+        "noUnusedParameters": true,
+        "noImplicitReturns": true,
+        "noFallthroughCasesInSwitch": true,
+        "allowSyntheticDefaultImports": true,
+        "esModuleInterop": true,
+        "resolveJsonModule": true,
+        "allowJs": true,
+        "skipLibCheck": true,
+        "baseUrl": "."
+    },
+    "exclude": [
+        "node_modules"
+    ],
+    "include": [
+        "plugins/**/*.tsx",
+        "plugins/**/*.ts",
+    ],
+    "ts-node": {
+        "files": true
+    }
+}
