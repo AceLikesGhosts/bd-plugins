@@ -175,7 +175,14 @@ ${Object.entries(configJSON).map(([k, v], i) => {
 */
     `;
 
-    const outFile = join(distPath, `${lastDirectory.toString()}.plugin.js`);
+    const readme = join(path, 'README.md');
+
+    if(existsSync(readme)) {
+        const readmeOut = join(distPath, lastDirectory, 'README.md');
+        writeFileSync(readFileSync(readme, { encoding: 'utf-8' }), readmeOut);
+    }
+
+    const outFile = join(distPath, lastDirectory, `${lastDirectory.toString()}.plugin.js`);
 
     ncc(
         inputPath,
