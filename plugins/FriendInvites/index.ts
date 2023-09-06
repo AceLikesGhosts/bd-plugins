@@ -153,6 +153,15 @@ export default class implements Plugin {
     TimestampUtils = BdApi.Webpack.getByKeys('fromTimestamp');
     IconUtils = BdApi.Webpack.getByKeys('getApplicationIconUrl');
     DiscordConstants = BdApi.Webpack.getModule((m) => m?.Plq?.ADMINISTRATOR == 8n);
+    InstantInviteStore: {
+        createFriendInvite(): Promise<Code>;
+        revokeFriendInvite(id: string): Promise<void>;
+        revokeFriendInvites(): Promise<void>;
+        getAllFriendInvites(): Promise<Code[]>;
+    } = BdApi.Webpack.getByKeys('createFriendInvite');
+    MessageModule: {
+        receiveMessage(id: string, content: Record<string, unknown>): Promise<void> | void;
+    } = BdApi.Webpack.getByKeys('sendBotMessage');
     // i hate typescript~!
     CommandAPI: ApplicationCommandAPI | undefined = void 0;
 
@@ -181,17 +190,6 @@ export default class implements Plugin {
         console.log('%c[FriendInvites]', 'color: #ff00ee', 'Plugin enabled!');
         this.CommandAPI = new ApplicationCommandAPI(this.ApplicationCommandStore, this.UserStore, this.IconUtils);
 
-        const InstantInviteStore: {
-            createFriendInvite(): Promise<Code>;
-            revokeFriendInvite(id: string): Promise<void>;
-            revokeFriendInvites(): Promise<void>;
-            getAllFriendInvites(): Promise<Code[]>;
-        } = BdApi.Webpack.getByKeys('createFriendInvite');
-
-        const MessageModule: {
-            receiveMessage(id: string, content: Record<string, unknown>): Promise<void> | void;
-        } = BdApi.Webpack.getByKeys('sendBotMessage');
-
         console.log('%c[FriendInvites]', 'color: #ff00ee', 'Patching XMLHttpRequest to prevent sending requests to Discord from client-side slash commands. (oop)');
         BdApi.Patcher.before('FriendInvites', XMLHttpRequest.prototype, 'open', (data) => {
             // Holy type casting hell, if only Patcher (type wise) would let us pass what our data is from a generic.
@@ -201,14 +199,10 @@ export default class implements Plugin {
             }
         });
 
-        // typescript doesnt like me.
-        // TODO: make this not bad.
-        const FakeMessage = this.FakeMessage;
-
-        function showErrorHappened(err: unknown, id: string) {
-            MessageModule.receiveMessage(
+        const showErrorHappened = (err: unknown, id: string) => {
+            this.MessageModule.receiveMessage(
                 id,
-                FakeMessage(
+                this.FakeMessage(
                     id,
                     '',
                     [
@@ -225,7 +219,7 @@ export default class implements Plugin {
                     ]
                 )
             );
-        }
+        };
 
         this.CommandAPI!.register('invites view', {
             name: 'invites view',
@@ -238,7 +232,7 @@ export default class implements Plugin {
             options: [],
             execute: async (_, { channel }) => {
                 try {
-                    InstantInviteStore.getAllFriendInvites().then((codes: Code[]) => {
+                    this.InstantInviteStore.getAllFriendInvites().then((codes: Code[]) => {
                         const invitesString = codes.map((code) => `
                                 **discord.gg/${ code.code }**
                                 **Created:** <t:${ Math.round(new Date(code.created_at).getTime() / 1000) }:R>
@@ -247,7 +241,7 @@ export default class implements Plugin {
                                 `
                         );
 
-                        MessageModule.receiveMessage(
+                        this.MessageModule.receiveMessage(
                             channel.id,
                             this.FakeMessage(
                                 channel.id,
@@ -280,8 +274,8 @@ export default class implements Plugin {
             options: [],
             execute: async (_, { channel }) => {
                 try {
-                    InstantInviteStore.createFriendInvite().then((code: Code) => {
-                        MessageModule.receiveMessage(
+                    this.InstantInviteStore.createFriendInvite().then((code: Code) => {
+                        this.MessageModule.receiveMessage(
                             channel.id,
                             this.FakeMessage(
                                 channel.id,
@@ -319,8 +313,8 @@ export default class implements Plugin {
             options: [],
             execute: async (_, { channel }) => {
                 try {
-                    InstantInviteStore.revokeFriendInvites().then(() => {
-                        MessageModule.receiveMessage(
+                    this.InstantInviteStore.revokeFriendInvites().then(() => {
+                        this.MessageModule.receiveMessage(
                             channel.id,
                             this.FakeMessage(
                                 channel.id,
