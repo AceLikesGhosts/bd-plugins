@@ -111,6 +111,8 @@ class default_1 {
         this.TimestampUtils = BdApi.Webpack.getByKeys('fromTimestamp');
         this.IconUtils = BdApi.Webpack.getByKeys('getApplicationIconUrl');
         this.DiscordConstants = BdApi.Webpack.getModule((m) => m?.Plq?.ADMINISTRATOR == 8n);
+        this.InstantInviteStore = BdApi.Webpack.getByKeys('createFriendInvite');
+        this.MessageModule = BdApi.Webpack.getByKeys('sendBotMessage');
         // i hate typescript~!
         this.CommandAPI = void 0;
     }
@@ -137,8 +139,6 @@ class default_1 {
     start() {
         console.log('%c[FriendInvites]', 'color: #ff00ee', 'Plugin enabled!');
         this.CommandAPI = new ApplicationCommandAPI(this.ApplicationCommandStore, this.UserStore, this.IconUtils);
-        const InstantInviteStore = BdApi.Webpack.getByKeys('createFriendInvite');
-        const MessageModule = BdApi.Webpack.getByKeys('sendBotMessage');
         console.log('%c[FriendInvites]', 'color: #ff00ee', 'Patching XMLHttpRequest to prevent sending requests to Discord from client-side slash commands. (oop)');
         BdApi.Patcher.before('FriendInvites', XMLHttpRequest.prototype, 'open', (data) => {
             // Holy type casting hell, if only Patcher (type wise) would let us pass what our data is from a generic.
@@ -147,11 +147,8 @@ class default_1 {
                 return;
             }
         });
-        // typescript doesnt like me.
-        // TODO: make this not bad.
-        const FakeMessage = this.FakeMessage;
-        function showErrorHappened(err, id) {
-            MessageModule.receiveMessage(id, FakeMessage(id, '', [
+        const showErrorHappened = (err, id) => {
+            this.MessageModule.receiveMessage(id, this.FakeMessage(id, '', [
                 {
                     type: 'rich',
                     title: 'An unexpected error has occured',
@@ -163,7 +160,7 @@ class default_1 {
                                 `
                 }
             ]));
-        }
+        };
         this.CommandAPI.register('invites view', {
             name: 'invites view',
             displayName: 'invites view',
@@ -175,14 +172,14 @@ class default_1 {
             options: [],
             execute: async (_, { channel }) => {
                 try {
-                    InstantInviteStore.getAllFriendInvites().then((codes) => {
+                    this.InstantInviteStore.getAllFriendInvites().then((codes) => {
                         const invitesString = codes.map((code) => `
                                 **discord.gg/${code.code}**
                                 **Created:** <t:${Math.round(new Date(code.created_at).getTime() / 1000)}:R>
                                 **Expires:** <t:${new Date(code.expires_at).getTime() / 1000}:R> 
                                 **Uses:** ${code.uses}/${code.max_uses}
                                 `);
-                        MessageModule.receiveMessage(channel.id, this.FakeMessage(channel.id, '', [
+                        this.MessageModule.receiveMessage(channel.id, this.FakeMessage(channel.id, '', [
                             {
                                 type: 'rich',
                                 title: `You have ${codes.length < 1 ? 'no active friend invites!' : `${codes.length.toLocaleString()} active ${codes.length > 1 ? 'invites' : 'invite'}`}`,
@@ -208,8 +205,8 @@ class default_1 {
             options: [],
             execute: async (_, { channel }) => {
                 try {
-                    InstantInviteStore.createFriendInvite().then((code) => {
-                        MessageModule.receiveMessage(channel.id, this.FakeMessage(channel.id, '', [
+                    this.InstantInviteStore.createFriendInvite().then((code) => {
+                        this.MessageModule.receiveMessage(channel.id, this.FakeMessage(channel.id, '', [
                             {
                                 type: 'rich',
                                 title: 'Created friend code (' + code.code + ')',
@@ -240,8 +237,8 @@ class default_1 {
             options: [],
             execute: async (_, { channel }) => {
                 try {
-                    InstantInviteStore.revokeFriendInvites().then(() => {
-                        MessageModule.receiveMessage(channel.id, this.FakeMessage(channel.id, '', [
+                    this.InstantInviteStore.revokeFriendInvites().then(() => {
+                        this.MessageModule.receiveMessage(channel.id, this.FakeMessage(channel.id, '', [
                             {
                                 type: 'rich',
                                 title: 'Deleted all invite codes',
