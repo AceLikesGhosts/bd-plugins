@@ -1,0 +1,10 @@
+# FriendInvites
+
+Basically [vencord's](https://github.com/Vendicated/Vencord) friend-invites plugin, but for BetterDiscord.
+also rips parts of Tharki's 1BunnyLib.. just minimize that region lowkey it doesn't have to be discussed
+
+[Raw](https://raw.githubusercontent.com/AceLikesGhosts/bd-plugins/master/dist/FriendInvites.plugin.js)
+
+| Create                                                                                                                              | View                                                                                                                            | Delete                                                                                                                              | All                                                                                                                           |
+| ----------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------- |
+| ![FriendCodeCreate](https://raw.githubusercontent.com/AceLikesGhosts/bd-plugins/master/images/friend-invites/FriendCode-Create.png) | ![FriendCodeView](https://raw.githubusercontent.com/AceLikesGhosts/bd-plugins/master/images/friend-invites/FriendCode-View.png) | ![FriendCodeDelete](https://raw.githubusercontent.com/AceLikesGhosts/bd-plugins/master/images/friend-invites/FriendCode-Delete.png) | ![FriendCodeAll](https://raw.githubusercontent.com/AceLikesGhosts/bd-plugins/master/images/friend-invites/FriendCode-All.png) |

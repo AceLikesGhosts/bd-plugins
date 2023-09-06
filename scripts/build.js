@@ -51,7 +51,7 @@ args = args.filter((v) => {
 });
 
 const { join, sep } = require('path');
-const { statSync, readdirSync, existsSync, mkdirSync, writeFileSync, readFileSync } = require('fs');
+const { statSync, readdirSync, existsSync, mkdirSync, writeFileSync, readFileSync, copyFileSync } = require('fs');
 // out of Scripts folder and into the base directory
 const basePath = join(__dirname, '..');
 // the plugins mono repo folder plugins
@@ -131,6 +131,7 @@ function compileProject(path) {
 
     const lastDirectory = path.split(sep).pop();
 
+
     const inputPath = join(path, 'index.ts');
     if(!existsSync(inputPath)) {
         // TODO: make better
@@ -138,6 +139,7 @@ function compileProject(path) {
     }
 
     const distPath = join(__dirname, '..', 'dist');
+    const distPluginPath = join(distPath, lastDirectory);
 
     /**
      * @param {string} p 
@@ -150,6 +152,7 @@ function compileProject(path) {
     };
 
     makePathIfNotExists(distPath);
+    makePathIfNotExists(distPluginPath);
 
     // before we compile, we wanna throw in our configuration.
     const configFile = join(path, 'config.json');
@@ -175,11 +178,11 @@ ${Object.entries(configJSON).map(([k, v], i) => {
 */
     `;
 
-    const readme = join(path, 'README.md');
+    const readmePath = join(path, 'README.md');
+    const readmeOut = join(distPath, lastDirectory, 'README.md');
 
-    if(existsSync(readme)) {
-        const readmeOut = join(distPath, lastDirectory, 'README.md');
-        writeFileSync(readFileSync(readme, { encoding: 'utf-8' }), readmeOut);
+    if(existsSync(readmePath)) {
+        writeFileSync(readmeOut, readFileSync(readmePath));
     }
 
     const outFile = join(distPath, lastDirectory, `${lastDirectory.toString()}.plugin.js`);
@@ -198,6 +201,9 @@ ${Object.entries(configJSON).map(([k, v], i) => {
         })
         .then(({ code }) => {
             console.log(`Finished building ${lastDirectory.toString()}!`);
-            writeFileSync(outFile, `${header.trim()}\n${code}`);
+            writeFileSync(outFile, `${header.trim()}\n${code}`, {
+                encoding: 'utf-8',
+                flag: 'w'
+            });
         });
 }
