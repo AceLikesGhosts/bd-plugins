@@ -192,8 +192,6 @@ export default class implements Plugin {
             receiveMessage(id: string, content: Record<string, unknown>): Promise<void> | void;
         } = BdApi.Webpack.getByKeys('sendBotMessage');
 
-
-
         console.log('%c[FriendInvites]', 'color: #ff00ee', 'Patching XMLHttpRequest to prevent sending requests to Discord from client-side slash commands. (oop)');
         BdApi.Patcher.before('FriendInvites', XMLHttpRequest.prototype, 'open', (data) => {
             // Holy type casting hell, if only Patcher (type wise) would let us pass what our data is from a generic.
