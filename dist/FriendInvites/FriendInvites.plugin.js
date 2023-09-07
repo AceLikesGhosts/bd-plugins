@@ -204,6 +204,16 @@ class default_1 {
             type: 1,
             options: [],
             execute: async (_, { channel }) => {
+                if (!this.UserStore.getCurrentUser().phone) {
+                    this.MessageModule.receiveMessage(channel.id, this.FakeMessage(channel.id, '', [
+                        {
+                            type: 'rich',
+                            title: 'Creating friend invites requires having a mobile phone number connected to your account.',
+                            content: ''
+                        }
+                    ]));
+                    return;
+                }
                 try {
                     this.InstantInviteStore.createFriendInvite().then((code) => {
                         this.MessageModule.receiveMessage(channel.id, this.FakeMessage(channel.id, '', [
