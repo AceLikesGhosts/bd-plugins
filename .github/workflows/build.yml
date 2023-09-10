@@ -14,5 +14,7 @@ jobs:
         node-version: 18
     - name: npm ci
       run: npm ci
-    - name: tsc
+    - name: Typescript Compiler
       uses: icrawl/action-tsc@v1
+    - name: Build (NCC)
+      run: node ./scripts/build.js
