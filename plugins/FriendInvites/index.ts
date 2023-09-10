@@ -9,7 +9,7 @@ class ApplicationCommandAPI {
     commands: Map<any, any>;
 
     constructor(applicationCommandStore: any, userStore: any, iconUtils: any) {
-        this.ApplicationCommandStore = applicationCommandStore || BdApi.Webpack.getStore('ApplicationCommandStore');
+        this.ApplicationCommandStore = applicationCommandStore;
         this.UserStore = userStore;
         this.IconUtils = iconUtils;
 
@@ -17,6 +17,7 @@ class ApplicationCommandAPI {
         this.#patchApplicationCommands();
         this.#patchIconUtils();
     }
+
     get CurrentUserSection() {
         const CurrentUser = this.UserStore.getCurrentUser();
         return {

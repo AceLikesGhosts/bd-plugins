@@ -25,7 +25,7 @@ Object.defineProperty(exports, "__esModule", ({ value: true }));
 class ApplicationCommandAPI {
     constructor(applicationCommandStore, userStore, iconUtils) {
         _ApplicationCommandAPI_instances.add(this);
-        this.ApplicationCommandStore = applicationCommandStore || BdApi.Webpack.getStore('ApplicationCommandStore');
+        this.ApplicationCommandStore = applicationCommandStore;
         this.UserStore = userStore;
         this.IconUtils = iconUtils;
         this.commands = new Map();
