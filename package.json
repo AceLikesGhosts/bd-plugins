@@ -13,7 +13,7 @@
     "@vercel/ncc": "^0.36.1"
   },
   "devDependencies": {
-    "@biased-ts/eslint-config": "^2.0.0",
+    "@biased-ts/eslint-config": "^2.1.0",
     "@types/node": "^20.5.9",
     "@typescript-eslint/eslint-plugin": "^6.6.0",
     "@typescript-eslint/parser": "^6.6.0",

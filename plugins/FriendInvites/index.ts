@@ -39,6 +39,7 @@ class ApplicationCommandAPI {
             if(
                 !Array.isArray(res.sectionDescriptors) ||
                 !res.sectionDescriptors.some(
+                    // eslint-disable-next-line eqeqeq
                     (section: { id: any; }) => section.id == this.CurrentUserSection.id
                 )
             )
@@ -71,6 +72,7 @@ class ApplicationCommandAPI {
                 if(
                     !Array.isArray(res.applicationSections) ||
                     !res.applicationSections.some(
+                        // eslint-disable-next-line eqeqeq
                         (section: { id: string; }) => section.id == this.CurrentUserSection.id
                     )
                 )
@@ -153,6 +155,7 @@ export default class implements Plugin {
     );
     TimestampUtils = BdApi.Webpack.getByKeys('fromTimestamp');
     IconUtils = BdApi.Webpack.getByKeys('getApplicationIconUrl');
+    // eslint-disable-next-line eqeqeq
     DiscordConstants = BdApi.Webpack.getModule((m) => m?.Plq?.ADMINISTRATOR == 8n);
     InstantInviteStore: {
         createFriendInvite(): Promise<Code>;
@@ -166,7 +169,7 @@ export default class implements Plugin {
     // i hate typescript~!
     CommandAPI: ApplicationCommandAPI | undefined = void 0;
 
-    FakeMessage(channelId: string, content: string, embeds: unknown[]) {
+    FakeMessage(channelId: string, content: string, embeds: unknown[]): Record<string, unknown> {
         return {
             id: this.TimestampUtils.fromTimestamp(Date.now()),
             type: this.DiscordConstants.uaV.DEFAULT,
@@ -175,7 +178,7 @@ export default class implements Plugin {
             channel_id: channelId,
             author: this.UserStore.getCurrentUser(),
             attachments: [],
-            embeds: null != embeds ? embeds : [],
+            embeds: embeds !== null ? embeds : [],
             pinned: false,
             mentions: [],
             mention_channels: [],
@@ -201,7 +204,7 @@ export default class implements Plugin {
         });
 
         const showErrorHappened = (err: unknown, id: string) => {
-            this.MessageModule.receiveMessage(
+            void this.MessageModule.receiveMessage(
                 id,
                 this.FakeMessage(
                     id,
@@ -242,7 +245,7 @@ export default class implements Plugin {
                                 `
                         );
 
-                        this.MessageModule.receiveMessage(
+                        void this.MessageModule.receiveMessage(
                             channel.id,
                             this.FakeMessage(
                                 channel.id,
@@ -257,7 +260,8 @@ export default class implements Plugin {
                             )
                         );
                     }).catch((err) => showErrorHappened(err, channel.id));
-                } catch(e) {
+                }
+                catch(e) {
                     showErrorHappened(e, channel.id);
                     console.error(e);
                 }
@@ -275,7 +279,7 @@ export default class implements Plugin {
             options: [],
             execute: async (_, { channel }) => {
                 if(!this.UserStore.getCurrentUser().phone) {
-                    this.MessageModule.receiveMessage(
+                    void this.MessageModule.receiveMessage(
                         channel.id,
                         this.FakeMessage(
                             channel.id,
@@ -294,7 +298,7 @@ export default class implements Plugin {
 
                 try {
                     this.InstantInviteStore.createFriendInvite().then((code: Code) => {
-                        this.MessageModule.receiveMessage(
+                        void this.MessageModule.receiveMessage(
                             channel.id,
                             this.FakeMessage(
                                 channel.id,
@@ -314,7 +318,8 @@ export default class implements Plugin {
                             )
                         );
                     }).catch(err => showErrorHappened(err, channel.id));
-                } catch(e) {
+                }
+                catch(e) {
                     showErrorHappened(e, channel.id);
                     console.error(e);
                 }
@@ -333,7 +338,7 @@ export default class implements Plugin {
             execute: async (_, { channel }) => {
                 try {
                     this.InstantInviteStore.revokeFriendInvites().then(() => {
-                        this.MessageModule.receiveMessage(
+                        void this.MessageModule.receiveMessage(
                             channel.id,
                             this.FakeMessage(
                                 channel.id,
@@ -348,7 +353,8 @@ export default class implements Plugin {
                             )
                         );
                     }).catch((err) => showErrorHappened(err, channel.id));
-                } catch(e) {
+                }
+                catch(e) {
                     showErrorHappened(e, channel.id);
                     console.error(e);
                 }
