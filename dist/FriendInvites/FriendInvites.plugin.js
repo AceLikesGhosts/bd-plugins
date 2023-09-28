@@ -2,7 +2,7 @@
 * @name FriendInvites
 * @description Simple friend-invites.
 * @author ace.
-* @version 1.1.0
+* @version 1.2.0
 * @source https://raw.githubusercontent.com/AceLikesGhosts/bd-plugins/master/dist/FriendInvites.plugin.js
 * @authorLink https://github.com/AceLikesGhosts/bd-plugins
 * @authorId 327639826075484162
@@ -63,7 +63,9 @@ _ApplicationCommandAPI_instances = new WeakSet(), _ApplicationCommandAPI_patchAp
         if (!res || !this.commands.size)
             return;
         if (!Array.isArray(res.sectionDescriptors) ||
-            !res.sectionDescriptors.some((section) => section.id == this.CurrentUserSection.id))
+            !res.sectionDescriptors.some(
+            // eslint-disable-next-line eqeqeq
+            (section) => section.id == this.CurrentUserSection.id))
             res.sectionDescriptors = Array.isArray(res.sectionDescriptors)
                 ? res.sectionDescriptors.splice(1, 0, this.CurrentUserSection)
                 : [this.CurrentUserSection];
@@ -81,7 +83,9 @@ _ApplicationCommandAPI_instances = new WeakSet(), _ApplicationCommandAPI_patchAp
         if (!res || !this.commands.size)
             return;
         if (!Array.isArray(res.applicationSections) ||
-            !res.applicationSections.some((section) => section.id == this.CurrentUserSection.id))
+            !res.applicationSections.some(
+            // eslint-disable-next-line eqeqeq
+            (section) => section.id == this.CurrentUserSection.id))
             res.applicationSections = Array.isArray(res.applicationSections)
                 ? [this.CurrentUserSection, ...res.applicationSections]
                 : [this.CurrentUserSection];
@@ -110,6 +114,7 @@ class default_1 {
         this.ApplicationCommandStore = BdApi.Webpack.getModule((m) => m?.ZP?.getApplicationSections);
         this.TimestampUtils = BdApi.Webpack.getByKeys('fromTimestamp');
         this.IconUtils = BdApi.Webpack.getByKeys('getApplicationIconUrl');
+        // eslint-disable-next-line eqeqeq
         this.DiscordConstants = BdApi.Webpack.getModule((m) => m?.Plq?.ADMINISTRATOR == 8n);
         this.InstantInviteStore = BdApi.Webpack.getByKeys('createFriendInvite');
         this.MessageModule = BdApi.Webpack.getByKeys('sendBotMessage');
@@ -125,7 +130,7 @@ class default_1 {
             channel_id: channelId,
             author: this.UserStore.getCurrentUser(),
             attachments: [],
-            embeds: null != embeds ? embeds : [],
+            embeds: embeds !== null ? embeds : [],
             pinned: false,
             mentions: [],
             mention_channels: [],
@@ -148,7 +153,7 @@ class default_1 {
             }
         });
         const showErrorHappened = (err, id) => {
-            this.MessageModule.receiveMessage(id, this.FakeMessage(id, '', [
+            void this.MessageModule.receiveMessage(id, this.FakeMessage(id, '', [
                 {
                     type: 'rich',
                     title: 'An unexpected error has occured',
@@ -179,7 +184,7 @@ class default_1 {
                                 **Expires:** <t:${new Date(code.expires_at).getTime() / 1000}:R> 
                                 **Uses:** ${code.uses}/${code.max_uses}
                                 `);
-                        this.MessageModule.receiveMessage(channel.id, this.FakeMessage(channel.id, '', [
+                        void this.MessageModule.receiveMessage(channel.id, this.FakeMessage(channel.id, '', [
                             {
                                 type: 'rich',
                                 title: `You have ${codes.length < 1 ? 'no active friend invites!' : `${codes.length.toLocaleString()} active ${codes.length > 1 ? 'invites' : 'invite'}`}`,
@@ -205,7 +210,7 @@ class default_1 {
             options: [],
             execute: async (_, { channel }) => {
                 if (!this.UserStore.getCurrentUser().phone) {
-                    this.MessageModule.receiveMessage(channel.id, this.FakeMessage(channel.id, '', [
+                    void this.MessageModule.receiveMessage(channel.id, this.FakeMessage(channel.id, '', [
                         {
                             type: 'rich',
                             title: 'Creating friend invites requires having a mobile phone number connected to your account.',
@@ -216,7 +221,7 @@ class default_1 {
                 }
                 try {
                     this.InstantInviteStore.createFriendInvite().then((code) => {
-                        this.MessageModule.receiveMessage(channel.id, this.FakeMessage(channel.id, '', [
+                        void this.MessageModule.receiveMessage(channel.id, this.FakeMessage(channel.id, '', [
                             {
                                 type: 'rich',
                                 title: 'Created friend code (' + code.code + ')',
@@ -248,7 +253,7 @@ class default_1 {
             execute: async (_, { channel }) => {
                 try {
                     this.InstantInviteStore.revokeFriendInvites().then(() => {
-                        this.MessageModule.receiveMessage(channel.id, this.FakeMessage(channel.id, '', [
+                        void this.MessageModule.receiveMessage(channel.id, this.FakeMessage(channel.id, '', [
                             {
                                 type: 'rich',
                                 title: 'Deleted all invite codes',
@@ -265,6 +270,8 @@ class default_1 {
         });
     }
     stop() {
+        this.CommandAPI?.unregister();
+        BdApi.Patcher.unpatchAll('FriendInvites');
     }
 }
 exports["default"] = default_1;
