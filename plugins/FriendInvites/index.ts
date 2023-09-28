@@ -363,5 +363,7 @@ export default class implements Plugin {
     }
 
     stop(): void {
+        this.CommandAPI?.unregister();
+        BdApi.Patcher.unpatchAll('FriendInvites');
     }
 }
