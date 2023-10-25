@@ -51,7 +51,7 @@ args = args.filter((v) => {
 });
 
 const { join, sep } = require('path');
-const { statSync, readdirSync, existsSync, mkdirSync, writeFileSync, readFileSync, copyFileSync } = require('fs');
+const { statSync, readdirSync, existsSync, mkdirSync, writeFileSync, readFileSync } = require('fs');
 // out of Scripts folder and into the base directory
 const basePath = join(__dirname, '..');
 // the plugins mono repo folder plugins
