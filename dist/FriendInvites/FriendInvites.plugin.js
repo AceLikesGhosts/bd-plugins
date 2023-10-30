@@ -7,11 +7,11 @@
 * @authorLink https://github.com/AceLikesGhosts/bd-plugins
 * @authorId 327639826075484162
 */
-/******/ (() => { // webpackBootstrap
+require('./sourcemap-register.js');/******/ (() => { // webpackBootstrap
 /******/ 	"use strict";
 /******/ 	var __webpack_modules__ = ({
 
-/***/ 713:
+/***/ 339:
 /***/ (function(__unused_webpack_module, exports) {
 
 
@@ -291,8 +291,9 @@ exports["default"] = default_1;
 /******/ 	// Load entry module and return exports
 /******/ 	// This entry module is referenced by other modules so it can't be inlined
 /******/ 	var __webpack_exports__ = {};
-/******/ 	__webpack_modules__[713](0, __webpack_exports__);
+/******/ 	__webpack_modules__[339](0, __webpack_exports__);
 /******/ 	module.exports = __webpack_exports__;
 /******/ 	
 /******/ })()
 ;
+//# sourceMappingURL=index.js.map
