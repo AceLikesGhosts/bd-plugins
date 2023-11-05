@@ -1,6 +1,0 @@
-stream prview
-guild verification
-max account limit
-no ptt 
-call timeout 
-nsfw bypass

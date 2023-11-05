@@ -17,4 +17,4 @@ jobs:
     - name: Typescript Compiler
       uses: icrawl/action-tsc@v1
     - name: Build (NCC)
-      run: node ./scripts/build.js all
+      run: npx tsx ./scripts/build.ts all
