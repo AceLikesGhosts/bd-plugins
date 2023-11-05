@@ -10,6 +10,7 @@
             "ES2021"
         ],
         "sourceMap": true,
+        "jsx": "react",
         "outDir": "./dist",
         "strict": true,
         "skipDefaultLibCheck": true,
@@ -28,7 +29,10 @@
         "resolveJsonModule": true,
         "allowJs": true,
         "skipLibCheck": true,
-        "baseUrl": "."
+        "baseUrl": ".",
+        "paths": {
+            "@lib/*": ["./lib/*"]
+        }
     },
     "exclude": [
         "node_modules",
