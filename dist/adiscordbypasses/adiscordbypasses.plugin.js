@@ -87,6 +87,96 @@ exports.React = BdApi.React;
 
 /***/ }),
 
+/***/ 908:
+/***/ ((__unused_webpack_module, exports) => {
+
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports["default"] = BdApi.Webpack.getStore('ApplicationStreamPreviewStore');
+
+
+/***/ }),
+
+/***/ 667:
+/***/ ((__unused_webpack_module, exports) => {
+
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports["default"] = BdApi.Webpack.getByKeys('VerificationCriteria');
+
+
+/***/ }),
+
+/***/ 115:
+/***/ ((__unused_webpack_module, exports) => {
+
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports["default"] = BdApi.Webpack.getByKeys('_currentDispatchActionType', '_processingWaitQueue');
+
+
+/***/ }),
+
+/***/ 993:
+/***/ ((__unused_webpack_module, exports) => {
+
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports["default"] = BdApi.Webpack.getByKeys('setBadge');
+
+
+/***/ }),
+
+/***/ 906:
+/***/ ((__unused_webpack_module, exports) => {
+
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports["default"] = BdApi.Webpack.getStore('PermissionStore');
+
+
+/***/ }),
+
+/***/ 893:
+/***/ ((__unused_webpack_module, exports) => {
+
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports["default"] = BdApi.Webpack.getByKeys('isSpotifyPremium', 'ensureSpotifyPremium');
+
+
+/***/ }),
+
+/***/ 329:
+/***/ ((__unused_webpack_module, exports) => {
+
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports["default"] = BdApi.Webpack.getByKeys('getProfile', 'SpotifyAPI');
+
+
+/***/ }),
+
+/***/ 643:
+/***/ ((__unused_webpack_module, exports) => {
+
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports["default"] = BdApi.Webpack.getByKeys('Timeout', 'DelayedCall');
+
+
+/***/ }),
+
+/***/ 256:
+/***/ ((__unused_webpack_module, exports) => {
+
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports["default"] = BdApi.Webpack.getStore('UserStore');
+
+
+/***/ }),
+
 /***/ 693:
 /***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
 
@@ -256,6 +346,273 @@ class ImagePickerItem extends components_1.React.Component {
 exports.ImagePickerItem = ImagePickerItem;
 
 
+/***/ }),
+
+/***/ 573:
+/***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
+
+
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+const { React } = BdApi;
+const ImagePicker_1 = __nccwpck_require__(171);
+const Form_1 = __nccwpck_require__(281);
+const NSFWPatch_1 = __importDefault(__nccwpck_require__(495));
+const SpotifyPremium_1 = __importDefault(__nccwpck_require__(533));
+const Timeout_1 = __importDefault(__nccwpck_require__(977));
+const GuildVerification_1 = __importDefault(__nccwpck_require__(291));
+const StreamPreview_1 = __importDefault(__nccwpck_require__(640));
+const PTT_1 = __importDefault(__nccwpck_require__(538));
+class ADiscordBypasses {
+    constructor() {
+        this.settings = void 0;
+        this.defaultSettings = {
+            PTT: false,
+            CallTimeout: false,
+            NSFW: false,
+            StreamPreview: false,
+            CustomPreviewImage: '',
+            SpotifyPremium: false,
+            SpotifyPause: false,
+            Verification: false,
+            MaxAccounts: false
+        };
+        this.UserStore = BdApi.Webpack.getStore('UserStore');
+    }
+    start() {
+        console.log('started');
+        this.settings = BdApi.Data.load('ADiscordBypasses', 'settings') || this.defaultSettings;
+        (0, NSFWPatch_1.default)(this);
+        (0, SpotifyPremium_1.default)(this);
+        (0, Timeout_1.default)(this);
+        (0, GuildVerification_1.default)(this);
+        (0, StreamPreview_1.default)(this);
+        (0, PTT_1.default)(this);
+    }
+    stop() {
+        console.log('stopped');
+        BdApi.Data.save('ADiscordBypasses', 'settings', this.settings);
+        BdApi.Patcher.unpatchAll('ADiscordBypasses');
+        delete this.settings;
+    }
+    getSettingsPanel() {
+        return DiscordBypassSettings.bind(this);
+    }
+}
+exports["default"] = ADiscordBypasses;
+function DiscordBypassSettings() {
+    const [nsfw, setNSFW] = React.useState(this.settings.NSFW);
+    const [callTimeout, setCallTimeout] = React.useState(this.settings.CallTimeout);
+    const [PTT, setPTT] = React.useState(this.settings.PTT);
+    const [streamPreview, setStreamPreview] = React.useState(this.settings.StreamPreview);
+    const [customPreviewImage, setCustomImagePreview] = React.useState(this.settings.CustomPreviewImage);
+    const [isPremium, setSpotifyPremium] = React.useState(this.settings.SpotifyPremium);
+    const [spotifyPause, setSpotifyPause] = React.useState(this.settings.SpotifyPause);
+    const [Verification, setVerification] = React.useState(this.settings.Verification);
+    const [maxAccounts, setMaxAccounts] = React.useState(this.settings.MaxAccounts);
+    React.useEffect(() => {
+        this.settings = {
+            NSFW: nsfw,
+            CallTimeout: callTimeout,
+            PTT,
+            SpotifyPremium: isPremium,
+            SpotifyPause: spotifyPause,
+            MaxAccounts: maxAccounts,
+            StreamPreview: streamPreview,
+            CustomPreviewImage: customPreviewImage,
+            Verification
+        };
+    }, [
+        nsfw,
+        callTimeout,
+        PTT,
+        streamPreview,
+        customPreviewImage,
+        isPremium,
+        spotifyPause,
+        Verification,
+        maxAccounts
+    ]);
+    return (React.createElement("div", null,
+        React.createElement(Form_1.FormSwitch, { disabled: this.UserStore?.getCurrentUser()?.nsfwAllowed && !this.settings?.NSFW, note: `Bypasses the channel restriction when you're too young to enter channels marked as NSFW.`, value: nsfw, onChange: ((v) => setNSFW(v)) }, "NSFW Bypass"),
+        React.createElement(Form_1.FormSwitch, { note: 'Lets you stay alone in a call for longer than 5 minutes.', value: callTimeout, onChange: ((v) => setCallTimeout(v)) }, "Call timeout"),
+        React.createElement(Form_1.FormSwitch, { note: 'Lets you use voice activity in channels that enforce the use of push-to-talk.', value: PTT, onChange: ((v) => setPTT(v)) }, "No push-to-talk."),
+        React.createElement(Form_1.FormSwitch, { note: 'Stops your stream preview from being rendered. If an image is provided, the image given will be rendered.', value: streamPreview, onChange: ((v) => setStreamPreview(v)) }, "Custom stream preview"),
+        React.createElement(ImagePicker_1.ImagePickerItem, { title: 'Custom Preview Image', note: 'Image to render as stream preview. (Must be under 200kb. If no image is provided, no stream preview will be shown.)', disabled: !streamPreview, value: customPreviewImage, onChange: ((v) => setCustomImagePreview(v)) }),
+        React.createElement(Form_1.FormSwitch, { note: 'Allows using the Spotify listen along feature on Discord without premium.', value: isPremium, onChange: ((v) => setSpotifyPremium(v)) }, "Spotify Listen Along"),
+        React.createElement(Form_1.FormSwitch, { note: 'Prevents Discord from pausing your Spotify when streaming or gaming.', value: spotifyPause, onChange: ((v) => setSpotifyPause(v)) }, "Spotify Pause"),
+        React.createElement(Form_1.FormSwitch, { note: 'Removes the 10 minutes wait before being able to join voice channels in newly joined guilds.', value: Verification, onChange: ((v) => setVerification(v)) }, "Guild verification bypass"),
+        React.createElement(Form_1.FormSwitch, { note: `Removes the maximum account limit in Discord's built-in account switcher.`, value: maxAccounts, onChange: ((v) => setMaxAccounts(v)) }, "Max account limit bypass")));
+}
+
+
+/***/ }),
+
+/***/ 291:
+/***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
+
+
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+const DiscordConstants_1 = __importDefault(__nccwpck_require__(667));
+exports["default"] = (main) => {
+    Object.defineProperty(DiscordConstants_1.default, 'VerificationCriteria', {
+        get: () => {
+            return main.settings?.Verification
+                ? { ACCOUNT_AGE: 0, MEMBER_AGE: 0 }
+                : { ACCOUNT_AGE: 5, MEMBER_AGE: 10 };
+        },
+        configurable: true,
+        enumerable: true,
+    });
+};
+
+
+/***/ }),
+
+/***/ 495:
+/***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
+
+
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+const UserStore_1 = __importDefault(__nccwpck_require__(256));
+exports["default"] = (main) => {
+    BdApi.Patcher.after('ADiscordBypasses', UserStore_1.default, 'getCurrentUser', (_, __, res) => {
+        if (res?.nsfwAllowed === false)
+            res.nsfwAllowed = main.settings.NSFW ?? res?.nsfwAllowed;
+        return res;
+    });
+};
+
+
+/***/ }),
+
+/***/ 538:
+/***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
+
+
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+const DiscordConstants_1 = __importDefault(__nccwpck_require__(667));
+const PermissionStore_1 = __importDefault(__nccwpck_require__(906));
+exports["default"] = (main) => {
+    BdApi.Patcher.after('ADiscordBypasses', PermissionStore_1.default, 'can', (_, args, res) => {
+        if (args[0] === DiscordConstants_1.default.Permissions.USE_VAD &&
+            main.settings?.PTT) {
+            return true;
+        }
+        return res;
+    });
+};
+
+
+/***/ }),
+
+/***/ 533:
+/***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
+
+
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+const SpotifyProtocolStore_1 = __importDefault(__nccwpck_require__(329));
+const SpotifyChecks_1 = __importDefault(__nccwpck_require__(893));
+const Dispatcher_1 = __importDefault(__nccwpck_require__(115));
+exports["default"] = (main) => {
+    BdApi.Patcher.instead('ADiscordBypasses', SpotifyProtocolStore_1.default, 'getProfile', (_, args, res) => {
+        main.settings?.SpotifyPremium ?
+            Dispatcher_1.default.dispatch({
+                type: 'SPOTIY_PROFILE_UPDATE',
+                accountId: args[0],
+                isPremium: true
+            })
+            : res(...args);
+    });
+    BdApi.Patcher.instead('ADiscordBypasses', SpotifyChecks_1.default, 'isSpotifyPremium', (_, __, res) => main.settings?.SpotifyPremium || res);
+    BdApi.Patcher.instead('ADiscordBypasses', SpotifyChecks_1.default, 'ensureSpotifyPremium', 
+    // eslint-disable-next-line @typescript-eslint/promise-function-async
+    (_, args, res) => main.settings?.SpotifyPremium
+        ? new Promise((res) => res(true))
+        : res(...args));
+};
+
+
+/***/ }),
+
+/***/ 640:
+/***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
+
+
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+const ElectronModule_1 = __importDefault(__nccwpck_require__(993));
+const ApplicationStreamPreviewStore_1 = __importDefault(__nccwpck_require__(908));
+const UserStore_1 = __importDefault(__nccwpck_require__(256));
+exports["default"] = (main) => {
+    if (!main.settings?.StreamPreview)
+        return;
+    const replaceWith = main.settings.CustomPreviewImage !== '' ?
+        main.settings.CustomPreviewImage
+        : null;
+    BdApi.Patcher.instead('ADiscordBypasses', ElectronModule_1.default, 'makeChunkedRequest', (_, args, res) => {
+        if ((args[2].method !== 'POST' && !args[0].includeS('preview')) || !main.settings?.StreamPreview) {
+            return res(...args);
+        }
+        if (!replaceWith)
+            return;
+        return res(args[0], { thumbnail: replaceWith }, args[2]);
+    });
+    BdApi.Patcher.after('ADiscordBypasses', ApplicationStreamPreviewStore_1.default, 'getPreviewURL', (_, args, res) => {
+        if (args[2] === UserStore_1.default.getCurrentUser()?.id &&
+            main.settings?.StreamPreview &&
+            !res?.startsWith('https://')) {
+            return replaceWith;
+        }
+        return res;
+    });
+};
+
+
+/***/ }),
+
+/***/ 977:
+/***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
+
+
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+const TimeoutManager_1 = __importDefault(__nccwpck_require__(643));
+exports["default"] = (main) => {
+    BdApi.Patcher.instead('ADiscordBypasses', TimeoutManager_1.default.Timeout.prototype, 'start', (instance, args, res) => {
+        // @ts-expect-error idc
+        const name = args[1]?.toString();
+        if ((name?.includes('BOT_CALL_IDLE_DISCONNECT') && main.settings?.CallTimeout) ||
+            (name?.includes('spotifyPause') && main.settings?.SpotifyPause)) {
+            // @ts-expect-error idc
+            instance.start = () => null;
+            // @ts-expect-error idc
+            instance.stop();
+            return null;
+        }
+        return res.call(instance, ...args);
+    });
+};
+
+
 /***/ })
 
 /******/ 	});
@@ -296,55 +653,12 @@ exports.ImagePickerItem = ImagePickerItem;
 /******/ 	if (typeof __nccwpck_require__ !== 'undefined') __nccwpck_require__.ab = __dirname + "/";
 /******/ 	
 /************************************************************************/
-var __webpack_exports__ = {};
-// This entry need to be wrapped in an IIFE because it need to be isolated against other modules in the chunk.
-(() => {
-var exports = __webpack_exports__;
-
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-const Form_1 = __nccwpck_require__(281);
-const ImagePicker_1 = __nccwpck_require__(171);
-const { React } = BdApi;
-class ADiscordBypasses {
-    constructor() {
-        this.settings = void 0;
-        this.defaultSettings = {
-            PTT: false,
-            CallTimeout: false,
-            NSFW: false,
-            StreamPreview: false,
-            CustomPreviewImage: ''
-        };
-        this.UserStore = BdApi.Webpack.getStore('UserStore');
-    }
-    start() {
-        this.settings = BdApi.Data.load('ADiscordBypasses', 'settings') || this.defaultSettings;
-    }
-    stop() {
-        BdApi.Data.save('ADiscordBypasses', 'settings', this.settings);
-        delete this.settings;
-    }
-    getSettingsPanel() {
-        return DiscordBypassSettings.bind(this);
-    }
-}
-exports["default"] = ADiscordBypasses;
-function DiscordBypassSettings() {
-    const [nsfw, setNSFW] = React.useState(this.settings.NSFW);
-    const [callTimeout, setCallTimeout] = React.useState(this.settings.CallTimeout);
-    const [PTT, setPTT] = React.useState(this.settings.PTT);
-    const [streamPreview, setStreamPreview] = React.useState(this.settings.StreamPreview);
-    const [customPreviewImage, setCustomImagePreview] = React.useState(this.settings.CustomPreviewImage);
-    return (React.createElement("div", null,
-        React.createElement(Form_1.FormSwitch, { disabled: this.UserStore?.getCurrentUser()?.nsfwAllowed && !this.settings?.NSFW, note: `Bypasses the channel restriction when you're too young to enter channels marked as NSFW.`, value: nsfw, onChange: ((v) => setNSFW(v)) }, "NSFW Bypass"),
-        React.createElement(Form_1.FormSwitch, { note: 'Lets you stay alone in a call for longer than 5 minutes.', value: callTimeout, onChange: ((v) => setCallTimeout(v)) }, "Call timeout"),
-        React.createElement(Form_1.FormSwitch, { note: 'Lets you use voice activity in channels that enforce the use of push-to-talk.', value: PTT, onChange: ((v) => setPTT(v)) }, "No push-to-talk."),
-        React.createElement(Form_1.FormSwitch, { note: 'Stops your stream preview from being rendered. If an image is provided, the image given will be rendered.', value: streamPreview, onChange: ((v) => setStreamPreview(v)) }, "Custom stream preview"),
-        React.createElement(ImagePicker_1.ImagePickerItem, { title: 'Custom Preview Iamge', note: 'Image to render as stream preview. (Must be under 200kb. If no image is provided, no stream preview will be shown.)', disabled: !streamPreview, value: customPreviewImage, onChange: ((v) => setCustomImagePreview(v)) })));
-}
-
-})();
-
-module.exports = __webpack_exports__;
+/******/ 	
+/******/ 	// startup
+/******/ 	// Load entry module and return exports
+/******/ 	// This entry module is referenced by other modules so it can't be inlined
+/******/ 	var __webpack_exports__ = __nccwpck_require__(573);
+/******/ 	module.exports = __webpack_exports__;
+/******/ 	
 /******/ })()
 ;

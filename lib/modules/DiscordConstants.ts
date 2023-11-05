@@ -1,5 +1,5 @@
 export interface DiscordConstants {
-    Permissions: Permissions;
+    Permissions: Record<string, bigint>;
     VerificationCriteria: { ACCOUNT_AGE: number; MEMBER_AGE: number; };
 }
 

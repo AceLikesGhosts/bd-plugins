@@ -1,0 +1,33 @@
+import type ADiscordBypasses from '..';
+import ElectronModule from '@lib/modules/ElectronModule';
+import ApplicationStreamPreviewStore from '@lib/modules/ApplicationStreamPreviewStore';
+import UserStore from '@lib/modules/UserStore';
+
+export default (main: ADiscordBypasses): void => {
+    if(!main.settings?.StreamPreview) return;
+
+    const replaceWith = main.settings.CustomPreviewImage !== '' ?
+        main.settings.CustomPreviewImage
+        : null;
+
+    BdApi.Patcher.instead('ADiscordBypasses', ElectronModule, 'makeChunkedRequest', (_, args, res) => {
+        if((args[2].method !== 'POST' && !args[0].includeS('preview')) || !main.settings?.StreamPreview) {
+            return res(...args as unknown[]);
+        }
+
+        if(!replaceWith) return;
+        return res(args[0], { thumbnail: replaceWith }, args[2]);
+    });
+
+    BdApi.Patcher.after('ADiscordBypasses', ApplicationStreamPreviewStore, 'getPreviewURL', (_, args, res: string) => {
+        if(
+            args[2] === UserStore.getCurrentUser()?.id &&
+            main.settings?.StreamPreview &&
+            !res?.startsWith('https://')
+        ) {
+            return replaceWith;
+        }
+
+        return res;
+    });
+};

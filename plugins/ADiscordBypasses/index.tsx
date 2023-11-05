@@ -1,7 +1,16 @@
 import type { Plugin } from 'betterdiscord';
-import { FormSwitch } from '@lib/components/Form';
-import { ImagePickerItem } from './components/ImagePicker';
 const { React } = BdApi;
+
+import { ImagePickerItem } from './components/ImagePicker';
+import { FormSwitch } from '@lib/components/Form';
+
+import NSFWPatch from './patches/NSFWPatch';
+import SpotifyPremium from './patches/SpotifyPremium';
+import Timeout from './patches/Timeout';
+import GuildVerification from './patches/GuildVerification';
+import StreamPreview from './patches/StreamPreview';
+import PTT from './patches/PTT';
+import AccountSwitcher from './patches/AccountSwitcher';
 
 export default class ADiscordBypasses implements Plugin {
     public settings: typeof this.defaultSettings | undefined = void 0;
@@ -20,11 +29,22 @@ export default class ADiscordBypasses implements Plugin {
     public UserStore: { getCurrentUser(): { nsfwAllowed: boolean; }; } = BdApi.Webpack.getStore('UserStore');
 
     start(): void {
+        console.log('started');
         this.settings = BdApi.Data.load('ADiscordBypasses', 'settings') || this.defaultSettings;
+
+        NSFWPatch(this);
+        SpotifyPremium(this);
+        Timeout(this);
+        GuildVerification(this);
+        StreamPreview(this);
+        PTT(this);
+        AccountSwitcher(this);
     }
 
     stop(): void {
+        console.log('stopped');
         BdApi.Data.save('ADiscordBypasses', 'settings', this.settings);
+        BdApi.Patcher.unpatchAll('ADiscordBypasses');
         delete this.settings;
     }
 
@@ -32,8 +52,6 @@ export default class ADiscordBypasses implements Plugin {
         return DiscordBypassSettings.bind(this);
     }
 }
-
-
 
 function DiscordBypassSettings(this: Omit<ADiscordBypasses, 'getSettingsPanel'>): JSX.Element {
     type DefaultSettings = typeof this.defaultSettings;
@@ -46,6 +64,30 @@ function DiscordBypassSettings(this: Omit<ADiscordBypasses, 'getSettingsPanel'>)
     const [spotifyPause, setSpotifyPause] = React.useState<DefaultSettings['SpotifyPause']>(this.settings!.SpotifyPause);
     const [Verification, setVerification] = React.useState<DefaultSettings['Verification']>(this.settings!.Verification);
     const [maxAccounts, setMaxAccounts] = React.useState<DefaultSettings['MaxAccounts']>(this.settings!.MaxAccounts);
+
+    React.useEffect(() => {
+        this.settings = {
+            NSFW: nsfw,
+            CallTimeout: callTimeout,
+            PTT,
+            SpotifyPremium: isPremium,
+            SpotifyPause: spotifyPause,
+            MaxAccounts: maxAccounts,
+            StreamPreview: streamPreview,
+            CustomPreviewImage: customPreviewImage,
+            Verification
+        };
+    }, [
+        nsfw, 
+        callTimeout, 
+        PTT, 
+        streamPreview, 
+        customPreviewImage, 
+        isPremium, 
+        spotifyPause, 
+        Verification, 
+        maxAccounts
+    ]);
 
     return (
         <div>
