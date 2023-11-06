@@ -4,6 +4,11 @@
         "@biased-ts/eslint-config/ProperDoc"
     ],
     "root": true,
+    "ignorePatterns": [
+        "dist/*",
+        "output/*",
+        "node_modules/*"
+    ],
     "parserOptions": {
         "project": [
             "./tsconfig.json",
