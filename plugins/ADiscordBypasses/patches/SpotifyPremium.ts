@@ -4,6 +4,7 @@ import SpotifyChecks from '@lib/modules/SpotifyChecks';
 import Dispatcher from '@lib/modules/Dispatcher';
 
 export default (main: ADiscordBypasses): void => {
+    main.logger.info('Patching Spotify Premium');
     BdApi.Patcher.instead('ADiscordBypasses', SpotifyProtocolStore, 'getProfile', (_, args, res) => {
         main.settings?.SpotifyPremium ?
             Dispatcher.dispatch({

@@ -81,4 +81,4 @@ interface Slider extends React.ComponentClass<SliderProps, SliderState> {
     };
 }
 
-export default RawSlider as Slider;
+export default /** @pure */ RawSlider as Slider;

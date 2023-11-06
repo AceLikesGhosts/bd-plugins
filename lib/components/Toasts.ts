@@ -72,7 +72,7 @@ const toast: ToastFn = (content, kind = Kind.SUCCESS, opts = undefined) => {
     RawComponents.showToast(props);
 };
 
-export default {
+export default /** @pure */ {
     toast,
     Kind,
     Position,

@@ -11,4 +11,4 @@ export interface SwitchProps {
     innerRef?: unknown;
 }
 
-export default RawSwitch as (props: SwitchProps) => JSX.Element;
+export default /** @pure */ RawSwitch as (props: SwitchProps) => JSX.Element;

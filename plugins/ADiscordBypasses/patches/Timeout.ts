@@ -4,6 +4,7 @@ import TimeoutManager from '@lib/modules/TimeoutManager';
 
 
 export default (main: ADiscordBypasses): void => {
+    main.logger.info('Patching Timeout (Idle kick/Spotify pause).');
     BdApi.Patcher.instead(
         'ADiscordBypasses',
         TimeoutManager.Timeout.prototype as { start(args: string[]): void; },

@@ -2,6 +2,7 @@ import type ADiscordBypasses from '..';
 import DiscordConstants from '@lib/modules/DiscordConstants';
 
 export default (main: ADiscordBypasses): void => {
+    main.logger.info('Patching DiscordConstants (Verification).');
     Object.defineProperty(DiscordConstants, 'VerificationCriteria', {
         get: () => {
             return main.settings?.Verification

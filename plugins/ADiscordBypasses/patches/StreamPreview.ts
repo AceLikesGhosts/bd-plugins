@@ -4,6 +4,7 @@ import ApplicationStreamPreviewStore from '@lib/modules/ApplicationStreamPreview
 import UserStore from '@lib/modules/UserStore';
 
 export default (main: ADiscordBypasses): void => {
+    main.logger.info('Patching StreamPreview');
     if(!main.settings?.StreamPreview) return;
 
     const replaceWith = main.settings.CustomPreviewImage !== '' ?

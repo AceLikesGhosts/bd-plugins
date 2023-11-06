@@ -1,8 +1,11 @@
-import type { Plugin } from 'betterdiscord';
+import type { Meta, Plugin } from 'betterdiscord';
 const { React } = BdApi;
+
+import Logger from '@lib/logger';
 
 import { ImagePickerItem } from './components/ImagePicker';
 import { FormSwitch } from '@lib/components/Form';
+import UserStore from '@lib/modules/UserStore';
 
 import NSFWPatch from './patches/NSFWPatch';
 import SpotifyPremium from './patches/SpotifyPremium';
@@ -13,6 +16,11 @@ import PTT from './patches/PTT';
 import AccountSwitcher from './patches/AccountSwitcher';
 
 export default class ADiscordBypasses implements Plugin {
+    public readonly logger: Logger;
+    public constructor(meta: Meta) {
+        this.logger = new Logger(meta);
+    }
+
     public settings: typeof this.defaultSettings | undefined = void 0;
     public defaultSettings = {
         PTT: false,
@@ -26,10 +34,8 @@ export default class ADiscordBypasses implements Plugin {
         MaxAccounts: false
     };
 
-    public UserStore: { getCurrentUser(): { nsfwAllowed: boolean; }; } = BdApi.Webpack.getStore('UserStore');
-
     start(): void {
-        console.log('started');
+        this.logger.log('started');
         this.settings = BdApi.Data.load('ADiscordBypasses', 'settings') || this.defaultSettings;
 
         NSFWPatch(this);
@@ -42,7 +48,7 @@ export default class ADiscordBypasses implements Plugin {
     }
 
     stop(): void {
-        console.log('stopped');
+        this.logger.log('stopped');
         BdApi.Data.save('ADiscordBypasses', 'settings', this.settings);
         BdApi.Patcher.unpatchAll('ADiscordBypasses');
         delete this.settings;
@@ -92,7 +98,7 @@ function DiscordBypassSettings(this: Omit<ADiscordBypasses, 'getSettingsPanel'>)
     return (
         <div>
             <FormSwitch
-                disabled={this.UserStore?.getCurrentUser()?.nsfwAllowed && !this.settings?.NSFW}
+                disabled={UserStore?.getCurrentUser()?.nsfwAllowed && !this.settings?.NSFW}
                 note={`Bypasses the channel restriction when you're too young to enter channels marked as NSFW.`}
                 value={nsfw}
                 onChange={((v) => setNSFW(v))}

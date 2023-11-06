@@ -32,4 +32,4 @@ interface RadioGroup {
     };
 }
 
-export default RawRadioGroup as RadioGroup;
+export default /** @pure */ RawRadioGroup as RadioGroup;

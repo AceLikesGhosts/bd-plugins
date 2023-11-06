@@ -87,6 +87,69 @@ exports.React = BdApi.React;
 
 /***/ }),
 
+/***/ 95:
+/***/ ((__unused_webpack_module, exports) => {
+
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+/** @pure */
+const DefaultColors = {
+    PLUGIN_NAME: 'color: purple; font-weight: bold;',
+    PLUGIN_VERSION: 'color: gray; font-size: 10px;'
+};
+function isError(err) {
+    return err instanceof Error;
+}
+function getErrorMessage(error) {
+    return `${error.name}: ${error.message}\nAt: ${error.stack}`;
+}
+class Logger {
+    constructor(meta, colors = DefaultColors) {
+        this._meta = meta;
+        this._colors = colors;
+    }
+    print(type, message, ...data) {
+        console[type](`%c[${this._meta.name}]%c(v${this._meta.version})`, this._colors.PLUGIN_NAME, this._colors.PLUGIN_VERSION, message, ...data);
+    }
+    log(message, ...data) {
+        if (process.env.DEV?.toString()?.toLocaleLowerCase() === 'true' ||
+            process.env.NODE_ENV?.toString()?.toLowerCase() === 'dev') {
+            return this.warn('`log` is an alias for `info`, please use the `info` function.');
+        }
+        return this.info(message, ...data);
+    }
+    info(message, ...data) {
+        return this.print('log', isError(message) ? getErrorMessage(message) : message, ...data);
+    }
+    warn(message, ...data) {
+        return this.print('warn', isError(message) ? getErrorMessage(message) : message, ...data);
+    }
+    error(message, ...data) {
+        if (process.env.DEV?.toString()?.toLocaleLowerCase() === 'true' ||
+            process.env.NODE_ENV?.toString()?.toLowerCase() === 'dev') {
+            return this.warn('`error` is an alias for `critical`, please use the `critical` function.');
+        }
+        return this.critical(message, ...data);
+    }
+    critical(message, ...data) {
+        return this.print('error', isError(message) ? getErrorMessage(message) : message, ...data);
+    }
+}
+exports["default"] = Logger;
+
+
+/***/ }),
+
+/***/ 895:
+/***/ ((__unused_webpack_module, exports) => {
+
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports["default"] = BdApi.Webpack.getByKeys('MAX_ACCOUNTS');
+
+
+/***/ }),
+
 /***/ 908:
 /***/ ((__unused_webpack_module, exports) => {
 
@@ -357,16 +420,19 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 const { React } = BdApi;
+const logger_1 = __importDefault(__nccwpck_require__(95));
 const ImagePicker_1 = __nccwpck_require__(171);
 const Form_1 = __nccwpck_require__(281);
+const UserStore_1 = __importDefault(__nccwpck_require__(256));
 const NSFWPatch_1 = __importDefault(__nccwpck_require__(495));
 const SpotifyPremium_1 = __importDefault(__nccwpck_require__(533));
 const Timeout_1 = __importDefault(__nccwpck_require__(977));
 const GuildVerification_1 = __importDefault(__nccwpck_require__(291));
 const StreamPreview_1 = __importDefault(__nccwpck_require__(640));
 const PTT_1 = __importDefault(__nccwpck_require__(538));
+const AccountSwitcher_1 = __importDefault(__nccwpck_require__(73));
 class ADiscordBypasses {
-    constructor() {
+    constructor(meta) {
         this.settings = void 0;
         this.defaultSettings = {
             PTT: false,
@@ -379,10 +445,10 @@ class ADiscordBypasses {
             Verification: false,
             MaxAccounts: false
         };
-        this.UserStore = BdApi.Webpack.getStore('UserStore');
+        this.logger = new logger_1.default(meta);
     }
     start() {
-        console.log('started');
+        this.logger.log('started');
         this.settings = BdApi.Data.load('ADiscordBypasses', 'settings') || this.defaultSettings;
         (0, NSFWPatch_1.default)(this);
         (0, SpotifyPremium_1.default)(this);
@@ -390,9 +456,10 @@ class ADiscordBypasses {
         (0, GuildVerification_1.default)(this);
         (0, StreamPreview_1.default)(this);
         (0, PTT_1.default)(this);
+        (0, AccountSwitcher_1.default)(this);
     }
     stop() {
-        console.log('stopped');
+        this.logger.log('stopped');
         BdApi.Data.save('ADiscordBypasses', 'settings', this.settings);
         BdApi.Patcher.unpatchAll('ADiscordBypasses');
         delete this.settings;
@@ -436,7 +503,7 @@ function DiscordBypassSettings() {
         maxAccounts
     ]);
     return (React.createElement("div", null,
-        React.createElement(Form_1.FormSwitch, { disabled: this.UserStore?.getCurrentUser()?.nsfwAllowed && !this.settings?.NSFW, note: `Bypasses the channel restriction when you're too young to enter channels marked as NSFW.`, value: nsfw, onChange: ((v) => setNSFW(v)) }, "NSFW Bypass"),
+        React.createElement(Form_1.FormSwitch, { disabled: UserStore_1.default?.getCurrentUser()?.nsfwAllowed && !this.settings?.NSFW, note: `Bypasses the channel restriction when you're too young to enter channels marked as NSFW.`, value: nsfw, onChange: ((v) => setNSFW(v)) }, "NSFW Bypass"),
         React.createElement(Form_1.FormSwitch, { note: 'Lets you stay alone in a call for longer than 5 minutes.', value: callTimeout, onChange: ((v) => setCallTimeout(v)) }, "Call timeout"),
         React.createElement(Form_1.FormSwitch, { note: 'Lets you use voice activity in channels that enforce the use of push-to-talk.', value: PTT, onChange: ((v) => setPTT(v)) }, "No push-to-talk."),
         React.createElement(Form_1.FormSwitch, { note: 'Stops your stream preview from being rendered. If an image is provided, the image given will be rendered.', value: streamPreview, onChange: ((v) => setStreamPreview(v)) }, "Custom stream preview"),
@@ -446,6 +513,29 @@ function DiscordBypassSettings() {
         React.createElement(Form_1.FormSwitch, { note: 'Removes the 10 minutes wait before being able to join voice channels in newly joined guilds.', value: Verification, onChange: ((v) => setVerification(v)) }, "Guild verification bypass"),
         React.createElement(Form_1.FormSwitch, { note: `Removes the maximum account limit in Discord's built-in account switcher.`, value: maxAccounts, onChange: ((v) => setMaxAccounts(v)) }, "Max account limit bypass")));
 }
+
+
+/***/ }),
+
+/***/ 73:
+/***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
+
+
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+const AccountSwitcher_1 = __importDefault(__nccwpck_require__(895));
+exports["default"] = (main) => {
+    main.logger.info('Patching AccountSwitcher.');
+    Object.defineProperty(AccountSwitcher_1.default, 'MAX_ACCOUNTS', {
+        get: () => {
+            return main.settings?.MaxAccounts ? Infinity : 5;
+        },
+        configurable: true,
+        enumerable: true,
+    });
+};
 
 
 /***/ }),
@@ -460,6 +550,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 const DiscordConstants_1 = __importDefault(__nccwpck_require__(667));
 exports["default"] = (main) => {
+    main.logger.info('Patching DiscordConstants (Verification).');
     Object.defineProperty(DiscordConstants_1.default, 'VerificationCriteria', {
         get: () => {
             return main.settings?.Verification
@@ -484,6 +575,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 const UserStore_1 = __importDefault(__nccwpck_require__(256));
 exports["default"] = (main) => {
+    main.logger.info('Patching NSFW state.');
     BdApi.Patcher.after('ADiscordBypasses', UserStore_1.default, 'getCurrentUser', (_, __, res) => {
         if (res?.nsfwAllowed === false)
             res.nsfwAllowed = main.settings.NSFW ?? res?.nsfwAllowed;
@@ -505,6 +597,7 @@ Object.defineProperty(exports, "__esModule", ({ value: true }));
 const DiscordConstants_1 = __importDefault(__nccwpck_require__(667));
 const PermissionStore_1 = __importDefault(__nccwpck_require__(906));
 exports["default"] = (main) => {
+    main.logger.info('Patching PerimssionStore (PTT)');
     BdApi.Patcher.after('ADiscordBypasses', PermissionStore_1.default, 'can', (_, args, res) => {
         if (args[0] === DiscordConstants_1.default.Permissions.USE_VAD &&
             main.settings?.PTT) {
@@ -529,6 +622,7 @@ const SpotifyProtocolStore_1 = __importDefault(__nccwpck_require__(329));
 const SpotifyChecks_1 = __importDefault(__nccwpck_require__(893));
 const Dispatcher_1 = __importDefault(__nccwpck_require__(115));
 exports["default"] = (main) => {
+    main.logger.info('Patching Spotify Premium');
     BdApi.Patcher.instead('ADiscordBypasses', SpotifyProtocolStore_1.default, 'getProfile', (_, args, res) => {
         main.settings?.SpotifyPremium ?
             Dispatcher_1.default.dispatch({
@@ -561,6 +655,7 @@ const ElectronModule_1 = __importDefault(__nccwpck_require__(993));
 const ApplicationStreamPreviewStore_1 = __importDefault(__nccwpck_require__(908));
 const UserStore_1 = __importDefault(__nccwpck_require__(256));
 exports["default"] = (main) => {
+    main.logger.info('Patching StreamPreview');
     if (!main.settings?.StreamPreview)
         return;
     const replaceWith = main.settings.CustomPreviewImage !== '' ?
@@ -597,6 +692,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 const TimeoutManager_1 = __importDefault(__nccwpck_require__(643));
 exports["default"] = (main) => {
+    main.logger.info('Patching Timeout (Idle kick/Spotify pause).');
     BdApi.Patcher.instead('ADiscordBypasses', TimeoutManager_1.default.Timeout.prototype, 'start', (instance, args, res) => {
         // @ts-expect-error idc
         const name = args[1]?.toString();
