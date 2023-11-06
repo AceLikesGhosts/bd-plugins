@@ -1,23 +1,45 @@
-name: Lint
+name: Release Plugin
 
 on:
-  pull_request:
   push:
-    branches:
-      - master
+    tags:
+      - 'v*' # Match tags starting with 'v'
 
 jobs:
-  eslint:
+  release:
     runs-on: ubuntu-latest
+
     steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-node@v3
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v2
         with:
-          node-version: 16
-      - run: npm ci # or yarn install
-      - uses: sibiraj-s/action-eslint@v2
+          node-version: '14' # Choose the Node.js version you need
+
+      - name: Install NPM dependencies
+        run: npm install
+
+      - name: Build all
+        run: npm run build all
+
+      - name: Release Plugin
+        run: |
+          if [[ ${{ github.ref }} =~ ^refs/tags/v[0-9]+\s(.+)$ ]]; then
+            plugin_name="${BASH_REMATCH[1]}"
+            echo "Plugin name: $plugin_name"
+            cp dist/$plugin_name/$plugin_name.plugin.js $GITHUB_WORKSPACE/$plugin_name.plugin.js
+            cp dist/$plugin_name/README.md $GITHUB_WORKSPACE/README.md
+          else
+            echo "Tag does not contain a plugin name. No releases will be made."
+            exit 0
+          fi
+
+      - name: Create GitHub Release
+        id: create_release
+        uses: softprops/action-gh-release@v1
         with:
-          github-token: ${{ secrets.GITHUB_TOKEN }} # Optional
-          eslint-args: '--ignore-path=.gitignore --quiet'
-          extensions: 'js,jsx,ts,tsx'
-          annotations: true
+          files: ${{ steps.release.outputs.artifacts }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
