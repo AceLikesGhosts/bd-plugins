@@ -1,6 +1,6 @@
 import type { Meta, Plugin } from 'betterdiscord';
-const { React } = BdApi;
 
+import { React } from '@lib/components';
 import Logger from '@lib/logger';
 
 import { ImagePickerItem } from './components/ImagePicker';
