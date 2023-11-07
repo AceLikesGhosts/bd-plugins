@@ -55,6 +55,15 @@
             "type": "string",
             "description": "A link to the plugin's source code.",
             "minLength": 1
+        },
+
+        // custom (non-betterdiscord) config options
+        // BD will still put these in our metadata
+        // so thats nice (thank you Zere <3)
+        "updateLink": {
+            "type": "string",
+            "description": "The link to update the plugin (either raw.github.com/... or a normal Github link, using a normal Github link implies you have releases in the format of \"v0.0.0_Name\".",
+            "minLength": 1
         }
     },
     "required": [

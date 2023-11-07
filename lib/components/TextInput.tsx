@@ -24,4 +24,4 @@ export interface TextInputProps {
     'aria-labelledby'?: unknown;
 }
 
-export default /** @pure */ TextInput as React.ComponentClass<TextInputProps, unknown>;
+export default /** @__PURE__ */ TextInput as React.ComponentClass<TextInputProps, unknown>;

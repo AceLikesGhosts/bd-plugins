@@ -1,10 +1,12 @@
 {
-    "$schema": "../../config_schema.json",
+    "$schema": "../../config_schema.jsonc",
     "name": "ADiscordBypasses",
     "description": "A simple rewrite of Tharki's DiscordBypasses.",
     "author": "ace.",
     "version": "0.1.2",
     "source": "https://raw.githubusercontent.com/AceLikesGhosts/bd-plugins/master/dist/ADiscordBypasses/ADiscordBypasses.plugin.js",
     "authorLink": "https://github.com/AceLikesGhosts/bd-plugins",
+    "website": "https://github.com/AceLikesGhosts/bd-plugins",
+    "updateLink": "https://github.com/AceLikesGhosts/bd-plugins",
     "authorId": "327639826075484162"
 }

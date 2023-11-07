@@ -6,4 +6,4 @@ export interface ApplicationStreamPreviewStore extends Store {
     getPreviewURLForStreamKey: (...args: any[]) => any;
 }
 
-export default /** @pure */ BdApi.Webpack.getStore('ApplicationStreamPreviewStore') as ApplicationStreamPreviewStore;
+export default /** @__PURE__ */ BdApi.Webpack.getStore('ApplicationStreamPreviewStore') as ApplicationStreamPreviewStore;

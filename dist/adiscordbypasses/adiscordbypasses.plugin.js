@@ -5,6 +5,8 @@
 * @version 0.1.2
 * @source https://raw.githubusercontent.com/AceLikesGhosts/bd-plugins/master/dist/ADiscordBypasses/ADiscordBypasses.plugin.js
 * @authorLink https://github.com/AceLikesGhosts/bd-plugins
+* @website https://github.com/AceLikesGhosts/bd-plugins
+* @updateLink https://github.com/AceLikesGhosts/bd-plugins
 * @authorId 327639826075484162
 */
 /******/ (() => { // webpackBootstrap
@@ -92,7 +94,7 @@ exports.React = BdApi.React;
 
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-/** @pure */
+/** @__PURE__ */
 const DefaultColors = {
     PLUGIN_NAME: 'color: purple; font-weight: bold;',
     PLUGIN_VERSION: 'color: gray; font-size: 10px;'

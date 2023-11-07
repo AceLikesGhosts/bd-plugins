@@ -83,4 +83,4 @@ export interface ElectronModule {
     updateCrashReporter: (...args: any[]) => any;
 }
 
-export default /** @pure */ BdApi.Webpack.getByKeys('setBadge') as ElectronModule;
+export default /** @__PURE__ */ BdApi.Webpack.getByKeys('setBadge') as ElectronModule;

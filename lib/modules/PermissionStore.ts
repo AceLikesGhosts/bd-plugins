@@ -19,4 +19,4 @@ export interface PermissionStore extends Store {
     clearVars: (...args: any[]) => any;
 }
 
-export default /** @pure */ BdApi.Webpack.getStore('PermissionStore') as PermissionStore;
+export default /** @__PURE__ */ BdApi.Webpack.getStore('PermissionStore') as PermissionStore;

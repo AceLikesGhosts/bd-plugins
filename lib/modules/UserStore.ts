@@ -39,4 +39,4 @@ export interface UserStore extends Store {
     getUserStoreVersion(): number;
 }
 
-export default /** @pure */ BdApi.Webpack.getStore('UserStore') as UserStore;
+export default /** @__PURE__ */ BdApi.Webpack.getStore('UserStore') as UserStore;

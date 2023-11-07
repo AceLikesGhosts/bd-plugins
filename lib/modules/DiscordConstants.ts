@@ -3,4 +3,4 @@ export interface DiscordConstants {
     VerificationCriteria: { ACCOUNT_AGE: number; MEMBER_AGE: number; };
 }
 
-export default /** @pure */ BdApi.Webpack.getByKeys('VerificationCriteria') as DiscordConstants;
+export default /** @__PURE__ */ BdApi.Webpack.getByKeys('VerificationCriteria') as DiscordConstants;

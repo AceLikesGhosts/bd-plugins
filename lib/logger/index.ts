@@ -8,7 +8,7 @@ export type Colors = {
     PLUGIN_VERSION: string;
 };
 
-/** @pure */
+/** @__PURE__ */
 const DefaultColors: Colors = {
     PLUGIN_NAME: 'color: purple; font-weight: bold;',
     PLUGIN_VERSION: 'color: gray; font-size: 10px;'
@@ -22,7 +22,7 @@ function getErrorMessage(error: Error): string {
     return `${ error.name }: ${ error.message }\nAt: ${ error.stack }`;
 }
 
-export default /** @pure */ class Logger {
+export default /** @__PURE__ */ class Logger {
     private readonly _meta: Meta;
     private readonly _colors: Colors;
     public constructor(meta: Meta, colors: Colors = DefaultColors) {

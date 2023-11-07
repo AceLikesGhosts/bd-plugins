@@ -5,4 +5,4 @@ export interface SpotifyChecks {
     isSpotifyPremium: (...args: any[]) => any;
 }
 
-export default /** @pure */ BdApi.Webpack.getByKeys('isSpotifyPremium', 'ensureSpotifyPremium') as SpotifyChecks;
+export default /** @__PURE__ */ BdApi.Webpack.getByKeys('isSpotifyPremium', 'ensureSpotifyPremium') as SpotifyChecks;

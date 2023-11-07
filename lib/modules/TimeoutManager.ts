@@ -5,4 +5,4 @@ export interface TimeoutManager {
     timeoutPromise: (...args: any[]) => any;
 }
 
-export default /** @pure */ BdApi.Webpack.getByKeys('Timeout', 'DelayedCall') as TimeoutManager;
+export default /** @__PURE__ */ BdApi.Webpack.getByKeys('Timeout', 'DelayedCall') as TimeoutManager;

@@ -13,4 +13,4 @@ export interface SpotifyProtocolStore {
     subscribePlayerStateNotifications: (...args: any[]) => any;
 }
 
-export default /** @pure */ BdApi.Webpack.getByKeys('getProfile', 'SpotifyAPI');
+export default /** @__PURE__ */ BdApi.Webpack.getByKeys('getProfile', 'SpotifyAPI');

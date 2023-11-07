@@ -157,7 +157,7 @@ interface FormComponents {
     FormNotice: FormNotice;
 }
 
-export const /** @pure */ {
+export const /** @__PURE__ */ {
     FormSection,
     FormItem,
     FormTitle,

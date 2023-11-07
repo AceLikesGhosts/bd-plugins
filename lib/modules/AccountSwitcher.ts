@@ -1,1 +1,1 @@
-export default /** @pure */ BdApi.Webpack.getByKeys('MAX_ACCOUNTS') as { MAX_ACCOUNTS: number; };
+export default /** @__PURE__ */ BdApi.Webpack.getByKeys('MAX_ACCOUNTS') as { MAX_ACCOUNTS: number; };
