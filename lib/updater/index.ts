@@ -1,5 +1,5 @@
 import parseJSDocMeta from '@lib/utils/Metadata';
-import { getSemVer } from '@lib/modules/SemVer';
+import { getSemVer } from '@lib/common/SemVer';
 
 import type Logger from '@lib/logger';
 import type { Meta } from 'betterdiscord';

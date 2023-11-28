@@ -1,5 +1,8 @@
 import { RawComponents } from '.';
+import { FormItem, FormItemProps } from './Form';
 const { RadioGroup: RawRadioGroup } = RawComponents;
+
+import { React } from '.';
 
 interface RadioGroupOption<T> {
     name: React.ReactNode;
@@ -30,6 +33,16 @@ interface RadioGroup {
         NOT_SET: string;
         SMALL: string;
     };
+}
+
+export function RadioItem<T>(props: RadioGroupProps<T> & FormItemProps): JSX.Element {
+    return (
+        <FormItem
+            {...props}
+        >
+            <RawRadioGroup {...props} />
+        </FormItem>
+    );
 }
 
 export default /** @__PURE__ */ RawRadioGroup as RadioGroup;

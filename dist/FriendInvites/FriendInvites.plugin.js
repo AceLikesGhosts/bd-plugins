@@ -3,11 +3,11 @@
 * @description Simple friend-invites.
 * @author ace.
 * @version 1.2.0
-* @source https://raw.githubusercontent.com/AceLikesGhosts/bd-plugins/master/dist/FriendInvites.plugin.js
+* @source https://raw.githubusercontent.com/AceLikesGhosts/bd-plugins/master/dist/FriendInvites/FriendInvites.plugin.js
 * @authorLink https://github.com/AceLikesGhosts/bd-plugins
 * @authorId 327639826075484162
 */
-require('./sourcemap-register.js');/******/ (() => { // webpackBootstrap
+/******/ (() => { // webpackBootstrap
 /******/ 	"use strict";
 /******/ 	var __webpack_modules__ = ({
 
@@ -296,4 +296,3 @@ exports["default"] = default_1;
 /******/ 	
 /******/ })()
 ;
-//# sourceMappingURL=index.js.map
