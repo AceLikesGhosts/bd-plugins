@@ -135,6 +135,18 @@ exports["default"] = BdApi.Webpack.getByKeys('getLocalPresence', 'getActivities'
 
 /***/ }),
 
+/***/ 570:
+/***/ ((__unused_webpack_module, exports) => {
+
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+const filter = BdApi.Webpack.Filters.byStrings('getAssetImage: size must === [number, number] for Twitch');
+exports["default"] = BdApi.Webpack.getModule(m => typeof m === 'object' &&
+    Object.values(m /** this was asserted above */).some(filter));
+
+
+/***/ }),
+
 /***/ 115:
 /***/ ((__unused_webpack_module, exports) => {
 
@@ -300,7 +312,6 @@ const Select_1 = __importStar(__nccwpck_require__(973));
 const Scroller_1 = __importDefault(__nccwpck_require__(904));
 const index_1 = __importStar(__nccwpck_require__(154));
 const Lodash_1 = __importDefault(__nccwpck_require__(317));
-const Dispatcher_1 = __importDefault(__nccwpck_require__(115));
 const ActivityStore_1 = __importDefault(__nccwpck_require__(248));
 const StoreUtils_1 = __importDefault(__nccwpck_require__(805));
 const { useStateFromStores } = StoreUtils_1.default;
@@ -332,23 +343,19 @@ function default_1({ rpcs, setEditingRpc, setRPCs }) {
                     setSelectedRPC(i);
                 }), value: selectedRPC ?? void 0, serialize: ((v) => v.toString && v.toString()) }),
             components_1.React.createElement(Button_1.default, { style: { marginRight: '5px' }, size: Button_1.default.Sizes.MEDIUM, onClick: (() => {
-                    if (activities.includes(rpcs[selectedRPC])) {
-                        Dispatcher_1.default.dispatch({
-                            type: 'LOCAL_ACTIVITY_UPDATE',
-                            activity: {},
-                            socketId: 'oh-my-god-bd-plugin',
-                            pid: 6969
-                        });
+                    if (selectedRPC === -1) {
                         return;
                     }
-                    Dispatcher_1.default.dispatch({
-                        type: 'LOCAL_ACTIVITY_UPDATE',
-                        activity: rpcs[selectedRPC],
-                        socketId: 'oh-my-god-bd-plugin',
-                        pid: 6969
-                    });
-                }) }, activities.includes(rpcs[selectedRPC]) ? 'Remove' : 'Set'),
+                    if (activities.includes(rpcs[selectedRPC])) {
+                        void index_1.default.setRPC(void 0);
+                        return;
+                    }
+                    void index_1.default.setRPC(rpcs[selectedRPC]);
+                }) }, selectedRPC !== -1 && activities.includes(rpcs[selectedRPC]) ? 'Remove' : 'Set'),
             components_1.React.createElement(Button_1.default, { color: Button_1.default.Colors.RED, style: { marginRight: '5px' }, size: Button_1.default.Sizes.MEDIUM, onClick: (() => {
+                    if (selectedRPC === -1) {
+                        return;
+                    }
                     removeActivity(rpcs[selectedRPC]);
                     setSelectedRPC(-1);
                 }) }, "Delete"),
@@ -398,7 +405,7 @@ function RPCEditor({ activity, save, back }) {
         });
     };
     return (components_1.React.createElement("div", null,
-        components_1.React.createElement(TextInput, { title: 'Application Id', value: String(tempRPC.application_id), required: true, onChange: ((e) => appendRPC({ application_id: Number(e) })) }),
+        components_1.React.createElement(TextInput, { title: 'Application Id', value: tempRPC.application_id, required: true, onChange: ((e) => appendRPC({ application_id: e })) }),
         components_1.React.createElement(TextInput, { title: 'Name', value: tempRPC.name, required: true, onChange: ((e) => appendRPC({ name: e })) }),
         components_1.React.createElement(TextInput, { title: 'Details', value: tempRPC.details, required: true, onChange: ((e) => appendRPC({ details: e })) }),
         components_1.React.createElement(TextInput, { title: 'State', value: tempRPC.state, onChange: ((e) => {
@@ -408,13 +415,13 @@ function RPCEditor({ activity, save, back }) {
                 }
                 appendRPC({ state: e });
             }) }),
-        components_1.React.createElement(TextInput, { title: 'Large Image', value: tempRPC.assets?.large_image, onChange: ((e) => appendRPC({ assets: { large_image: e } })) }),
+        components_1.React.createElement(TextInput, { title: 'Large Image', value: tempRPC.assets?.large_image, onChange: ((e) => appendRPC({ assets: { large_image: e } })), disabled: tempRPC.application_id === '0' }),
         components_1.React.createElement(TextInput, { title: 'Large Image Text', value: tempRPC.assets?.large_text, 
             // if listening the large image text is used instead, cringe limitation of cord.
             // iirc.
-            disabled: tempRPC.type === UserActivity_1.ActivityType.Listening, onChange: ((e) => appendRPC({ assets: { large_text: e } })) }),
-        components_1.React.createElement(TextInput, { title: 'Small Image', value: tempRPC.assets?.small_image, onChange: ((e) => appendRPC({ assets: { small_image: e } })) }),
-        components_1.React.createElement(TextInput, { title: 'Small Image Text', value: tempRPC.assets?.small_text, onChange: ((e) => appendRPC({ assets: { small_text: e } })) }),
+            disabled: tempRPC.type === UserActivity_1.ActivityType.Listening || tempRPC.application_id === '0', onChange: ((e) => appendRPC({ assets: { large_text: e } })) }),
+        components_1.React.createElement(TextInput, { title: 'Small Image', value: tempRPC.assets?.small_image, onChange: ((e) => appendRPC({ assets: { small_image: e } })), disabled: tempRPC.application_id === '0' }),
+        components_1.React.createElement(TextInput, { title: 'Small Image Text', value: tempRPC.assets?.small_text, onChange: ((e) => appendRPC({ assets: { small_text: e } })), disabled: tempRPC.application_id === '0' }),
         components_1.React.createElement(Form_1.FormSwitch, { value: showTime, onChange: ((e) => setShowTime(e)) }, "Show Time"),
         components_1.React.createElement(TextInput, { title: 'Start', value: String(tempRPC.timestamps?.start ?? '0'), onChange: ((e) => appendRPC({ timestamps: { start: Number(e) } })), disabled: !showTime }),
         components_1.React.createElement(TextInput, { title: 'End', value: String(tempRPC.timestamps?.end ?? '0'), onChange: ((e) => appendRPC({ timestamps: { end: Number(e) } })), disabled: !showTime }),
@@ -444,8 +451,10 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.RPC_DEFAULT = void 0;
 const UserActivity_1 = __nccwpck_require__(335);
+const AssetManager_1 = __importDefault(__nccwpck_require__(570));
 const Settings_1 = __importDefault(__nccwpck_require__(935));
 const config_json_1 = __importDefault(__nccwpck_require__(148));
+const Dispatcher_1 = __importDefault(__nccwpck_require__(115));
 // import styles from './style.css';
 // @vercel/ncc limitation, they refuse to expose
 // webpack internals (plugins), @vercel/ncc#549
@@ -474,7 +483,7 @@ const styles = `
 }
 `.trim();
 exports.RPC_DEFAULT = {
-    application_id: 0,
+    application_id: '0',
     name: 'RPC!',
     details: 'This is a default',
     state: 'RPC provided!',
@@ -485,9 +494,28 @@ class CustomRPC {
     constructor() {
         this.rpcs = void 0;
     }
+    static async fetchAsset(id, key) {
+        return (await AssetManager_1.default.fetchAssetIds(id, [key, undefined]))[0];
+    }
+    static async setRPC(rpc) {
+        const newRPC = { ...rpc };
+        if (rpc?.assets?.large_image) {
+            newRPC.assets.large_image = await this.fetchAsset(rpc.application_id, rpc.assets.large_image);
+        }
+        if (rpc?.assets?.small_image) {
+            newRPC.assets.small_image = await this.fetchAsset(rpc.application_id, rpc.assets.small_image);
+        }
+        console.log(`applied rpc:`, newRPC);
+        Dispatcher_1.default.dispatch({
+            type: 'LOCAL_ACTIVITY_UPDATE',
+            pid: 6969,
+            socketId: 'oh-my-god-bd-plugin',
+            activity: newRPC
+        });
+    }
     start() {
         this.rpcs = BdApi.Data.load(config_json_1.default.name, 'rpcs');
-        if (this.rpcs.length < 1) {
+        if (!this.rpcs?.length || this.rpcs?.length < 1) {
             console.log('length replacement: ', this.rpcs?.length);
             this.rpcs = [exports.RPC_DEFAULT];
         }
@@ -516,6 +544,7 @@ class CustomRPC {
         BdApi.Data.save(config_json_1.default.name, 'rpcs', this.rpcs);
         BdApi.Data.save(config_json_1.default.name, 'settings', { selRPC: CustomRPC.selRPC });
         this.rpcs = void 0;
+        void CustomRPC.setRPC(void 0);
     }
     getSettingsPanel() {
         return Settings_1.default.bind(this);

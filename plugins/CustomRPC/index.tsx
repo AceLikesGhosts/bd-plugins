@@ -1,9 +1,11 @@
 import type { Plugin } from 'betterdiscord';
 import { ActivityType, type Activity } from '@lib/modules/UserActivity';
+import AssetManager from '@lib/modules/AssetManager';
 
 import Settings from './components/Settings';
 
 import config from './config.json';
+import Dispatcher from '@lib/modules/Dispatcher';
 // import styles from './style.css';
 // @vercel/ncc limitation, they refuse to expose
 // webpack internals (plugins), @vercel/ncc#549
@@ -33,7 +35,7 @@ const styles = `
 `.trim();
 
 export const RPC_DEFAULT: Activity = {
-    application_id: 0,
+    application_id: '0',
     name: 'RPC!',
     details: 'This is a default',
     state: 'RPC provided!',
@@ -45,9 +47,33 @@ export default class CustomRPC implements Plugin {
     public rpcs?: Activity[] = void 0;
     static selRPC: number = -1;
 
+    static async fetchAsset(id: string, key: string): Promise<string> {
+        return (await AssetManager.fetchAssetIds(id, [key, undefined]))[0] as string;
+    }
+
+    static async setRPC(rpc?: Activity): Promise<void> {
+        const newRPC = {...rpc};
+        if(rpc?.assets?.large_image) {
+            newRPC.assets!.large_image = await this.fetchAsset(rpc.application_id, rpc.assets.large_image);
+        }
+
+        if(rpc?.assets?.small_image) {
+            newRPC.assets!.small_image = await this.fetchAsset(rpc.application_id, rpc.assets.small_image);
+        }
+
+        console.log(`applied rpc:`, newRPC);
+
+        Dispatcher.dispatch({
+            type: 'LOCAL_ACTIVITY_UPDATE',
+            pid: 6969,
+            socketId: 'oh-my-god-bd-plugin',
+            activity: newRPC
+        });
+    }
+
     start(): void {
         this.rpcs = BdApi.Data.load(config.name, 'rpcs');
-        if(this.rpcs!.length < 1) {
+        if(!this.rpcs?.length || this.rpcs?.length < 1) {
             console.log('length replacement: ', this.rpcs?.length);
             this.rpcs = [RPC_DEFAULT];
         }
@@ -58,7 +84,7 @@ export default class CustomRPC implements Plugin {
         CustomRPC.selRPC = selectedRPCTemp;
         // for cleanup
         selectedRPCTemp = void 0;
-        
+
         console.log(this.rpcs);
         BdApi.DOM.addStyle(config.name, styles as string);
 
@@ -81,6 +107,7 @@ export default class CustomRPC implements Plugin {
         BdApi.Data.save(config.name, 'rpcs', this.rpcs);
         BdApi.Data.save(config.name, 'settings', { selRPC: CustomRPC.selRPC });
         this.rpcs = void 0;
+        void CustomRPC.setRPC(void 0);
     }
 
     getSettingsPanel(): () => JSX.Element {

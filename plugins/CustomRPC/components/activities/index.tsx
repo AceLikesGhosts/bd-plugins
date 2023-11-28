@@ -9,7 +9,6 @@ import Scroller from '@lib/components/Scroller';
 import CustomRPC, { RPC_DEFAULT } from '../../index';
 
 import LoDash from '@lib/common/Lodash';
-import Dispatcher from '@lib/modules/Dispatcher';
 import ActivityStore from '@lib/modules/ActivityStore';
 import StoreUtils from '@lib/modules/StoreUtils';
 const { useStateFromStores } = StoreUtils;
@@ -64,26 +63,19 @@ export default function ({ rpcs, setEditingRpc, setRPCs }: ActivityProps): JSX.E
                     style={{ marginRight: '5px' }}
                     size={Button.Sizes.MEDIUM}
                     onClick={(() => {
-                        if(activities.includes(rpcs[selectedRPC])) {
-                            Dispatcher.dispatch({
-                                type: 'LOCAL_ACTIVITY_UPDATE',
-                                activity: {},
-                                socketId: 'oh-my-god-bd-plugin',
-                                pid: 6969
-                            });
-
+                        if(selectedRPC === -1) {
                             return;
                         }
 
-                        Dispatcher.dispatch({
-                            type: 'LOCAL_ACTIVITY_UPDATE',
-                            activity: rpcs[selectedRPC as keyof typeof rpcs],
-                            socketId: 'oh-my-god-bd-plugin',
-                            pid: 6969
-                        });
+                        if(activities.includes(rpcs[selectedRPC])) {
+                            void CustomRPC.setRPC(void 0);
+                            return;
+                        }
+
+                        void CustomRPC.setRPC(rpcs[selectedRPC]);
                     })}
                 >
-                    {activities.includes(rpcs[selectedRPC]) ? 'Remove' : 'Set'}
+                    {selectedRPC !== -1 && activities.includes(rpcs[selectedRPC]) ? 'Remove' : 'Set'}
                 </Button>
 
                 <Button
@@ -91,6 +83,10 @@ export default function ({ rpcs, setEditingRpc, setRPCs }: ActivityProps): JSX.E
                     style={{ marginRight: '5px' }}
                     size={Button.Sizes.MEDIUM}
                     onClick={(() => {
+                        if(selectedRPC === -1) {
+                            return;
+                        }
+
                         removeActivity(rpcs[selectedRPC as number]);
                         setSelectedRPC(-1);
                     })}

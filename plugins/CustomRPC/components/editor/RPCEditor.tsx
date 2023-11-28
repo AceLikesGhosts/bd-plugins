@@ -41,9 +41,9 @@ export default function RPCEditor({ activity, save, back }: { activity: Activity
         <div>
             <TextInput
                 title={'Application Id'}
-                value={String(tempRPC.application_id)}
+                value={tempRPC.application_id}
                 required
-                onChange={((e) => appendRPC({ application_id: Number(e) }))}
+                onChange={((e) => appendRPC({ application_id: e }))}
             />
 
             <TextInput
@@ -78,6 +78,7 @@ export default function RPCEditor({ activity, save, back }: { activity: Activity
                 title={'Large Image'}
                 value={tempRPC.assets?.large_image}
                 onChange={((e) => appendRPC({ assets: { large_image: e } }))}
+                disabled={tempRPC.application_id === '0'}
             />
 
             <TextInput
@@ -85,7 +86,7 @@ export default function RPCEditor({ activity, save, back }: { activity: Activity
                 value={tempRPC.assets?.large_text}
                 // if listening the large image text is used instead, cringe limitation of cord.
                 // iirc.
-                disabled={tempRPC.type === ActivityType.Listening}
+                disabled={tempRPC.type === ActivityType.Listening || tempRPC.application_id === '0'}
                 onChange={((e) => appendRPC({ assets: { large_text: e } }))}
             />
 
@@ -93,12 +94,14 @@ export default function RPCEditor({ activity, save, back }: { activity: Activity
                 title={'Small Image'}
                 value={tempRPC.assets?.small_image}
                 onChange={((e) => appendRPC({ assets: { small_image: e } }))}
+                disabled={tempRPC.application_id === '0'}
             />
 
             <TextInput
                 title={'Small Image Text'}
                 value={tempRPC.assets?.small_text}
                 onChange={((e) => appendRPC({ assets: { small_text: e } }))}
+                disabled={tempRPC.application_id === '0'}
             />
 
             <FormSwitch

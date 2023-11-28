@@ -1,7 +1,7 @@
 import type { User } from './UserStore';
 
 export interface Activity {
-    application_id: number;
+    application_id: string;
     type: typeof ActivityType[keyof typeof ActivityType];
     flags: number;
     assets?: ActivityAssets;
