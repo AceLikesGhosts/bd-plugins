@@ -2,7 +2,7 @@
 * @name CustomRPC
 * @description Pretty decent RPC plugin.
 * @author ace.
-* @version 1.0.0-RC
+* @version 1.1.0-RC
 * @source https://raw.githubusercontent.com/AceLikesGhosts/bd-plugins/master/dist/CustomRPC/CustomRPC.plugin.js
 * @authorLink https://github.com/AceLikesGhosts/bd-plugins
 * @authorId 327639826075484162
@@ -91,9 +91,9 @@ exports["default"] = _1.RawComponents.AdvancedScrollerAuto;
 
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.selectControl = void 0;
+exports.selectControlFlexStyle = void 0;
 const _1 = __nccwpck_require__(799);
-exports.selectControl = BdApi.Webpack.getByKeys('selectControl').selectControl;
+exports.selectControlFlexStyle = '1 1 40%';
 // export default /** @__PURE__ */ RawComponents.Select as (props: SelectProps) => JSX.Element
 exports["default"] = _1.RawComponents.SingleSelect;
 
@@ -308,7 +308,7 @@ const components_1 = __nccwpck_require__(799);
 const UserActivities_1 = __importDefault(__nccwpck_require__(984));
 const Flex_1 = __importDefault(__nccwpck_require__(348));
 const Button_1 = __importDefault(__nccwpck_require__(776));
-const Select_1 = __importStar(__nccwpck_require__(973));
+const Select_1 = __importDefault(__nccwpck_require__(973));
 const Scroller_1 = __importDefault(__nccwpck_require__(904));
 const index_1 = __importStar(__nccwpck_require__(154));
 const Lodash_1 = __importDefault(__nccwpck_require__(317));
@@ -333,7 +333,11 @@ function default_1({ rpcs, setEditingRpc, setRPCs }) {
     const activities = useStateFromStores([ActivityStore_1.default], () => ActivityStore_1.default.getActivities());
     return (components_1.React.createElement("div", null,
         components_1.React.createElement(Flex_1.default, { align: Flex_1.default.Align.START, direction: Flex_1.default.Direction.HORIZONTAL },
-            components_1.React.createElement(Select_1.default, { className: Select_1.selectControl, options: rpcs?.map((v, i) => {
+            components_1.React.createElement(Select_1.default
+            // className={selectControl}
+            , { 
+                // className={selectControl}
+                options: rpcs?.map((v, i) => {
                     return {
                         label: v.name,
                         value: i
@@ -341,7 +345,7 @@ function default_1({ rpcs, setEditingRpc, setRPCs }) {
                 }), onChange: ((i) => {
                     console.log('changed radio to', i);
                     setSelectedRPC(i);
-                }), value: selectedRPC ?? void 0, serialize: ((v) => v.toString && v.toString()) }),
+                }), value: selectedRPC ?? void 0, className: 'bd-rpc-single-select', serialize: ((v) => v.toString && v.toString()) }),
             components_1.React.createElement(Button_1.default, { style: { marginRight: '5px' }, size: Button_1.default.Sizes.MEDIUM, onClick: (() => {
                     if (selectedRPC === -1) {
                         return;
@@ -481,6 +485,11 @@ const styles = `
     position: relative;
     padding: 16px;
 }
+
+.bd-rpc-single-select {
+    flex: 1 1 40%
+}
+
 `.trim();
 exports.RPC_DEFAULT = {
     application_id: '0',
@@ -559,7 +568,7 @@ exports["default"] = CustomRPC;
 /***/ 148:
 /***/ ((module) => {
 
-module.exports = JSON.parse('{"$schema":"../../config_schema.json","name":"CustomRPC","description":"Pretty decent RPC plugin.","author":"ace.","version":"1.0.0-RC","source":"https://raw.githubusercontent.com/AceLikesGhosts/bd-plugins/master/dist/CustomRPC/CustomRPC.plugin.js","authorLink":"https://github.com/AceLikesGhosts/bd-plugins","authorId":"327639826075484162"}');
+module.exports = JSON.parse('{"$schema":"../../config_schema.json","name":"CustomRPC","description":"Pretty decent RPC plugin.","author":"ace.","version":"1.1.0-RC","source":"https://raw.githubusercontent.com/AceLikesGhosts/bd-plugins/master/dist/CustomRPC/CustomRPC.plugin.js","authorLink":"https://github.com/AceLikesGhosts/bd-plugins","authorId":"327639826075484162"}');
 
 /***/ })
 

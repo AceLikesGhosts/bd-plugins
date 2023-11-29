@@ -9,9 +9,9 @@ interface SelectProps {
     }[];
     onChange?: (i: unknown) => unknown;
     serialize: (v: unknown) => string;
+    style?: Record<string, string>;
 }
 
-export const selectControl = BdApi.Webpack.getByKeys('selectControl').selectControl as string;
-
+export const selectControlFlexStyle = '1 1 40%';
 // export default /** @__PURE__ */ RawComponents.Select as (props: SelectProps) => JSX.Element
 export default /** @__PURE__ */ RawComponents.SingleSelect as (props: SelectProps) => JSX.Element;

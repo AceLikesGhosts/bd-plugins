@@ -4,7 +4,7 @@ import type { Activity } from '@lib/modules/UserActivity';
 import UserActivities from './UserActivities';
 import Flex from '@lib/components/Flex';
 import Button from '@lib/components/Button';
-import Select, { selectControl } from '@lib/components/Select';
+import Select from '@lib/components/Select';
 import Scroller from '@lib/components/Scroller';
 import CustomRPC, { RPC_DEFAULT } from '../../index';
 
@@ -44,7 +44,7 @@ export default function ({ rpcs, setEditingRpc, setRPCs }: ActivityProps): JSX.E
         <div>
             <Flex align={Flex.Align.START} direction={Flex.Direction.HORIZONTAL}>
                 <Select
-                    className={selectControl}
+                    // className={selectControl}
                     options={rpcs?.map((v, i) => {
                         return {
                             label: v.name,
@@ -56,6 +56,7 @@ export default function ({ rpcs, setEditingRpc, setRPCs }: ActivityProps): JSX.E
                         setSelectedRPC(i as number);
                     })}
                     value={selectedRPC ?? void 0}
+                    className='bd-rpc-single-select'
                     serialize={((v) => (v as any).toString && (v as any).toString())}
                 />
 

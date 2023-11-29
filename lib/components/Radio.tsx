@@ -1,5 +1,6 @@
 import { RawComponents } from '.';
-import { FormItem, FormItemProps } from './Form';
+import type { FormItemProps } from './Form';
+import { FormItem } from './Form';
 const { RadioGroup: RawRadioGroup } = RawComponents;
 
 import { React } from '.';

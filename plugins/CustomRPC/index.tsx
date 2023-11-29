@@ -32,6 +32,11 @@ const styles = `
     position: relative;
     padding: 16px;
 }
+
+.bd-rpc-single-select {
+    flex: 1 1 40%
+}
+
 `.trim();
 
 export const RPC_DEFAULT: Activity = {
