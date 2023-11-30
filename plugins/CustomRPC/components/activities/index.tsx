@@ -8,7 +8,6 @@ import Select from '@lib/components/Select';
 import Scroller from '@lib/components/Scroller';
 import CustomRPC, { RPC_DEFAULT } from '../../index';
 
-import LoDash from '@lib/common/Lodash';
 import ActivityStore from '@lib/modules/ActivityStore';
 import StoreUtils from '@lib/modules/StoreUtils';
 const { useStateFromStores } = StoreUtils;
@@ -32,13 +31,34 @@ export default function ({ rpcs, setEditingRpc, setRPCs }: ActivityProps): JSX.E
         });
     };
 
-    const removeActivity = (rpc: Activity) => {
+    function shallowEquals<T>(a: T, b: T): boolean {
+        for(const key in a) {
+            if(typeof a[key] === 'object' || typeof b[key] === 'object') 
+                continue;
+
+            if(a[key] !== b[key]) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    const removeActivity = (spot: number) => {
         setRPCs((r_rpcs) => {
-            return r_rpcs.filter((v) => !LoDash.isEqual(v, rpc));
+            return r_rpcs.filter((_, i) => {
+                return i !== spot;
+            });
         });
     };
 
-    const activities = useStateFromStores([ActivityStore], () => ActivityStore.getActivities());
+    const activities = useStateFromStores<Activity>([ActivityStore], () => ActivityStore.getActivities());
+    const isRPCActive = (): boolean => {
+        const rpc = rpcs[selectedRPC];
+        return activities.some((r_rpc) => {
+            return shallowEquals(rpc, r_rpc);
+        });
+    };
 
     return (
         <div>
@@ -68,7 +88,7 @@ export default function ({ rpcs, setEditingRpc, setRPCs }: ActivityProps): JSX.E
                             return;
                         }
 
-                        if(activities.includes(rpcs[selectedRPC])) {
+                        if(isRPCActive()) {
                             void CustomRPC.setRPC(void 0);
                             return;
                         }
@@ -76,7 +96,7 @@ export default function ({ rpcs, setEditingRpc, setRPCs }: ActivityProps): JSX.E
                         void CustomRPC.setRPC(rpcs[selectedRPC]);
                     })}
                 >
-                    {selectedRPC !== -1 && activities.includes(rpcs[selectedRPC]) ? 'Remove' : 'Set'}
+                    {selectedRPC !== -1 && isRPCActive() ? 'Remove' : 'Set'}
                 </Button>
 
                 <Button
@@ -88,7 +108,7 @@ export default function ({ rpcs, setEditingRpc, setRPCs }: ActivityProps): JSX.E
                             return;
                         }
 
-                        removeActivity(rpcs[selectedRPC as number]);
+                        removeActivity(selectedRPC);
                         setSelectedRPC(-1);
                     })}
                 >

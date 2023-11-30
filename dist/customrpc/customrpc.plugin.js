@@ -11,16 +11,6 @@
 /******/ 	"use strict";
 /******/ 	var __webpack_modules__ = ({
 
-/***/ 317:
-/***/ ((__unused_webpack_module, exports) => {
-
-
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports["default"] = BdApi.Webpack.getByKeys('debounce');
-
-
-/***/ }),
-
 /***/ 776:
 /***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
 
@@ -121,6 +111,59 @@ exports.React = exports.Margins = exports.RawComponents = void 0;
 exports.RawComponents = BdApi.Webpack.getByKeys('Button', 'Switch', 'Select');
 exports.Margins = BdApi.Webpack.getByKeys('marginBottom40', 'marginTop4');
 exports.React = BdApi.React;
+
+
+/***/ }),
+
+/***/ 95:
+/***/ ((__unused_webpack_module, exports) => {
+
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+/** @__PURE__ */
+const DefaultColors = {
+    PLUGIN_NAME: 'color: purple; font-weight: bold;',
+    PLUGIN_VERSION: 'color: gray; font-size: 10px;'
+};
+function isError(err) {
+    return err instanceof Error;
+}
+function getErrorMessage(error) {
+    return `${error.name}: ${error.message}\nAt: ${error.stack}`;
+}
+class Logger {
+    constructor(meta, colors = DefaultColors) {
+        this._meta = meta;
+        this._colors = colors;
+    }
+    print(type, message, ...data) {
+        console[type](`%c[${this._meta.name}]%c(v${this._meta.version})`, this._colors.PLUGIN_NAME, this._colors.PLUGIN_VERSION, message, ...data);
+    }
+    log(message, ...data) {
+        if (process.env.DEV?.toString()?.toLocaleLowerCase() === 'true' ||
+            process.env.NODE_ENV?.toString()?.toLowerCase() === 'dev') {
+            return this.warn('`log` is an alias for `info`, please use the `info` function.');
+        }
+        return this.info(message, ...data);
+    }
+    info(message, ...data) {
+        return this.print('log', isError(message) ? getErrorMessage(message) : message, ...data);
+    }
+    warn(message, ...data) {
+        return this.print('warn', isError(message) ? getErrorMessage(message) : message, ...data);
+    }
+    error(message, ...data) {
+        if (process.env.DEV?.toString()?.toLocaleLowerCase() === 'true' ||
+            process.env.NODE_ENV?.toString()?.toLowerCase() === 'dev') {
+            return this.warn('`error` is an alias for `critical`, please use the `critical` function.');
+        }
+        return this.critical(message, ...data);
+    }
+    critical(message, ...data) {
+        return this.print('error', isError(message) ? getErrorMessage(message) : message, ...data);
+    }
+}
+exports["default"] = Logger;
 
 
 /***/ }),
@@ -311,7 +354,6 @@ const Button_1 = __importDefault(__nccwpck_require__(776));
 const Select_1 = __importDefault(__nccwpck_require__(973));
 const Scroller_1 = __importDefault(__nccwpck_require__(904));
 const index_1 = __importStar(__nccwpck_require__(154));
-const Lodash_1 = __importDefault(__nccwpck_require__(317));
 const ActivityStore_1 = __importDefault(__nccwpck_require__(248));
 const StoreUtils_1 = __importDefault(__nccwpck_require__(805));
 const { useStateFromStores } = StoreUtils_1.default;
@@ -325,12 +367,30 @@ function default_1({ rpcs, setEditingRpc, setRPCs }) {
             return [...r_rpcs, rpc];
         });
     };
-    const removeActivity = (rpc) => {
+    function shallowEquals(a, b) {
+        for (const key in a) {
+            if (typeof a[key] === 'object' || typeof b[key] === 'object')
+                continue;
+            if (a[key] !== b[key]) {
+                return false;
+            }
+        }
+        return true;
+    }
+    const removeActivity = (spot) => {
         setRPCs((r_rpcs) => {
-            return r_rpcs.filter((v) => !Lodash_1.default.isEqual(v, rpc));
+            return r_rpcs.filter((_, i) => {
+                return i !== spot;
+            });
         });
     };
     const activities = useStateFromStores([ActivityStore_1.default], () => ActivityStore_1.default.getActivities());
+    const isRPCActive = () => {
+        const rpc = rpcs[selectedRPC];
+        return activities.some((r_rpc) => {
+            return shallowEquals(rpc, r_rpc);
+        });
+    };
     return (components_1.React.createElement("div", null,
         components_1.React.createElement(Flex_1.default, { align: Flex_1.default.Align.START, direction: Flex_1.default.Direction.HORIZONTAL },
             components_1.React.createElement(Select_1.default
@@ -350,17 +410,17 @@ function default_1({ rpcs, setEditingRpc, setRPCs }) {
                     if (selectedRPC === -1) {
                         return;
                     }
-                    if (activities.includes(rpcs[selectedRPC])) {
+                    if (isRPCActive()) {
                         void index_1.default.setRPC(void 0);
                         return;
                     }
                     void index_1.default.setRPC(rpcs[selectedRPC]);
-                }) }, selectedRPC !== -1 && activities.includes(rpcs[selectedRPC]) ? 'Remove' : 'Set'),
+                }) }, selectedRPC !== -1 && isRPCActive() ? 'Remove' : 'Set'),
             components_1.React.createElement(Button_1.default, { color: Button_1.default.Colors.RED, style: { marginRight: '5px' }, size: Button_1.default.Sizes.MEDIUM, onClick: (() => {
                     if (selectedRPC === -1) {
                         return;
                     }
-                    removeActivity(rpcs[selectedRPC]);
+                    removeActivity(selectedRPC);
                     setSelectedRPC(-1);
                 }) }, "Delete"),
             components_1.React.createElement(Button_1.default, { size: Button_1.default.Sizes.MEDIUM, onClick: (() => {
@@ -419,13 +479,13 @@ function RPCEditor({ activity, save, back }) {
                 }
                 appendRPC({ state: e });
             }) }),
-        components_1.React.createElement(TextInput, { title: 'Large Image', value: tempRPC.assets?.large_image, onChange: ((e) => appendRPC({ assets: { large_image: e } })), disabled: tempRPC.application_id === '0' }),
+        components_1.React.createElement(TextInput, { title: 'Large Image', value: tempRPC.assets?.large_image, onChange: ((e) => appendRPC({ assets: { large_image: e } })) }),
         components_1.React.createElement(TextInput, { title: 'Large Image Text', value: tempRPC.assets?.large_text, 
             // if listening the large image text is used instead, cringe limitation of cord.
             // iirc.
-            disabled: tempRPC.type === UserActivity_1.ActivityType.Listening || tempRPC.application_id === '0', onChange: ((e) => appendRPC({ assets: { large_text: e } })) }),
-        components_1.React.createElement(TextInput, { title: 'Small Image', value: tempRPC.assets?.small_image, onChange: ((e) => appendRPC({ assets: { small_image: e } })), disabled: tempRPC.application_id === '0' }),
-        components_1.React.createElement(TextInput, { title: 'Small Image Text', value: tempRPC.assets?.small_text, onChange: ((e) => appendRPC({ assets: { small_text: e } })), disabled: tempRPC.application_id === '0' }),
+            disabled: tempRPC.type === UserActivity_1.ActivityType.Listening, onChange: ((e) => appendRPC({ assets: { large_text: e } })) }),
+        components_1.React.createElement(TextInput, { title: 'Small Image', value: tempRPC.assets?.small_image, onChange: ((e) => appendRPC({ assets: { small_image: e } })) }),
+        components_1.React.createElement(TextInput, { title: 'Small Image Text', value: tempRPC.assets?.small_text, onChange: ((e) => appendRPC({ assets: { small_text: e } })) }),
         components_1.React.createElement(Form_1.FormSwitch, { value: showTime, onChange: ((e) => setShowTime(e)) }, "Show Time"),
         components_1.React.createElement(TextInput, { title: 'Start', value: String(tempRPC.timestamps?.start ?? '0'), onChange: ((e) => appendRPC({ timestamps: { start: Number(e) } })), disabled: !showTime }),
         components_1.React.createElement(TextInput, { title: 'End', value: String(tempRPC.timestamps?.end ?? '0'), onChange: ((e) => appendRPC({ timestamps: { end: Number(e) } })), disabled: !showTime }),
@@ -459,6 +519,7 @@ const AssetManager_1 = __importDefault(__nccwpck_require__(570));
 const Settings_1 = __importDefault(__nccwpck_require__(935));
 const config_json_1 = __importDefault(__nccwpck_require__(148));
 const Dispatcher_1 = __importDefault(__nccwpck_require__(115));
+const logger_1 = __importDefault(__nccwpck_require__(95));
 // import styles from './style.css';
 // @vercel/ncc limitation, they refuse to expose
 // webpack internals (plugins), @vercel/ncc#549
@@ -499,33 +560,46 @@ exports.RPC_DEFAULT = {
     flags: 1,
     type: UserActivity_1.ActivityType.Playing,
 };
+const discordRegex = /https:\/\/(?:media|cdn)\.discordapp.(?:net|com)\/(.+)/g;
 class CustomRPC {
     constructor() {
         this.rpcs = void 0;
+        this.logger = new logger_1.default(config_json_1.default);
     }
     static async fetchAsset(id, key) {
         return (await AssetManager_1.default.fetchAssetIds(id, [key, undefined]))[0];
     }
-    static async setRPC(rpc) {
-        const newRPC = { ...rpc };
+    static async parseRPC(rpc) {
+        const newRPC = JSON.parse(JSON.stringify(rpc));
         if (rpc?.assets?.large_image) {
-            newRPC.assets.large_image = await this.fetchAsset(rpc.application_id, rpc.assets.large_image);
+            if (discordRegex.test(rpc.assets.large_image))
+                newRPC.assets.large_image = 'mp:'.concat(rpc.assets.large_image.split(discordRegex)[1]);
+            else
+                newRPC.assets.large_image = await this.fetchAsset(rpc.application_id, rpc.assets.large_image);
         }
         if (rpc?.assets?.small_image) {
-            newRPC.assets.small_image = await this.fetchAsset(rpc.application_id, rpc.assets.small_image);
+            if (discordRegex.test(rpc.assets.small_image))
+                newRPC.assets.small_image = 'mp:'.concat(rpc.assets.large_image.split(discordRegex)[1]);
+            else
+                newRPC.assets.small_image = await this.fetchAsset(rpc.application_id, rpc.assets.small_image);
         }
-        console.log(`applied rpc:`, newRPC);
+        return newRPC;
+    }
+    static async setRPC(rpc) {
+        if (rpc) {
+            rpc = await this.parseRPC(rpc);
+        }
         Dispatcher_1.default.dispatch({
             type: 'LOCAL_ACTIVITY_UPDATE',
             pid: 6969,
             socketId: 'oh-my-god-bd-plugin',
-            activity: newRPC
+            activity: rpc
         });
     }
     start() {
+        this.logger.log('Enabled plugin');
         this.rpcs = BdApi.Data.load(config_json_1.default.name, 'rpcs');
         if (!this.rpcs?.length || this.rpcs?.length < 1) {
-            console.log('length replacement: ', this.rpcs?.length);
             this.rpcs = [exports.RPC_DEFAULT];
         }
         let selectedRPCTemp = BdApi.Data.load(config_json_1.default.name, 'settings')?.selRPC;
@@ -535,7 +609,8 @@ class CustomRPC {
         CustomRPC.selRPC = selectedRPCTemp;
         // for cleanup
         selectedRPCTemp = void 0;
-        console.log(this.rpcs);
+        this.logger.log('Loaded configuration');
+        this.logger.log('Added styles component');
         BdApi.DOM.addStyle(config_json_1.default.name, styles);
         // const connectionOpen = () => {
         //     if(this.selRPC === -1 || !this.rpcs) {
@@ -549,11 +624,13 @@ class CustomRPC {
         // Dispatcher.subscribe('CONNECTION_OPEN', connectionOpen);
     }
     stop() {
-        console.log('rpcs on stop', this.rpcs);
+        this.logger.log('Saving configuration settings, rpc, settings', this.rpcs, { selRPC: CustomRPC.selRPC });
         BdApi.Data.save(config_json_1.default.name, 'rpcs', this.rpcs);
         BdApi.Data.save(config_json_1.default.name, 'settings', { selRPC: CustomRPC.selRPC });
         this.rpcs = void 0;
+        this.logger.log('Resetting RPC');
         void CustomRPC.setRPC(void 0);
+        this.logger.log('Disabled.');
     }
     getSettingsPanel() {
         return Settings_1.default.bind(this);

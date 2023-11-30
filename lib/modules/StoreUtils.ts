@@ -10,9 +10,9 @@ interface StoreUtils {
     Store: new (...args: any[]) => Store;
     BatchedStoreListener: new (...args: any[]) => unknown; // class
     default: unknown; // idk and cba to find out
-    useStateFromStores(stores: unknown[], callback: () => unknown): unknown[];
-    useStateFromStoresArray(stores: unknown[], callback: () => unknown): unknown[];
-    useStateFromStoresObject(stores: unknown[], callback: () => unknown): unknown[];
+    useStateFromStores<T>(stores: unknown[], callback: () => unknown): T[];
+    useStateFromStoresArray<T>(stores: unknown[], callback: () => unknown): T[];
+    useStateFromStoresObject<T>(stores: unknown[], callback: () => unknown): T[];
 }
 
 export default /** @__PURE__ */ BdApi.Webpack.getByKeys('Store', 'useStateFromStores') as StoreUtils;
