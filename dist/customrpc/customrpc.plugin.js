@@ -242,7 +242,7 @@ exports["default"] = BdApi.Webpack.getStore('UserStore');
 
 /***/ }),
 
-/***/ 935:
+/***/ 544:
 /***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
 
 
@@ -251,8 +251,8 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 const components_1 = __nccwpck_require__(799);
-const RPCEditor_1 = __importDefault(__nccwpck_require__(233));
-const activities_1 = __importDefault(__nccwpck_require__(831));
+const RPCEditor_1 = __importDefault(__nccwpck_require__(131));
+const activities_1 = __importDefault(__nccwpck_require__(916));
 function Settings() {
     const [showRPC, setShowRPC] = components_1.React.useState(false);
     const [editingRPC, setEditingRPC] = components_1.React.useState(-1);
@@ -282,7 +282,7 @@ exports["default"] = Settings;
 
 /***/ }),
 
-/***/ 984:
+/***/ 331:
 /***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
 
 
@@ -316,7 +316,7 @@ exports["default"] = UserActivities;
 
 /***/ }),
 
-/***/ 831:
+/***/ 916:
 /***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
 
 
@@ -348,12 +348,12 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 const components_1 = __nccwpck_require__(799);
-const UserActivities_1 = __importDefault(__nccwpck_require__(984));
+const UserActivities_1 = __importDefault(__nccwpck_require__(331));
 const Flex_1 = __importDefault(__nccwpck_require__(348));
 const Button_1 = __importDefault(__nccwpck_require__(776));
 const Select_1 = __importDefault(__nccwpck_require__(973));
 const Scroller_1 = __importDefault(__nccwpck_require__(904));
-const index_1 = __importStar(__nccwpck_require__(154));
+const index_1 = __importStar(__nccwpck_require__(364));
 const ActivityStore_1 = __importDefault(__nccwpck_require__(248));
 const StoreUtils_1 = __importDefault(__nccwpck_require__(805));
 const { useStateFromStores } = StoreUtils_1.default;
@@ -436,7 +436,7 @@ exports["default"] = default_1;
 
 /***/ }),
 
-/***/ 233:
+/***/ 131:
 /***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
 
 
@@ -505,7 +505,7 @@ exports["default"] = RPCEditor;
 
 /***/ }),
 
-/***/ 154:
+/***/ 364:
 /***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
 
 
@@ -516,8 +516,8 @@ Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.RPC_DEFAULT = void 0;
 const UserActivity_1 = __nccwpck_require__(335);
 const AssetManager_1 = __importDefault(__nccwpck_require__(570));
-const Settings_1 = __importDefault(__nccwpck_require__(935));
-const config_json_1 = __importDefault(__nccwpck_require__(148));
+const Settings_1 = __importDefault(__nccwpck_require__(544));
+const config_json_1 = __importDefault(__nccwpck_require__(43));
 const Dispatcher_1 = __importDefault(__nccwpck_require__(115));
 const logger_1 = __importDefault(__nccwpck_require__(95));
 // import styles from './style.css';
@@ -642,7 +642,7 @@ exports["default"] = CustomRPC;
 
 /***/ }),
 
-/***/ 148:
+/***/ 43:
 /***/ ((module) => {
 
 module.exports = JSON.parse('{"$schema":"../../config_schema.json","name":"CustomRPC","description":"Pretty decent RPC plugin.","author":"ace.","version":"1.3.0-RC","source":"https://raw.githubusercontent.com/AceLikesGhosts/bd-plugins/master/dist/CustomRPC/CustomRPC.plugin.js","authorLink":"https://github.com/AceLikesGhosts/bd-plugins","authorId":"327639826075484162"}');
@@ -691,7 +691,7 @@ module.exports = JSON.parse('{"$schema":"../../config_schema.json","name":"Custo
 /******/ 	// startup
 /******/ 	// Load entry module and return exports
 /******/ 	// This entry module is referenced by other modules so it can't be inlined
-/******/ 	var __webpack_exports__ = __nccwpck_require__(154);
+/******/ 	var __webpack_exports__ = __nccwpck_require__(364);
 /******/ 	module.exports = __webpack_exports__;
 /******/ 	
 /******/ })()

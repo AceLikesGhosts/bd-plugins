@@ -41,9 +41,6 @@ if(argv.includes('all')) {
 }
 else {
     argv.forEach((p) => {
-        // DEAL WITH IT!
-        p = p.toLowerCase();
-
         if(!fs.existsSync(path.join(pluginsPath, p))) {
             throw 'Failed to find project ' + p + ' in the projects folder, is your pluginPath set incorrectly?';
         }
