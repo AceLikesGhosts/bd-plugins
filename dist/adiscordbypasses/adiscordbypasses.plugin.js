@@ -2,7 +2,7 @@
 * @name ADiscordBypasses
 * @description A simple rewrite of Tharki's DiscordBypasses.
 * @author ace.
-* @version 0.1.2
+* @version 0.1.3
 * @source https://raw.githubusercontent.com/AceLikesGhosts/bd-plugins/master/dist/ADiscordBypasses/ADiscordBypasses.plugin.js
 * @authorLink https://github.com/AceLikesGhosts/bd-plugins
 * @website https://github.com/AceLikesGhosts/bd-plugins
@@ -664,7 +664,7 @@ exports["default"] = (main) => {
         main.settings.CustomPreviewImage
         : null;
     BdApi.Patcher.instead('ADiscordBypasses', ElectronModule_1.default, 'makeChunkedRequest', (_, args, res) => {
-        if ((args[2].method !== 'POST' && !args[0].includeS('preview')) || !main.settings?.StreamPreview) {
+        if ((args[2].method !== 'POST' && !args[0].includes('preview')) || !main.settings?.StreamPreview) {
             return res(...args);
         }
         if (!replaceWith)

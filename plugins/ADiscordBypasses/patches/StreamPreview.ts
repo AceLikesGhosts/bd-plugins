@@ -12,7 +12,7 @@ export default (main: ADiscordBypasses): void => {
         : null;
 
     BdApi.Patcher.instead('ADiscordBypasses', ElectronModule, 'makeChunkedRequest', (_, args, res) => {
-        if((args[2].method !== 'POST' && !args[0].includeS('preview')) || !main.settings?.StreamPreview) {
+        if((args[2].method !== 'POST' && !args[0].includes('preview')) || !main.settings?.StreamPreview) {
             return res(...args as unknown[]);
         }
 
