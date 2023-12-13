@@ -25,6 +25,7 @@ function getErrorMessage(error: Error): string {
 export default /** @__PURE__ */ class Logger {
     private readonly _meta: Meta;
     private readonly _colors: Colors;
+    public static internal: Logger = new Logger({ name: 'INTERNAL', version: '' } as Meta);
     public constructor(meta: Meta, colors: Colors = DefaultColors) {
         this._meta = meta;
         this._colors = colors;

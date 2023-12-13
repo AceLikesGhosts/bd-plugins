@@ -25,5 +25,5 @@ export default /** @__PURE__ */ function parseJSDocMeta(fileContent: string): Me
     out[field] = accum.trim();
     delete out[''];
     out.format = 'jsdoc';
-    return out as unknown as Meta;
+    return out as unknown as Meta & { format: 'jsdoc' };
 }
