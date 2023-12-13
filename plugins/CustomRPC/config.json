@@ -1,5 +1,5 @@
 {
-    "$schema": "../../config_schema.json",
+    "$schema": "../../config_schema.jsonc",
     "name": "CustomRPC",
     "description": "Pretty decent RPC plugin.",
     "author": "ace.",

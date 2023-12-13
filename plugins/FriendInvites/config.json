@@ -1,5 +1,5 @@
 {
-    "$schema": "../../config_schema.json",
+    "$schema": "../../config_schema.jsonc",
     "name": "FriendInvites",
     "description": "Simple friend-invites.",
     "author": "ace.",
