@@ -137,6 +137,7 @@ class Logger {
         return this.print('error', isError(message) ? getErrorMessage(message) : message, ...data);
     }
 }
+Logger.internal = new Logger({ name: 'INTERNAL', version: '' });
 exports["default"] = Logger;
 
 

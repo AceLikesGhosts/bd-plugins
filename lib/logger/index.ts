@@ -9,7 +9,7 @@ export type Colors = {
 };
 
 /** @__PURE__ */
-const DefaultColors: Colors = {
+export const DefaultColors: Colors = {
     PLUGIN_NAME: 'color: purple; font-weight: bold;',
     PLUGIN_VERSION: 'color: gray; font-size: 10px;'
 } as const;
@@ -25,13 +25,13 @@ function getErrorMessage(error: Error): string {
 export default /** @__PURE__ */ class Logger {
     private readonly _meta: Meta;
     private readonly _colors: Colors;
-    public static internal: Logger = new Logger({ name: 'INTERNAL', version: '' } as Meta);
+
     public constructor(meta: Meta, colors: Colors = DefaultColors) {
         this._meta = meta;
         this._colors = colors;
     }
 
-    public print<T>(type: 'log' | 'warn' | 'error', message: T, ...data: unknown[]): void {
+    public print<T>(type: 'log' | 'warn' | 'error' | 'debug', message: T, ...data: unknown[]): void {
         console[type](
             `%c[${ this._meta.name }]%c(v${ this._meta.version })`,
             this._colors.PLUGIN_NAME,
@@ -41,14 +41,11 @@ export default /** @__PURE__ */ class Logger {
         );
     }
 
-    public log<T>(message: T, ...data: unknown[]): void {
-        if(
-            process.env.DEV?.toString()?.toLocaleLowerCase() === 'true' ||
-            process.env.NODE_ENV?.toString()?.toLowerCase() === 'dev'
-        ) {
-            return this.warn('`log` is an alias for `info`, please use the `info` function.');
-        }
+    public debug<T>(message: T, ...data: unknown[]): void {
+        return this.print('debug', message, ...data);
+    }
 
+    public log<T>(message: T, ...data: unknown[]): void {
         return this.info(message, ...data);
     }
 
@@ -61,13 +58,6 @@ export default /** @__PURE__ */ class Logger {
     }
 
     public error<T>(message: T, ...data: unknown[]): void {
-        if(
-            process.env.DEV?.toString()?.toLocaleLowerCase() === 'true' ||
-            process.env.NODE_ENV?.toString()?.toLowerCase() === 'dev'
-        ) {
-            return this.warn('`error` is an alias for `critical`, please use the `critical` function.');
-        }
-
         return this.critical(message, ...data);
     }
 

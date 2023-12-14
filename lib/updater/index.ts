@@ -1,11 +1,19 @@
 import { getSemVer } from '@lib/common/SemVer';
+import Logger from '@lib/logger';
 import parseJSDocMeta from '@lib/utils/Metadata';
 import type { Meta } from 'betterdiscord';
 
 // ncc doesn't touch our funny imports
-import { writeFile } from 'fs';
+import { unlink, writeFile } from 'fs';
 import path from 'path';
 import type { SemVer } from 'semver';
+
+const updateLogger = new Logger(
+    {
+        name: 'Updater',
+        version: 'INTERNAL'
+    } as Meta
+);
 
 interface GithubRelease {
     tag_name: string;
@@ -18,7 +26,7 @@ interface GithubAsset {
 }
 
 async function downloadFromRelease(currentMeta: Meta, currentSemver: SemVer): Promise<void> {
-    const releaseURL: string = `https://api.github.com/repos/${currentMeta.updateLink!.split('.com')[1]}`;
+    const releaseURL: string = `https://api.github.com/repos/${ currentMeta.updateLink!.split('.com/')[1] }`;
     const releases = await (
         await fetch(releaseURL)
     ).json() as GithubRelease[];
@@ -40,7 +48,6 @@ async function downloadFromRelease(currentMeta: Meta, currentSemver: SemVer): Pr
             continue;
         }
 
-
         for(let j: number = 0; j < release.assets.length; j++) {
             const asset = release.assets[j];
             if(asset.name !== `${ currentMeta.name }.plugin.js`) {
@@ -52,10 +59,22 @@ async function downloadFromRelease(currentMeta: Meta, currentSemver: SemVer): Pr
             const outPath = path.join(BdApi.Plugins.folder, `${ currentMeta.name }.plugin.js`);
             const resp = await fetch(asset.browser_download_url);
             const buffer = await resp.arrayBuffer();
-            writeFile(outPath, Buffer.from(buffer), {}, (err) => {
+            unlink(outPath, (err) => {
                 if(err) {
-                    throw err;
+                    updateLogger.critical(err);
+                    return;
                 }
+
+                updateLogger.debug('unlinked file', outPath);
+
+                writeFile(outPath, Buffer.from(buffer), {}, (err) => {
+                    if(err) {
+                        updateLogger.critical(err);
+                        return;
+                    }
+
+                    updateLogger.debug(`updated plugin ${ currentMeta.name } to ${ splitName[0] } from ${ currentMeta.version }`);
+                });
             });
         }
     }
@@ -70,10 +89,20 @@ async function downloadFromRaw(currentMeta: Meta, currentSemver: SemVer): Promis
     }
 
     const outPath = path.join(BdApi.Plugins.folder, `${ currentMeta.name }.plugin.js`);
-    writeFile(outPath, text, {}, (err) => {
+    unlink(outPath, (err) => {
         if(err) {
-            throw err;
+            updateLogger.critical(err);
+            return;
         }
+
+        writeFile(outPath, text, (err) => {
+            if(err) {
+                updateLogger.critical(err);
+                return;
+            }
+
+            updateLogger.debug(`updated plugin ${ currentMeta.name } to ${ rawMeta.version } from ${ currentMeta.version }`);
+        });
     });
 }
 
@@ -83,16 +112,18 @@ export default /** @__PURE__ */ class Updater {
         const semVer = getSemVer(meta.version) as SemVer;
         if(meta.updateLink?.startsWith('https://github.com/')) {
             return setInterval(() => {
+                updateLogger.debug('attempting to download from releases');
                 void downloadFromRelease(meta, semVer);
             }, Updater.DURATION);
         }
         else if(meta.updateLink?.startsWith('https://raw.github.com/')) {
             return setInterval(() => {
+                updateLogger.debug('attempting to download from raw');
                 void downloadFromRaw(meta, semVer);
             }, Updater.DURATION);
         }
         else {
-            throw new Error(`Illegal Scheme Expected: Recieved UpdateURL "${meta.updateLink}" but it was not a Raw Github link nor a link to a mono repo supporting releases.`);
+            throw new Error(`Illegal Scheme Expected: Recieved UpdateURL "${ meta.updateLink }" but it was not a Raw Github link nor a link to a mono repo supporting releases.`);
         }
     }
 }
