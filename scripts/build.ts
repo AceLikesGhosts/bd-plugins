@@ -99,7 +99,7 @@ ${ Object.entries(configJSON).map(([k, v], i) => {
     let outFilePath = path.join(distPath, lastDirectory, pluginFileName);
 
     if(bdFolderPath || args.move) {
-        outFilePath = bdFolderPath ? path.join(appData, pluginFileName) : path.join(appData, pluginFileName);
+        outFilePath = bdFolderPath ? path.join(bdFolderPath, pluginFileName) : path.join(appData, 'BetterDiscord', 'plugins', pluginFileName);
     }
 
     build(inputPath, outFilePath, header, args, args.watch || false);

@@ -1,7 +1,7 @@
 import { getSemVer } from '@lib/common/SemVer';
 import Logger from '@lib/logger';
 import parseJSDocMeta from '@lib/utils/Metadata';
-import type { Meta } from 'betterdiscord';
+import type Meta from '../types';
 
 // ncc doesn't touch our funny imports
 import { unlink, writeFile } from 'fs';
@@ -108,22 +108,30 @@ async function downloadFromRaw(currentMeta: Meta, currentSemver: SemVer): Promis
 
 export default /** @__PURE__ */ class Updater {
     public static DURATION: number = 3600;
+    private readonly id: NodeJS.Timeout | null = null;
+
     public constructor(meta: Meta) {
         const semVer = getSemVer(meta.version) as SemVer;
         if(meta.updateLink?.startsWith('https://github.com/')) {
-            return setInterval(() => {
+            this.id = setInterval(() => {
                 updateLogger.debug('attempting to download from releases');
                 void downloadFromRelease(meta, semVer);
             }, Updater.DURATION);
         }
-        else if(meta.updateLink?.startsWith('https://raw.github.com/')) {
-            return setInterval(() => {
+        else if(meta.updateLink?.startsWith('https://raw.githubusercontent.com/')) {
+            this.id = setInterval(() => {
                 updateLogger.debug('attempting to download from raw');
                 void downloadFromRaw(meta, semVer);
             }, Updater.DURATION);
         }
         else {
             throw new Error(`Illegal Scheme Expected: Recieved UpdateURL "${ meta.updateLink }" but it was not a Raw Github link nor a link to a mono repo supporting releases.`);
+        }
+    }
+
+    public stop(): void {
+        if(this.id) {
+            clearInterval(this.id);
         }
     }
 }

@@ -1,0 +1,11 @@
+{
+    "$schema": "../../config_schema.jsonc",
+    "name": "Test",
+    "description": "Plugin to test the Updater.",
+    "author": "ace.",
+    "version": "0.0.0",
+    "source": "https://raw.githubusercontent.com/AceLikesGhosts/bd-plugins/master/dist/test/test.plugin.js",
+    "updateLink": "https://raw.githubusercontent.com/AceLikesGhosts/bd-plugins/master/dist/test/test.plugin.js",
+    "authorLink": "https://github.com/AceLikesGhosts/bd-plugins",
+    "authorId": "327639826075484162"
+}
