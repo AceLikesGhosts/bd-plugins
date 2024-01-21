@@ -1,5 +1,5 @@
 import type ADiscordBypasses from '..';
-import UserStore from '@lib/modules/UserStore';
+import UserStore from '@lib/stores/UserStore';
 
 export default (main: ADiscordBypasses): void => {
     main.logger.info('Patching NSFW state.');

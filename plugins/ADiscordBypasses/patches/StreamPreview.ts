@@ -1,7 +1,7 @@
 import type ADiscordBypasses from '..';
 import ElectronModule from '@lib/modules/ElectronModule';
-import ApplicationStreamPreviewStore from '@lib/modules/ApplicationStreamPreviewStore';
-import UserStore from '@lib/modules/UserStore';
+import ApplicationStreamPreviewStore from '@lib/stores/ApplicationStreamPreviewStore';
+import UserStore from '@lib/stores/UserStore';
 
 export default (main: ADiscordBypasses): void => {
     main.logger.info('Patching StreamPreview');

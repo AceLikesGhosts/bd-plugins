@@ -1,4 +1,4 @@
-import type { User } from './UserStore';
+import type { User } from '../stores/UserStore';
 
 export interface Activity {
     application_id: string;

@@ -2,7 +2,7 @@
 // the dispatcher, store, and some store utils
 // but those are already exported
 
-import type { FluxDispatcher } from './Dispatcher';
+import type { FluxDispatcher } from '../modules/Dispatcher';
 import type { Store } from './Store';
 
 interface StoreUtils {

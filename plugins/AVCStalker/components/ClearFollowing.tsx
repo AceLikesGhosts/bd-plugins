@@ -1,6 +1,6 @@
 import { React } from '@lib/components';
 import { Icons, followingPeople } from '..';
-import UserStore from '@lib/modules/UserStore';
+import UserStore from '@lib/stores/UserStore';
 
 const PanelButton = BdApi.Webpack.getByStrings('Masks.PANEL_BUTTON');
 

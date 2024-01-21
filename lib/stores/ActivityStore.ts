@@ -1,4 +1,4 @@
-import type { Activity } from './UserActivity';
+import type { Activity } from '../modules/UserActivity';
 
 interface ActivityStore {
     getActivities(): Activity[];

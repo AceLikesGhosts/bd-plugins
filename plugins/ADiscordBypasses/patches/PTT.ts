@@ -1,6 +1,6 @@
 import DiscordConstants from '@lib/modules/DiscordConstants';
 import type ADiscordBypasses from '..';
-import PermissionStore from '@lib/modules/PermissionStore';
+import PermissionStore from '@lib/stores/PermissionStore';
 
 export default (main: ADiscordBypasses): void => {
     main.logger.info('Patching PerimssionStore (PTT)');

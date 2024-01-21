@@ -1,5 +1,5 @@
 import type ADiscordBypasses from '..';
-import SpotifyProtocolStore from '@lib/modules/SpotifyProtocolStore';
+import SpotifyProtocolStore from '@lib/stores/SpotifyProtocolStore';
 import SpotifyChecks from '@lib/modules/SpotifyChecks';
 import Dispatcher from '@lib/modules/Dispatcher';
 

@@ -5,7 +5,7 @@ import Logger from '@lib/logger';
 
 import { ImagePickerItem } from './components/ImagePicker';
 import { FormSwitch } from '@lib/components/Form';
-import UserStore from '@lib/modules/UserStore';
+import UserStore from '@lib/stores/UserStore';
 
 import NSFWPatch from './patches/NSFWPatch';
 import SpotifyPremium from './patches/SpotifyPremium';

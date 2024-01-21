@@ -1,21 +1,15 @@
-import type { UserVoiceState } from '@lib/modules/VoiceStateStore';
 import { followingPeople, logger } from '.';
-import UserStore from '@lib/modules/UserStore';
-import VoiceStateStore from '@lib/modules/VoiceStateStore';
+import UserStore from '@lib/stores/UserStore';
+import ChannelStore, { type Channel } from '@lib/stores/ChannelStore';
+import VoiceStateStore from '@lib/stores/VoiceStateStore';
+import { ConnectionBit } from './util';
+import type { UserVoiceState } from '@lib/stores/VoiceStateStore';
 
 const voiceChannelUtils = BdApi.Webpack.getByKeys('selectVoiceChannel', 'disconnect') as {
     selectVoiceChannel: (channelId: string) => void;
     disconnect(): void;
 };
 
-type Channel = {
-    name: string;
-    guild_id: string;
-    userLimit_: number;
-};
-const ChannelStore = BdApi.Webpack.getStore('ChannelStore') as {
-    getChannel(id: string): Channel;
-};
 
 // I don't care!
 // eslint-disable-next-line @typescript-eslint/no-invalid-void-type
@@ -24,11 +18,20 @@ function joinCall(voiceState: UserVoiceState, channel: Channel): NodeJS.Timeout 
 
     const VSs = VoiceStateStore.getVoiceStatesForChannel(voiceState.channelId) as Record<string, UserVoiceState>;
     if(!VSs) return;
-    
+
+    if(
+        channel.permissionOverwrites_
+        && channel.permissionOverwrites_[UserStore.getCurrentUser().id]
+        && channel.permissionOverwrites_[UserStore.getCurrentUser().id]?.deny & ConnectionBit
+    ) {
+        logger.info(`attempted to join vc but we are denied from joining, setting 250ms timeout before attempting to rejoin`);
+        return setTimeout(() => joinCall(voiceState, channel), 250);
+    }
+
     const people = Object.keys(VSs).length;
 
     if(people >= channel.userLimit_) {
-        logger.info(`UserLimit (${channel.userLimit_}) >= people (${people}) retrying in 250ms`);
+        logger.info(`attempted to join ${ channel.name } but it was full (${ people } >= ${ channel.userLimit_ }). setting 250ms timeout before attempting to rejoin`);
         return setTimeout(() => joinCall(voiceState, channel), 250);
     }
 

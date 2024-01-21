@@ -1,7 +1,7 @@
 import { React } from '@lib/components';
 import type { Cancel } from 'betterdiscord';
 import AUserVoiceLocation, { followingPeople, logger } from '..';
-import VoiceStateStore from '@lib/modules/VoiceStateStore';
+import VoiceStateStore from '@lib/stores/VoiceStateStore';
 const { Item } = BdApi.ContextMenu;
 
 const voiceChannelUtils = BdApi.Webpack.getByKeys('selectVoiceChannel', 'disconnect') as {

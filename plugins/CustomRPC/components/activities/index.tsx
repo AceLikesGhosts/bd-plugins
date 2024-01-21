@@ -8,8 +8,8 @@ import Select from '@lib/components/Select';
 import Scroller from '@lib/components/Scroller';
 import CustomRPC, { RPC_DEFAULT } from '../../index';
 
-import ActivityStore from '@lib/modules/ActivityStore';
-import StoreUtils from '@lib/modules/StoreUtils';
+import ActivityStore from '@lib/stores/ActivityStore';
+import StoreUtils from '@lib/stores/StoreUtils';
 const { useStateFromStores } = StoreUtils;
 
 interface ActivityProps {

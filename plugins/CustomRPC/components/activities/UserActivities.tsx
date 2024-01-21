@@ -5,7 +5,7 @@ import { React } from '@lib/components';
 // import ActivityStore from '@lib/modules/ActivityStore';
 import type { Activity } from '@lib/modules/UserActivity';
 import UserActivity from '@lib/modules/UserActivity';
-import UserStore from '@lib/modules/UserStore';
+import UserStore from '@lib/stores/UserStore';
 // const { useStateFromStores } = StoreUtil;
 import Button from '@lib/components/Button';
 import Flex from '@lib/components/Flex';

@@ -1,7 +1,8 @@
 import { React } from '@lib/components/index';
 import { Icons } from '..';
-import type { UserVoiceState } from '@lib/modules/VoiceStateStore';
-import VoiceStateStore from '@lib/modules/VoiceStateStore';
+import type { UserVoiceState } from '@lib/stores/VoiceStateStore';
+import VoiceStateStore from '@lib/stores/VoiceStateStore';
+import ChannelStore from '@lib/stores/ChannelStore';
 
 const DiscordTooltip = BdApi.Components.Tooltip;
 
@@ -15,8 +16,6 @@ const useStateFromStores = BdApi.Webpack.getByKeys('useStateFromStores')?.useSta
 const transitions = BdApi.Webpack.getByKeys('transitionTo') as {
     transitionToGuild: (guildId: string, channelId: string) => void;
 };
-const ChannelStore = BdApi.Webpack.getStore('ChannelStore') as { getChannel(id: string): Channel; };
-
 
 export default function JoinVcIcon({ userId }: Props): JSX.Element {
     const voiceData = useStateFromStores([VoiceStateStore], () => [VoiceStateStore.getVoiceStateForUser(userId)] ?? [undefined]) as [UserVoiceState];
