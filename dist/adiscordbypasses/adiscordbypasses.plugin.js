@@ -94,8 +94,9 @@ exports.React = BdApi.React;
 
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.DefaultColors = void 0;
 /** @__PURE__ */
-const DefaultColors = {
+exports.DefaultColors = {
     PLUGIN_NAME: 'color: purple; font-weight: bold;',
     PLUGIN_VERSION: 'color: gray; font-size: 10px;'
 };
@@ -106,18 +107,17 @@ function getErrorMessage(error) {
     return `${error.name}: ${error.message}\nAt: ${error.stack}`;
 }
 class Logger {
-    constructor(meta, colors = DefaultColors) {
+    constructor(meta, colors = exports.DefaultColors) {
         this._meta = meta;
         this._colors = colors;
     }
     print(type, message, ...data) {
         console[type](`%c[${this._meta.name}]%c(v${this._meta.version})`, this._colors.PLUGIN_NAME, this._colors.PLUGIN_VERSION, message, ...data);
     }
+    debug(message, ...data) {
+        return this.print('debug', message, ...data);
+    }
     log(message, ...data) {
-        if (process.env.DEV?.toString()?.toLocaleLowerCase() === 'true' ||
-            process.env.NODE_ENV?.toString()?.toLowerCase() === 'dev') {
-            return this.warn('`log` is an alias for `info`, please use the `info` function.');
-        }
         return this.info(message, ...data);
     }
     info(message, ...data) {
@@ -127,17 +127,12 @@ class Logger {
         return this.print('warn', isError(message) ? getErrorMessage(message) : message, ...data);
     }
     error(message, ...data) {
-        if (process.env.DEV?.toString()?.toLocaleLowerCase() === 'true' ||
-            process.env.NODE_ENV?.toString()?.toLowerCase() === 'dev') {
-            return this.warn('`error` is an alias for `critical`, please use the `critical` function.');
-        }
         return this.critical(message, ...data);
     }
     critical(message, ...data) {
         return this.print('error', isError(message) ? getErrorMessage(message) : message, ...data);
     }
 }
-Logger.internal = new Logger({ name: 'INTERNAL', version: '' });
 exports["default"] = Logger;
 
 
