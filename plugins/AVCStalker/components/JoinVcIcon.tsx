@@ -9,22 +9,24 @@ type Props = {
     userId: string;
 };
 
-// type Channel = { guild_id: string; };
+type Channel = { guild_id: string; };
 
 const useStateFromStores = BdApi.Webpack.getByKeys('useStateFromStores')?.useStateFromStores as <T>(stores: unknown[], cb: () => T) => T;
-const transitionTo = BdApi.Webpack.getByKeys('transitionTo').transitionTo as (channelId: string) => void;
-// const ChannelStore = BdApi.Webpack.getStore('ChannelStore') as { getChannel(id: string): Channel; };
+const transitions = BdApi.Webpack.getByKeys('transitionTo') as {
+    transitionToGuild: (guildId: string, channelId: string) => void;
+};
+const ChannelStore = BdApi.Webpack.getStore('ChannelStore') as { getChannel(id: string): Channel; };
 
 
 export default function JoinVcIcon({ userId }: Props): JSX.Element {
     const voiceData = useStateFromStores([VoiceStateStore], () => [VoiceStateStore.getVoiceStateForUser(userId)] ?? [undefined]) as [UserVoiceState];
 
-    // const [channel, setChannel] = React.useState<Channel>(ChannelStore.getChannel(voiceData[0]?.channelId ?? '0') as Channel);
+    const [channel, setChannel] = React.useState<Channel>(ChannelStore.getChannel(voiceData[0]?.channelId ?? '0') as Channel);
     const [peopleInVC, setGuildChannelLength] = React.useState<number>(1);
 
     React.useEffect(() => {
         setGuildChannelLength(Object.keys(VoiceStateStore.getVoiceStatesForChannel(voiceData[0]?.channelId) ?? { hi: 'u-shouldnt-see-this' }).length);
-        // setChannel(ChannelStore.getChannel(voiceData[0]?.channelId ?? '0') as Channel);
+        setChannel(ChannelStore.getChannel(voiceData[0]?.channelId ?? '0') as Channel);
     }, [voiceData]);
 
     return (
@@ -44,7 +46,9 @@ export default function JoinVcIcon({ userId }: Props): JSX.Element {
                                         Icons.GaUserAdd
                             }}
                             onClick={(() => {
-                                if(voiceData[0]?.channelId) transitionTo(voiceData[0]!.channelId);
+                                if(voiceData[0]?.channelId) {
+                                    transitions.transitionToGuild(channel.guild_id, voiceData[0]!.channelId);
+                                }
                                 else BdApi.UI.showToast('Failed to locate the voice channel they are in', { type: 'error' });
                             })}
                         />

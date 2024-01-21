@@ -11,7 +11,6 @@ export default function PatchUserCallHeader(): void {
     const [titlebarModule, titlebarKey] = BdApi.Webpack.getWithKey((m) => keyFilter(m) && !stringFilter(m));
 
     BdApi.Patcher.before(config.name, titlebarModule, titlebarKey, (_, [props]) => {
-        console.log(props);
         let foundId: string | undefined = undefined;
         for(let i = 0; i < (props as any).children?.length; i++) {
             const child = (props as any).children[i];
