@@ -2,7 +2,7 @@
 * @name AVCStalker
 * @description A simplistic.
 * @author ace. & friez.
-* @version 0.0.1-rc
+* @version 0.0.2-rc
 * @source https://raw.githubusercontent.com/AceLikesGhosts/bd-plugins/master/dist/AVCStalker/AVCStalker.plugin.js
 * @authorLink https://github.com/AceLikesGhosts/bd-plugins
 * @website https://github.com/AceLikesGhosts/bd-plugins
@@ -115,11 +115,25 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 const _1 = __nccwpck_require__(65);
 const UserStore_1 = __importDefault(__nccwpck_require__(256));
+const VoiceStateStore_1 = __importDefault(__nccwpck_require__(78));
 const voiceChannelUtils = BdApi.Webpack.getByKeys('selectVoiceChannel', 'disconnect');
 const ChannelStore = BdApi.Webpack.getStore('ChannelStore');
-// function joinCall(channelId: string): void {
-//     voiceChannelUtils.selectVoiceChannel(channelId);
-// }
+// I don't care!
+// eslint-disable-next-line @typescript-eslint/no-invalid-void-type
+function joinCall(voiceState, channel) {
+    if (!_1.followingPeople.has(voiceState.userId))
+        return;
+    const VSs = VoiceStateStore_1.default.getVoiceStatesForChannel(voiceState.channelId);
+    if (!VSs)
+        return;
+    const people = Object.keys(VSs).length;
+    if (people >= channel.userLimit_) {
+        _1.logger.info(`UserLimit (${channel.userLimit_}) >= people (${people}) retrying in 250ms`);
+        return setTimeout(() => joinCall(voiceState, channel), 250);
+    }
+    _1.logger.info('joining voice channel');
+    voiceChannelUtils.selectVoiceChannel(voiceState.channelId);
+}
 function onVoiceChange(voiceState) {
     if (voiceState.type !== 'VOICE_STATE_UPDATES')
         return;
@@ -130,7 +144,7 @@ function onVoiceChange(voiceState) {
             const msg = `Joining ${UserStore_1.default.getUser(vs.userId).globalName} in #${channel.name}`;
             _1.logger.info(msg);
             BdApi.UI.showToast(msg);
-            voiceChannelUtils.selectVoiceChannel(vs.channelId);
+            joinCall(vs, channel);
         }
     }
 }
@@ -551,7 +565,7 @@ exports["default"] = PatchUserContext;
 /***/ 136:
 /***/ ((module) => {
 
-module.exports = JSON.parse('{"$schema":"../../config_schema.jsonc","name":"AVCStalker","description":"A simplistic.","author":"ace. & friez.","version":"0.0.1-rc","source":"https://raw.githubusercontent.com/AceLikesGhosts/bd-plugins/master/dist/AVCStalker/AVCStalker.plugin.js","authorLink":"https://github.com/AceLikesGhosts/bd-plugins","website":"https://github.com/AceLikesGhosts/bd-plugins","updateLink":"https://github.com/AceLikesGhosts/bd-plugins","authorId":"327639826075484162"}');
+module.exports = JSON.parse('{"$schema":"../../config_schema.jsonc","name":"AVCStalker","description":"A simplistic.","author":"ace. & friez.","version":"0.0.2-rc","source":"https://raw.githubusercontent.com/AceLikesGhosts/bd-plugins/master/dist/AVCStalker/AVCStalker.plugin.js","authorLink":"https://github.com/AceLikesGhosts/bd-plugins","website":"https://github.com/AceLikesGhosts/bd-plugins","updateLink":"https://github.com/AceLikesGhosts/bd-plugins","authorId":"327639826075484162"}');
 
 /***/ })
 
