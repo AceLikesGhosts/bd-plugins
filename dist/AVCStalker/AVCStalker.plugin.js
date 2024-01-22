@@ -2,7 +2,7 @@
 * @name AVCStalker
 * @description A simplistic.
 * @author ace. & friez.
-* @version 0.0.7-rc
+* @version 0.0.8-rc
 * @source https://raw.githubusercontent.com/AceLikesGhosts/bd-plugins/master/dist/AVCStalker/AVCStalker.plugin.js
 * @authorLink https://github.com/AceLikesGhosts/bd-plugins
 * @website https://github.com/AceLikesGhosts/bd-plugins
@@ -132,6 +132,10 @@ const voiceChannelUtils = BdApi.Webpack.getByKeys('selectVoiceChannel', 'disconn
 // I don't care!
 // eslint-disable-next-line @typescript-eslint/no-invalid-void-type
 function joinCall(voiceState, channel) {
+    if (voiceState.channelId === null) {
+        BdApi.UI.showToast(`${UserStore_1.default.getUser(voiceState.userId).globalName} left voice chat!`, { type: 'warn' });
+        return;
+    }
     if (!_1.followingPeople.has(voiceState.userId))
         return;
     if (VoiceStateStore_1.default.isInChannel(channel.id))
@@ -595,7 +599,7 @@ exports.ConnectionBit = 0x100000n;
 /***/ 136:
 /***/ ((module) => {
 
-module.exports = JSON.parse('{"$schema":"../../config_schema.jsonc","name":"AVCStalker","description":"A simplistic.","author":"ace. & friez.","version":"0.0.7-rc","source":"https://raw.githubusercontent.com/AceLikesGhosts/bd-plugins/master/dist/AVCStalker/AVCStalker.plugin.js","authorLink":"https://github.com/AceLikesGhosts/bd-plugins","website":"https://github.com/AceLikesGhosts/bd-plugins","updateLink":"https://github.com/AceLikesGhosts/bd-plugins","authorId":"327639826075484162"}');
+module.exports = JSON.parse('{"$schema":"../../config_schema.jsonc","name":"AVCStalker","description":"A simplistic.","author":"ace. & friez.","version":"0.0.8-rc","source":"https://raw.githubusercontent.com/AceLikesGhosts/bd-plugins/master/dist/AVCStalker/AVCStalker.plugin.js","authorLink":"https://github.com/AceLikesGhosts/bd-plugins","website":"https://github.com/AceLikesGhosts/bd-plugins","updateLink":"https://github.com/AceLikesGhosts/bd-plugins","authorId":"327639826075484162"}');
 
 /***/ })
 
