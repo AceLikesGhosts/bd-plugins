@@ -14,15 +14,10 @@ const voiceChannelUtils = BdApi.Webpack.getByKeys('selectVoiceChannel', 'disconn
 // I don't care!
 // eslint-disable-next-line @typescript-eslint/no-invalid-void-type
 function joinCall(voiceState: UserVoiceState, channel: Channel): NodeJS.Timeout | void {
-    if(voiceState.channelId === null) {
-        BdApi.UI.showToast(`${UserStore.getUser(voiceState.userId).globalName} left voice chat!`, { type: 'warn' });
-        return;
-    }
-
     if(!followingPeople.has(voiceState.userId)) return;
     if(VoiceStateStore.isInChannel(channel.id)) return;
 
-    const VSs = VoiceStateStore.getVoiceStatesForChannel(voiceState.channelId) as Record<string, UserVoiceState>;
+    const VSs = VoiceStateStore.getVoiceStatesForChannel(voiceState.channelId!) as Record<string, UserVoiceState>;
     if(!VSs) return;
 
     if(
@@ -42,7 +37,7 @@ function joinCall(voiceState: UserVoiceState, channel: Channel): NodeJS.Timeout 
     }
 
     logger.info('joining voice channel');
-    voiceChannelUtils.selectVoiceChannel(voiceState.channelId);
+    voiceChannelUtils.selectVoiceChannel(voiceState.channelId!);
 }
 
 export default function onVoiceChange(voiceState: { type: 'VOICE_STATE_UPDATES'; voiceStates: UserVoiceState[]; }): void {
@@ -52,6 +47,11 @@ export default function onVoiceChange(voiceState: { type: 'VOICE_STATE_UPDATES';
         const vs = voiceState.voiceStates[i];
 
         if(followingPeople.has(vs.userId)) {
+            if(vs.channelId === null || !vs.channelId) {
+                BdApi.UI.showToast(`${ UserStore.getUser(vs.userId).globalName } left voice chat!`, { type: 'warn' });
+                return;
+            }
+
             const channel = ChannelStore.getChannel(vs.channelId);
             const msg = `Joining ${ UserStore.getUser(vs.userId).globalName } in #${ channel.name }`;
 

@@ -1,6 +1,6 @@
 export interface UserVoiceState {
     userId: string;
-    channelId: string;
+    channelId: string | null;
     sessionId: string;
     mute: boolean;
     deaf: boolean;

@@ -15,7 +15,7 @@ export default function PatchUserContext(): Cancel {
         const vs = VoiceStateStore.getVoiceStateForUser(id);
         if(!vs) return;
         logger.info(`${ id } was already in a vc when we said to start following so joining their call (${ vs.channelId })`);
-        voiceChannelUtils.selectVoiceChannel(vs.channelId);
+        voiceChannelUtils.selectVoiceChannel(vs.channelId!);
     }
 
     return BdApi.ContextMenu.patch('user-context', (res, props) => {

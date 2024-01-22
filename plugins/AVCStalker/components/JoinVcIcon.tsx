@@ -24,7 +24,8 @@ export default function JoinVcIcon({ userId }: Props): JSX.Element {
     const [peopleInVC, setGuildChannelLength] = React.useState<number>(1);
 
     React.useEffect(() => {
-        setGuildChannelLength(Object.keys(VoiceStateStore.getVoiceStatesForChannel(voiceData[0]?.channelId) ?? { hi: 'u-shouldnt-see-this' }).length);
+        // eslint-disable-next-line @typescript-eslint/no-non-null-asserted-optional-chain
+        setGuildChannelLength(Object.keys(VoiceStateStore.getVoiceStatesForChannel(voiceData[0]?.channelId!) ?? { hi: 'u-shouldnt-see-this' }).length);
         setChannel(ChannelStore.getChannel(voiceData[0]?.channelId ?? '0') as Channel);
     }, [voiceData]);
 

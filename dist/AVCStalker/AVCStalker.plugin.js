@@ -132,10 +132,6 @@ const voiceChannelUtils = BdApi.Webpack.getByKeys('selectVoiceChannel', 'disconn
 // I don't care!
 // eslint-disable-next-line @typescript-eslint/no-invalid-void-type
 function joinCall(voiceState, channel) {
-    if (voiceState.channelId === null) {
-        BdApi.UI.showToast(`${UserStore_1.default.getUser(voiceState.userId).globalName} left voice chat!`, { type: 'warn' });
-        return;
-    }
     if (!_1.followingPeople.has(voiceState.userId))
         return;
     if (VoiceStateStore_1.default.isInChannel(channel.id))
@@ -163,6 +159,10 @@ function onVoiceChange(voiceState) {
     for (let i = 0; i < voiceState.voiceStates.length; i++) {
         const vs = voiceState.voiceStates[i];
         if (_1.followingPeople.has(vs.userId)) {
+            if (vs.channelId === null || !vs.channelId) {
+                BdApi.UI.showToast(`${UserStore_1.default.getUser(vs.userId).globalName} left voice chat!`, { type: 'warn' });
+                return;
+            }
             const channel = ChannelStore_1.default.getChannel(vs.channelId);
             const msg = `Joining ${UserStore_1.default.getUser(vs.userId).globalName} in #${channel.name}`;
             _1.logger.info(msg);
@@ -264,6 +264,7 @@ function JoinVcIcon({ userId }) {
     const [channel, setChannel] = index_1.React.useState(ChannelStore_1.default.getChannel(voiceData[0]?.channelId ?? '0'));
     const [peopleInVC, setGuildChannelLength] = index_1.React.useState(1);
     index_1.React.useEffect(() => {
+        // eslint-disable-next-line @typescript-eslint/no-non-null-asserted-optional-chain
         setGuildChannelLength(Object.keys(VoiceStateStore_1.default.getVoiceStatesForChannel(voiceData[0]?.channelId) ?? { hi: 'u-shouldnt-see-this' }).length);
         setChannel(ChannelStore_1.default.getChannel(voiceData[0]?.channelId ?? '0'));
     }, [voiceData]);
