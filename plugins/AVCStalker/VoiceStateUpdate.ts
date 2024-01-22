@@ -30,7 +30,7 @@ function joinCall(voiceState: UserVoiceState, channel: Channel): NodeJS.Timeout 
 
     const people = Object.keys(VSs).length;
 
-    if(people >= channel.userLimit_) {
+    if(channel.userLimit_ !== 0 && people >= channel.userLimit_) {
         logger.info(`attempted to join ${ channel.name } but it was full (${ people } >= ${ channel.userLimit_ }). setting 250ms timeout before attempting to rejoin`);
         return setTimeout(() => joinCall(voiceState, channel), 250);
     }

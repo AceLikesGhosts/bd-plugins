@@ -2,7 +2,7 @@
 * @name AVCStalker
 * @description A simplistic.
 * @author ace. & friez.
-* @version 0.0.2-rc
+* @version 0.0.5-rc
 * @source https://raw.githubusercontent.com/AceLikesGhosts/bd-plugins/master/dist/AVCStalker/AVCStalker.plugin.js
 * @authorLink https://github.com/AceLikesGhosts/bd-plugins
 * @website https://github.com/AceLikesGhosts/bd-plugins
@@ -85,7 +85,17 @@ exports["default"] = BdApi.Webpack.getByKeys('_currentDispatchActionType', '_pro
 
 /***/ }),
 
-/***/ 256:
+/***/ 432:
+/***/ ((__unused_webpack_module, exports) => {
+
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports["default"] = BdApi.Webpack.getStore('ChannelStore');
+
+
+/***/ }),
+
+/***/ 682:
 /***/ ((__unused_webpack_module, exports) => {
 
 
@@ -95,7 +105,7 @@ exports["default"] = BdApi.Webpack.getStore('UserStore');
 
 /***/ }),
 
-/***/ 78:
+/***/ 979:
 /***/ ((__unused_webpack_module, exports) => {
 
 
@@ -114,10 +124,11 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 const _1 = __nccwpck_require__(65);
-const UserStore_1 = __importDefault(__nccwpck_require__(256));
-const VoiceStateStore_1 = __importDefault(__nccwpck_require__(78));
+const UserStore_1 = __importDefault(__nccwpck_require__(682));
+const ChannelStore_1 = __importDefault(__nccwpck_require__(432));
+const VoiceStateStore_1 = __importDefault(__nccwpck_require__(979));
+const util_1 = __nccwpck_require__(268);
 const voiceChannelUtils = BdApi.Webpack.getByKeys('selectVoiceChannel', 'disconnect');
-const ChannelStore = BdApi.Webpack.getStore('ChannelStore');
 // I don't care!
 // eslint-disable-next-line @typescript-eslint/no-invalid-void-type
 function joinCall(voiceState, channel) {
@@ -126,9 +137,15 @@ function joinCall(voiceState, channel) {
     const VSs = VoiceStateStore_1.default.getVoiceStatesForChannel(voiceState.channelId);
     if (!VSs)
         return;
+    if (channel.permissionOverwrites_
+        && channel.permissionOverwrites_[UserStore_1.default.getCurrentUser().id]
+        && channel.permissionOverwrites_[UserStore_1.default.getCurrentUser().id]?.deny & util_1.ConnectionBit) {
+        _1.logger.info(`attempted to join vc but we are denied from joining, setting 250ms timeout before attempting to rejoin`);
+        return setTimeout(() => joinCall(voiceState, channel), 250);
+    }
     const people = Object.keys(VSs).length;
     if (people >= channel.userLimit_) {
-        _1.logger.info(`UserLimit (${channel.userLimit_}) >= people (${people}) retrying in 250ms`);
+        _1.logger.info(`attempted to join ${channel.name} but it was full (${people} >= ${channel.userLimit_}). setting 250ms timeout before attempting to rejoin`);
         return setTimeout(() => joinCall(voiceState, channel), 250);
     }
     _1.logger.info('joining voice channel');
@@ -140,7 +157,7 @@ function onVoiceChange(voiceState) {
     for (let i = 0; i < voiceState.voiceStates.length; i++) {
         const vs = voiceState.voiceStates[i];
         if (_1.followingPeople.has(vs.userId)) {
-            const channel = ChannelStore.getChannel(vs.channelId);
+            const channel = ChannelStore_1.default.getChannel(vs.channelId);
             const msg = `Joining ${UserStore_1.default.getUser(vs.userId).globalName} in #${channel.name}`;
             _1.logger.info(msg);
             BdApi.UI.showToast(msg);
@@ -163,7 +180,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 const components_1 = __nccwpck_require__(799);
 const __1 = __nccwpck_require__(65);
-const UserStore_1 = __importDefault(__nccwpck_require__(256));
+const UserStore_1 = __importDefault(__nccwpck_require__(682));
 const PanelButton = BdApi.Webpack.getByStrings('Masks.PANEL_BUTTON');
 function ClearFollowing() {
     function clearFollowingPeople() {
@@ -231,18 +248,18 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 const index_1 = __nccwpck_require__(799);
 const __1 = __nccwpck_require__(65);
-const VoiceStateStore_1 = __importDefault(__nccwpck_require__(78));
+const VoiceStateStore_1 = __importDefault(__nccwpck_require__(979));
+const ChannelStore_1 = __importDefault(__nccwpck_require__(432));
 const DiscordTooltip = BdApi.Components.Tooltip;
 const useStateFromStores = BdApi.Webpack.getByKeys('useStateFromStores')?.useStateFromStores;
 const transitions = BdApi.Webpack.getByKeys('transitionTo');
-const ChannelStore = BdApi.Webpack.getStore('ChannelStore');
 function JoinVcIcon({ userId }) {
     const voiceData = useStateFromStores([VoiceStateStore_1.default], () => [VoiceStateStore_1.default.getVoiceStateForUser(userId)] ?? 0);
-    const [channel, setChannel] = index_1.React.useState(ChannelStore.getChannel(voiceData[0]?.channelId ?? '0'));
+    const [channel, setChannel] = index_1.React.useState(ChannelStore_1.default.getChannel(voiceData[0]?.channelId ?? '0'));
     const [peopleInVC, setGuildChannelLength] = index_1.React.useState(1);
     index_1.React.useEffect(() => {
         setGuildChannelLength(Object.keys(VoiceStateStore_1.default.getVoiceStatesForChannel(voiceData[0]?.channelId) ?? { hi: 'u-shouldnt-see-this' }).length);
-        setChannel(ChannelStore.getChannel(voiceData[0]?.channelId ?? '0'));
+        setChannel(ChannelStore_1.default.getChannel(voiceData[0]?.channelId ?? '0'));
     }, [voiceData]);
     return (index_1.React.createElement(index_1.React.Fragment, null, voiceData[0]?.channelId ? index_1.React.createElement(DiscordTooltip, { text: 'Voice Channel' }, (props) => index_1.React.createElement("div", { ...props },
         index_1.React.createElement("svg", { width: 24, height: 24, role: 'img', 
@@ -528,7 +545,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 const components_1 = __nccwpck_require__(799);
 const __1 = __importStar(__nccwpck_require__(65));
-const VoiceStateStore_1 = __importDefault(__nccwpck_require__(78));
+const VoiceStateStore_1 = __importDefault(__nccwpck_require__(979));
 const { Item } = BdApi.ContextMenu;
 const voiceChannelUtils = BdApi.Webpack.getByKeys('selectVoiceChannel', 'disconnect');
 function PatchUserContext() {
@@ -562,10 +579,21 @@ exports["default"] = PatchUserContext;
 
 /***/ }),
 
+/***/ 268:
+/***/ ((__unused_webpack_module, exports) => {
+
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.ConnectionBit = void 0;
+exports.ConnectionBit = 0x100000n;
+
+
+/***/ }),
+
 /***/ 136:
 /***/ ((module) => {
 
-module.exports = JSON.parse('{"$schema":"../../config_schema.jsonc","name":"AVCStalker","description":"A simplistic.","author":"ace. & friez.","version":"0.0.2-rc","source":"https://raw.githubusercontent.com/AceLikesGhosts/bd-plugins/master/dist/AVCStalker/AVCStalker.plugin.js","authorLink":"https://github.com/AceLikesGhosts/bd-plugins","website":"https://github.com/AceLikesGhosts/bd-plugins","updateLink":"https://github.com/AceLikesGhosts/bd-plugins","authorId":"327639826075484162"}');
+module.exports = JSON.parse('{"$schema":"../../config_schema.jsonc","name":"AVCStalker","description":"A simplistic.","author":"ace. & friez.","version":"0.0.5-rc","source":"https://raw.githubusercontent.com/AceLikesGhosts/bd-plugins/master/dist/AVCStalker/AVCStalker.plugin.js","authorLink":"https://github.com/AceLikesGhosts/bd-plugins","website":"https://github.com/AceLikesGhosts/bd-plugins","updateLink":"https://github.com/AceLikesGhosts/bd-plugins","authorId":"327639826075484162"}');
 
 /***/ })
 
