@@ -2,7 +2,7 @@
 * @name CustomRPC
 * @description Pretty decent RPC plugin.
 * @author ace.
-* @version 1.4.0-RC
+* @version 1.4.1-RC
 * @source https://raw.githubusercontent.com/AceLikesGhosts/bd-plugins/master/dist/CustomRPC/CustomRPC.plugin.js
 * @authorLink https://github.com/AceLikesGhosts/bd-plugins
 * @authorId 327639826075484162
@@ -636,7 +636,7 @@ exports["default"] = CustomRPC;
 /***/ 43:
 /***/ ((module) => {
 
-module.exports = JSON.parse('{"$schema":"../../config_schema.jsonc","name":"CustomRPC","description":"Pretty decent RPC plugin.","author":"ace.","version":"1.4.0-RC","source":"https://raw.githubusercontent.com/AceLikesGhosts/bd-plugins/master/dist/CustomRPC/CustomRPC.plugin.js","authorLink":"https://github.com/AceLikesGhosts/bd-plugins","authorId":"327639826075484162"}');
+module.exports = JSON.parse('{"$schema":"../../config_schema.jsonc","name":"CustomRPC","description":"Pretty decent RPC plugin.","author":"ace.","version":"1.4.1-RC","source":"https://raw.githubusercontent.com/AceLikesGhosts/bd-plugins/master/dist/CustomRPC/CustomRPC.plugin.js","authorLink":"https://github.com/AceLikesGhosts/bd-plugins","authorId":"327639826075484162"}');
 
 /***/ })
 
