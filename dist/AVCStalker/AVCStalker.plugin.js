@@ -2,7 +2,7 @@
 * @name AVCStalker
 * @description A simplistic.
 * @author ace. & friez.
-* @version 0.0.8-rc
+* @version 1.0.8-rc
 * @source https://raw.githubusercontent.com/AceLikesGhosts/bd-plugins/master/dist/AVCStalker/AVCStalker.plugin.js
 * @authorLink https://github.com/AceLikesGhosts/bd-plugins
 * @website https://github.com/AceLikesGhosts/bd-plugins
@@ -123,6 +123,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.joinCall = void 0;
 const _1 = __nccwpck_require__(65);
 const UserStore_1 = __importDefault(__nccwpck_require__(682));
 const ChannelStore_1 = __importDefault(__nccwpck_require__(432));
@@ -153,6 +154,7 @@ function joinCall(voiceState, channel) {
     _1.logger.info('joining voice channel');
     voiceChannelUtils.selectVoiceChannel(voiceState.channelId);
 }
+exports.joinCall = joinCall;
 function onVoiceChange(voiceState) {
     if (voiceState.type !== 'VOICE_STATE_UPDATES')
         return;
@@ -553,16 +555,18 @@ Object.defineProperty(exports, "__esModule", ({ value: true }));
 const components_1 = __nccwpck_require__(799);
 const __1 = __importStar(__nccwpck_require__(65));
 const VoiceStateStore_1 = __importDefault(__nccwpck_require__(979));
+const VoiceStateUpdate_1 = __nccwpck_require__(567);
+const ChannelStore_1 = __importDefault(__nccwpck_require__(432));
 const { Item } = BdApi.ContextMenu;
-const voiceChannelUtils = BdApi.Webpack.getByKeys('selectVoiceChannel', 'disconnect');
 function PatchUserContext() {
     __1.logger.info('Patched UserContext');
     function findVCAndJoin(id) {
         const vs = VoiceStateStore_1.default.getVoiceStateForUser(id);
-        if (!vs)
+        if (!vs || !vs.channelId)
             return;
+        const channel = ChannelStore_1.default.getChannel(vs.channelId);
         __1.logger.info(`${id} was already in a vc when we said to start following so joining their call (${vs.channelId})`);
-        voiceChannelUtils.selectVoiceChannel(vs.channelId);
+        (0, VoiceStateUpdate_1.joinCall)(vs, channel);
     }
     return BdApi.ContextMenu.patch('user-context', (res, props) => {
         if (!__1.default.settings.voiceChatFollowing.enabled)
@@ -600,7 +604,7 @@ exports.ConnectionBit = 0x100000n;
 /***/ 136:
 /***/ ((module) => {
 
-module.exports = JSON.parse('{"$schema":"../../config_schema.jsonc","name":"AVCStalker","description":"A simplistic.","author":"ace. & friez.","version":"0.0.8-rc","source":"https://raw.githubusercontent.com/AceLikesGhosts/bd-plugins/master/dist/AVCStalker/AVCStalker.plugin.js","authorLink":"https://github.com/AceLikesGhosts/bd-plugins","website":"https://github.com/AceLikesGhosts/bd-plugins","updateLink":"https://github.com/AceLikesGhosts/bd-plugins","authorId":"327639826075484162"}');
+module.exports = JSON.parse('{"$schema":"../../config_schema.jsonc","name":"AVCStalker","description":"A simplistic.","author":"ace. & friez.","version":"1.0.8-rc","source":"https://raw.githubusercontent.com/AceLikesGhosts/bd-plugins/master/dist/AVCStalker/AVCStalker.plugin.js","authorLink":"https://github.com/AceLikesGhosts/bd-plugins","website":"https://github.com/AceLikesGhosts/bd-plugins","updateLink":"https://github.com/AceLikesGhosts/bd-plugins","authorId":"327639826075484162"}');
 
 /***/ })
 

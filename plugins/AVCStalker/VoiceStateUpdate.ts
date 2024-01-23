@@ -13,7 +13,7 @@ const voiceChannelUtils = BdApi.Webpack.getByKeys('selectVoiceChannel', 'disconn
 
 // I don't care!
 // eslint-disable-next-line @typescript-eslint/no-invalid-void-type
-function joinCall(voiceState: UserVoiceState, channel: Channel): NodeJS.Timeout | void {
+export function joinCall(voiceState: UserVoiceState, channel: Channel): NodeJS.Timeout | void {
     if(!followingPeople.has(voiceState.userId)) return;
     if(VoiceStateStore.isInChannel(channel.id)) return;
 
