@@ -1,5 +1,3 @@
-const filter = BdApi.Webpack.Filters.byStrings('getAssetImage: size must === [number, number] for Twitch');
-
 interface AssetManager {
     fetchAssetIds: (e: unknown, t: unknown) => Promise<unknown[]>;
     getAssetFromImage: (e: unknown, t: unknown) => unknown;
@@ -8,7 +6,4 @@ interface AssetManager {
     getAssets: (e: unknown) => Promise<unknown>;
 }
 
-export default /** @__PURE__ */ BdApi.Webpack.getModule(m =>
-    typeof m === 'object' &&
-    Object.values(m as object /** this was asserted above */).some(filter as unknown as (value: unknown, index: number, array: unknown[]) => boolean)
-) as AssetManager;
+export default /** @__PURE__ */ BdApi.Webpack.getByKeys('fetchAssetIds', 'getAssetImage') as AssetManager;

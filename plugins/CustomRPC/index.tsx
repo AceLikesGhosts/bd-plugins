@@ -49,44 +49,40 @@ export const RPC_DEFAULT: Activity = {
     type: ActivityType.Playing,
 } as const;
 
-const discordRegex = /https:\/\/(?:media|cdn)\.discordapp.(?:net|com)\/(.+)/g;
+async function getAsset(application_id: string, key: string): Promise<string> {
+    if(/https?:\/\/(cdn|media)\.discordapp\.(com|net)\/attachments\//.test(key)) return 'mp:' + key.replace(/https?:\/\/(cdn|media)\.discordapp\.(com|net)\//, '');
+    return (await AssetManager.fetchAssetIds(application_id, [key]))[0] as string;
+}
+
+async function parseRPC(rpc?: Activity): Promise<Activity | undefined> {
+    if(rpc?.assets?.large_image) rpc.assets.large_image = await getAsset(rpc.application_id, rpc.assets.large_image);
+    if(rpc?.assets?.small_image) rpc.assets.small_image = await getAsset(rpc.application_id, rpc.assets.small_image);
+    return rpc;
+};
+
+export async function setRPC(rpc?: Activity): Promise<void> {
+    if(rpc) {
+        rpc = JSON.parse(JSON.stringify(rpc));
+        rpc = await parseRPC(rpc);
+    }
+
+    Dispatcher.dispatch({
+        type: 'LOCAL_ACTIVITY_UPDATE',
+        pid: 6969,
+        socketId: 'oh-my-god-bd-plugin',
+        activity: rpc
+    });
+}
+
+
 
 export default class CustomRPC implements Plugin {
     public rpcs?: Activity[] = void 0;
     public logger: Logger = new Logger(config);
     static selRPC: number = -1;
 
-    static async fetchAsset(id: string, key: string): Promise<string> {
-        return (await AssetManager.fetchAssetIds(id, [key, undefined]))[0] as string;
-    }
-
-    static async parseRPC(rpc?: Activity): Promise<Activity> {
-        const newRPC = JSON.parse(JSON.stringify(rpc!)) as Activity;
-        if(rpc?.assets?.large_image) {
-            if(discordRegex.test(rpc.assets.large_image)) newRPC!.assets!.large_image = 'mp:'.concat(rpc.assets.large_image.split(discordRegex)[1]);
-            else newRPC.assets!.large_image = await this.fetchAsset(rpc.application_id, rpc.assets.large_image);
-        }
-
-        if(rpc?.assets?.small_image) {
-            if(discordRegex.test(rpc.assets.small_image)) newRPC!.assets!.small_image = 'mp:'.concat(rpc.assets.large_image!.split(discordRegex)[1]);
-            else newRPC.assets!.small_image = await this.fetchAsset(rpc.application_id, rpc.assets.small_image);
-        }
-
-        return newRPC;
-    }
-
-    static async setRPC(rpc?: Activity): Promise<void> {
-        if(rpc) {
-            rpc = await this.parseRPC(rpc);
-        }
-
-        Dispatcher.dispatch({
-            type: 'LOCAL_ACTIVITY_UPDATE',
-            pid: 6969,
-            socketId: 'oh-my-god-bd-plugin',
-            activity: rpc
-        });
-    }
+    // static async fetchAsset(id: string, key: string): Promise<string> {
+    // }
 
     start(): void {
         this.logger.log('Enabled plugin');
@@ -126,7 +122,7 @@ export default class CustomRPC implements Plugin {
         BdApi.Data.save(config.name, 'settings', { selRPC: CustomRPC.selRPC });
         this.rpcs = void 0;
         this.logger.log('Resetting RPC');
-        void CustomRPC.setRPC(void 0);
+        void setRPC(void 0);
         this.logger.log('Disabled.');
     }
 

@@ -6,7 +6,7 @@ import Flex from '@lib/components/Flex';
 import Button from '@lib/components/Button';
 import Select from '@lib/components/Select';
 import Scroller from '@lib/components/Scroller';
-import CustomRPC, { RPC_DEFAULT } from '../../index';
+import CustomRPC, { RPC_DEFAULT, setRPC } from '../../index';
 
 import ActivityStore from '@lib/stores/ActivityStore';
 import StoreUtils from '@lib/stores/StoreUtils';
@@ -89,11 +89,11 @@ export default function ({ rpcs, setEditingRpc, setRPCs }: ActivityProps): JSX.E
                         }
 
                         if(isRPCActive()) {
-                            void CustomRPC.setRPC(void 0);
+                            void setRPC(void 0);
                             return;
                         }
 
-                        void CustomRPC.setRPC(rpcs[selectedRPC]);
+                        void setRPC(rpcs[selectedRPC]);
                     })}
                 >
                     {selectedRPC !== -1 && isRPCActive() ? 'Remove' : 'Set'}

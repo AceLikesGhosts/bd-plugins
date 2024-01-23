@@ -164,24 +164,12 @@ exports["default"] = Logger;
 
 /***/ }),
 
-/***/ 248:
-/***/ ((__unused_webpack_module, exports) => {
-
-
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports["default"] = BdApi.Webpack.getByKeys('getLocalPresence', 'getActivities');
-
-
-/***/ }),
-
 /***/ 570:
 /***/ ((__unused_webpack_module, exports) => {
 
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-const filter = BdApi.Webpack.Filters.byStrings('getAssetImage: size must === [number, number] for Twitch');
-exports["default"] = BdApi.Webpack.getModule(m => typeof m === 'object' &&
-    Object.values(m /** this was asserted above */).some(filter));
+exports["default"] = BdApi.Webpack.getByKeys('fetchAssetIds', 'getAssetImage');
 
 
 /***/ }),
@@ -192,19 +180,6 @@ exports["default"] = BdApi.Webpack.getModule(m => typeof m === 'object' &&
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports["default"] = BdApi.Webpack.getByKeys('_currentDispatchActionType', '_processingWaitQueue');
-
-
-/***/ }),
-
-/***/ 805:
-/***/ ((__unused_webpack_module, exports) => {
-
-
-// this is actually the raw classes of
-// the dispatcher, store, and some store utils
-// but those are already exported
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports["default"] = BdApi.Webpack.getByKeys('Store', 'useStateFromStores');
 
 
 /***/ }),
@@ -228,7 +203,30 @@ exports["default"] = BdApi.Webpack.getByStrings('renderXboxImage');
 
 /***/ }),
 
-/***/ 256:
+/***/ 257:
+/***/ ((__unused_webpack_module, exports) => {
+
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports["default"] = BdApi.Webpack.getByKeys('getLocalPresence', 'getActivities');
+
+
+/***/ }),
+
+/***/ 771:
+/***/ ((__unused_webpack_module, exports) => {
+
+
+// this is actually the raw classes of
+// the dispatcher, store, and some store utils
+// but those are already exported
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports["default"] = BdApi.Webpack.getByKeys('Store', 'useStateFromStores');
+
+
+/***/ }),
+
+/***/ 682:
 /***/ ((__unused_webpack_module, exports) => {
 
 
@@ -290,7 +288,7 @@ Object.defineProperty(exports, "__esModule", ({ value: true }));
 // Totally legally taken code
 const components_1 = __nccwpck_require__(799);
 const UserActivity_1 = __importDefault(__nccwpck_require__(335));
-const UserStore_1 = __importDefault(__nccwpck_require__(256));
+const UserStore_1 = __importDefault(__nccwpck_require__(682));
 // const { useStateFromStores } = StoreUtil;
 const Button_1 = __importDefault(__nccwpck_require__(776));
 const Flex_1 = __importDefault(__nccwpck_require__(348));
@@ -350,8 +348,8 @@ const Button_1 = __importDefault(__nccwpck_require__(776));
 const Select_1 = __importDefault(__nccwpck_require__(973));
 const Scroller_1 = __importDefault(__nccwpck_require__(904));
 const index_1 = __importStar(__nccwpck_require__(364));
-const ActivityStore_1 = __importDefault(__nccwpck_require__(248));
-const StoreUtils_1 = __importDefault(__nccwpck_require__(805));
+const ActivityStore_1 = __importDefault(__nccwpck_require__(257));
+const StoreUtils_1 = __importDefault(__nccwpck_require__(771));
 const { useStateFromStores } = StoreUtils_1.default;
 function default_1({ rpcs, setEditingRpc, setRPCs }) {
     const [selectedRPC, setSelectedRPC] = components_1.React.useState(index_1.default.selRPC);
@@ -407,10 +405,10 @@ function default_1({ rpcs, setEditingRpc, setRPCs }) {
                         return;
                     }
                     if (isRPCActive()) {
-                        void index_1.default.setRPC(void 0);
+                        void (0, index_1.setRPC)(void 0);
                         return;
                     }
-                    void index_1.default.setRPC(rpcs[selectedRPC]);
+                    void (0, index_1.setRPC)(rpcs[selectedRPC]);
                 }) }, selectedRPC !== -1 && isRPCActive() ? 'Remove' : 'Set'),
             components_1.React.createElement(Button_1.default, { color: Button_1.default.Colors.RED, style: { marginRight: '5px' }, size: Button_1.default.Sizes.MEDIUM, onClick: (() => {
                     if (selectedRPC === -1) {
@@ -509,7 +507,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.RPC_DEFAULT = void 0;
+exports.setRPC = exports.RPC_DEFAULT = void 0;
 const UserActivity_1 = __nccwpck_require__(335);
 const AssetManager_1 = __importDefault(__nccwpck_require__(570));
 const Settings_1 = __importDefault(__nccwpck_require__(544));
@@ -556,42 +554,53 @@ exports.RPC_DEFAULT = {
     flags: 1,
     type: UserActivity_1.ActivityType.Playing,
 };
-const discordRegex = /https:\/\/(?:media|cdn)\.discordapp.(?:net|com)\/(.+)/g;
+async function getAsset(application_id, key) {
+    if (/https?:\/\/(cdn|media)\.discordapp\.(com|net)\/attachments\//.test(key))
+        return 'mp:' + key.replace(/https?:\/\/(cdn|media)\.discordapp\.(com|net)\//, '');
+    return (await AssetManager_1.default.fetchAssetIds(application_id, [key]))[0];
+}
+async function parseRPC(rpc) {
+    if (rpc?.assets?.large_image)
+        rpc.assets.large_image = await getAsset(rpc.application_id, rpc.assets.large_image);
+    if (rpc?.assets?.small_image)
+        rpc.assets.small_image = await getAsset(rpc.application_id, rpc.assets.small_image);
+    return rpc;
+}
+;
+async function setRPC(rpc) {
+    if (rpc) {
+        rpc = JSON.parse(JSON.stringify(rpc));
+        rpc = await parseRPC(rpc);
+        console.log('custom rpc !!!!!!!!!!!!!!!!!!!!!!!!!!');
+        console.log('custom rpc !!!!!!!!!!!!!!!!!!!!!!!!!!');
+        console.log('custom rpc !!!!!!!!!!!!!!!!!!!!!!!!!!');
+        console.log('custom rpc !!!!!!!!!!!!!!!!!!!!!!!!!!');
+        console.log('!! ' + JSON.stringify(rpc) + ' !!');
+        console.log('!! ' + JSON.stringify(rpc) + ' !!');
+        console.log('!! ' + JSON.stringify(rpc) + ' !!');
+        console.log('!! ' + JSON.stringify(rpc) + ' !!');
+        console.log('!! ' + JSON.stringify(rpc) + ' !!');
+        console.log('custom rpc !!!!!!!!!!!!!!!!!!!!!!!!!!');
+        console.log('custom rpc !!!!!!!!!!!!!!!!!!!!!!!!!!');
+        console.log('custom rpc !!!!!!!!!!!!!!!!!!!!!!!!!!');
+        console.log('custom rpc !!!!!!!!!!!!!!!!!!!!!!!!!!');
+        console.log('custom rpc !!!!!!!!!!!!!!!!!!!!!!!!!!');
+    }
+    Dispatcher_1.default.dispatch({
+        type: 'LOCAL_ACTIVITY_UPDATE',
+        pid: 6969,
+        socketId: 'oh-my-god-bd-plugin',
+        activity: rpc
+    });
+}
+exports.setRPC = setRPC;
 class CustomRPC {
     constructor() {
         this.rpcs = void 0;
         this.logger = new logger_1.default(config_json_1.default);
     }
-    static async fetchAsset(id, key) {
-        return (await AssetManager_1.default.fetchAssetIds(id, [key, undefined]))[0];
-    }
-    static async parseRPC(rpc) {
-        const newRPC = JSON.parse(JSON.stringify(rpc));
-        if (rpc?.assets?.large_image) {
-            if (discordRegex.test(rpc.assets.large_image))
-                newRPC.assets.large_image = 'mp:'.concat(rpc.assets.large_image.split(discordRegex)[1]);
-            else
-                newRPC.assets.large_image = await this.fetchAsset(rpc.application_id, rpc.assets.large_image);
-        }
-        if (rpc?.assets?.small_image) {
-            if (discordRegex.test(rpc.assets.small_image))
-                newRPC.assets.small_image = 'mp:'.concat(rpc.assets.large_image.split(discordRegex)[1]);
-            else
-                newRPC.assets.small_image = await this.fetchAsset(rpc.application_id, rpc.assets.small_image);
-        }
-        return newRPC;
-    }
-    static async setRPC(rpc) {
-        if (rpc) {
-            rpc = await this.parseRPC(rpc);
-        }
-        Dispatcher_1.default.dispatch({
-            type: 'LOCAL_ACTIVITY_UPDATE',
-            pid: 6969,
-            socketId: 'oh-my-god-bd-plugin',
-            activity: rpc
-        });
-    }
+    // static async fetchAsset(id: string, key: string): Promise<string> {
+    // }
     start() {
         this.logger.log('Enabled plugin');
         this.rpcs = BdApi.Data.load(config_json_1.default.name, 'rpcs');
@@ -625,7 +634,7 @@ class CustomRPC {
         BdApi.Data.save(config_json_1.default.name, 'settings', { selRPC: CustomRPC.selRPC });
         this.rpcs = void 0;
         this.logger.log('Resetting RPC');
-        void CustomRPC.setRPC(void 0);
+        void setRPC(void 0);
         this.logger.log('Disabled.');
     }
     getSettingsPanel() {
