@@ -2,7 +2,7 @@
 * @name AVCStalker
 * @description A simplistic.
 * @author ace. & friez.
-* @version 1.0.8-rc
+* @version 1.1.10-rc
 * @source https://raw.githubusercontent.com/AceLikesGhosts/bd-plugins/master/dist/AVCStalker/AVCStalker.plugin.js
 * @authorLink https://github.com/AceLikesGhosts/bd-plugins
 * @website https://github.com/AceLikesGhosts/bd-plugins
@@ -12,6 +12,19 @@
 /******/ (() => { // webpackBootstrap
 /******/ 	"use strict";
 /******/ 	var __webpack_modules__ = ({
+
+/***/ 281:
+/***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
+
+
+var _a;
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.FormNotice = exports.FormSwitch = exports.FormDivider = exports.FormLabel = exports.FormText = exports.FormTitle = exports.FormItem = exports.FormSection = void 0;
+const _1 = __nccwpck_require__(799);
+_a = _1.RawComponents, exports.FormSection = _a.FormSection, exports.FormItem = _a.FormItem, exports.FormTitle = _a.FormTitle, exports.FormText = _a.FormText, exports.FormLabel = _a.FormLabel, exports.FormDivider = _a.FormDivider, exports.FormSwitch = _a.FormSwitch, exports.FormNotice = _a.FormNotice;
+
+
+/***/ }),
 
 /***/ 799:
 /***/ ((__unused_webpack_module, exports) => {
@@ -182,16 +195,41 @@ exports["default"] = onVoiceChange;
 /***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
 
 
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    __setModuleDefault(result, mod);
+    return result;
+};
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 const components_1 = __nccwpck_require__(799);
-const __1 = __nccwpck_require__(65);
+const __1 = __importStar(__nccwpck_require__(65));
 const UserStore_1 = __importDefault(__nccwpck_require__(682));
 const PanelButton = BdApi.Webpack.getByStrings('Masks.PANEL_BUTTON');
 function ClearFollowing() {
     function clearFollowingPeople() {
+        if (!__1.default.settings.voiceChatFollowing.clickVoiceChatButtonClears)
+            return;
         BdApi.UI.showToast('Cleared following list', { type: 'success' });
         __1.followingPeople.clear();
     }
@@ -291,11 +329,16 @@ exports["default"] = JoinVcIcon;
 /***/ }),
 
 /***/ 423:
-/***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
+/***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
 
 
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 const index_1 = __nccwpck_require__(799);
+const __1 = __importDefault(__nccwpck_require__(65));
+const Form_1 = __nccwpck_require__(281);
 // import type { TextInputProps } from '@lib/components/TextInput';
 // import type { FormItemProps } from '@lib/components/Form';
 // import RawTextInput from '@lib/components/TextInput';
@@ -319,24 +362,16 @@ const index_1 = __nccwpck_require__(799);
 //     );
 // }
 function Settings() {
-    // const [maxLogFileSize, setMaxLogFileSize] = React.useState<number>(AUserVoiceLocation.settings.maxLogFileSize);
-    // const [shouldLogFriends, setShouldLogFriends] = React.useState<boolean>(AUserVoiceLocation.settings.whoToLog.friends);
-    // const [shouldLogRandoms, setShouldLogRandoms] = React.useState<boolean>(AUserVoiceLocation.settings.whoToLog.randoms);
-    // const [purgeWhen, setPurgeWhen] = React.useState<number>(AUserVoiceLocation.settings.purgeWhen);
-    // const [shouldPurge, setShouldPurge] = React.useState<boolean>(AUserVoiceLocation.settings.shouldPurge);
-    // React.useEffect(() => {
-    //     AUserVoiceLocation.settings = {
-    //         maxLogFileSize,
-    //         whoToLog: {
-    //             friends: shouldLogFriends,
-    //             randoms: shouldLogRandoms
-    //         },
-    //         purgeWhen,
-    //         shouldPurge
-    //     };
-    // }, [maxLogFileSize, shouldLogFriends, shouldLogRandoms, shouldPurge, purgeWhen]);
+    const [clickVoiceChatButtonClears, setClickVoiceChatButtonClears] = index_1.React.useState(__1.default.settings.voiceChatFollowing.clickVoiceChatButtonClears ?? true);
+    index_1.React.useEffect(() => {
+        __1.default.settings = {
+            voiceChatFollowing: {
+                clickVoiceChatButtonClears
+            }
+        };
+    }, [clickVoiceChatButtonClears]);
     return (index_1.React.createElement("div", null,
-        index_1.React.createElement("h1", null, "There is nothing here at this time.")));
+        index_1.React.createElement(Form_1.FormSwitch, { value: clickVoiceChatButtonClears, onChange: ((e) => setClickVoiceChatButtonClears(e)), note: 'Should clicking the following button clear the following list? Setting made for Ollie.' }, "Following Button Clearing")));
 }
 exports["default"] = Settings;
 
@@ -371,8 +406,7 @@ exports.Icons = {
 // #endregion end of cringe
 const DefaultSettings = {
     voiceChatFollowing: {
-        enabled: true,
-        clearAllButton: true
+        clickVoiceChatButtonClears: true
     }
 };
 // export let settings: typeof DefaultSettings = DefaultSettings;
@@ -418,8 +452,6 @@ class AUserVoiceLocation {
         return Settings_1.default;
     }
     onSwitch() {
-        if (!AUserVoiceLocation.settings.voiceChatFollowing.clearAllButton)
-            return;
         exports.logger.info('Dom-Patching UserAccountPanel');
         (0, UserAccountMenu_1.default)();
     }
@@ -525,35 +557,12 @@ exports["default"] = PatchUserCallHeader;
 /***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
 
 
-var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
-    if (k2 === undefined) k2 = k;
-    var desc = Object.getOwnPropertyDescriptor(m, k);
-    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
-      desc = { enumerable: true, get: function() { return m[k]; } };
-    }
-    Object.defineProperty(o, k2, desc);
-}) : (function(o, m, k, k2) {
-    if (k2 === undefined) k2 = k;
-    o[k2] = m[k];
-}));
-var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
-    Object.defineProperty(o, "default", { enumerable: true, value: v });
-}) : function(o, v) {
-    o["default"] = v;
-});
-var __importStar = (this && this.__importStar) || function (mod) {
-    if (mod && mod.__esModule) return mod;
-    var result = {};
-    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
-    __setModuleDefault(result, mod);
-    return result;
-};
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 const components_1 = __nccwpck_require__(799);
-const __1 = __importStar(__nccwpck_require__(65));
+const __1 = __nccwpck_require__(65);
 const VoiceStateStore_1 = __importDefault(__nccwpck_require__(979));
 const VoiceStateUpdate_1 = __nccwpck_require__(567);
 const ChannelStore_1 = __importDefault(__nccwpck_require__(432));
@@ -569,8 +578,6 @@ function PatchUserContext() {
         (0, VoiceStateUpdate_1.joinCall)(vs, channel);
     }
     return BdApi.ContextMenu.patch('user-context', (res, props) => {
-        if (!__1.default.settings.voiceChatFollowing.enabled)
-            return;
         const id = props.user.id;
         const isFollowing = __1.followingPeople.has(id);
         res.props.children.push(components_1.React.createElement(Item, { label: isFollowing ? 'Unfollow' : 'Follow', id: 'follow-call', action: (() => {
@@ -604,7 +611,7 @@ exports.ConnectionBit = 0x100000n;
 /***/ 136:
 /***/ ((module) => {
 
-module.exports = JSON.parse('{"$schema":"../../config_schema.jsonc","name":"AVCStalker","description":"A simplistic.","author":"ace. & friez.","version":"1.0.8-rc","source":"https://raw.githubusercontent.com/AceLikesGhosts/bd-plugins/master/dist/AVCStalker/AVCStalker.plugin.js","authorLink":"https://github.com/AceLikesGhosts/bd-plugins","website":"https://github.com/AceLikesGhosts/bd-plugins","updateLink":"https://github.com/AceLikesGhosts/bd-plugins","authorId":"327639826075484162"}');
+module.exports = JSON.parse('{"$schema":"../../config_schema.jsonc","name":"AVCStalker","description":"A simplistic.","author":"ace. & friez.","version":"1.1.10-rc","source":"https://raw.githubusercontent.com/AceLikesGhosts/bd-plugins/master/dist/AVCStalker/AVCStalker.plugin.js","authorLink":"https://github.com/AceLikesGhosts/bd-plugins","website":"https://github.com/AceLikesGhosts/bd-plugins","updateLink":"https://github.com/AceLikesGhosts/bd-plugins","authorId":"327639826075484162"}');
 
 /***/ })
 

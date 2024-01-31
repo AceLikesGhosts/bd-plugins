@@ -20,8 +20,7 @@ export const Icons = {
 // #endregion end of cringe
 const DefaultSettings = {
     voiceChatFollowing: {
-        enabled: true,
-        clearAllButton: true
+        clickVoiceChatButtonClears: true
     }
 };
 
@@ -79,8 +78,6 @@ export default class AUserVoiceLocation implements Plugin {
     }
 
     onSwitch(): void {
-        if(!AUserVoiceLocation.settings.voiceChatFollowing.clearAllButton) return;
-
         logger.info('Dom-Patching UserAccountPanel');
         PatchUserAccountMenu();
     }

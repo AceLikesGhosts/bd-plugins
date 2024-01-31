@@ -1,6 +1,6 @@
 import { React } from '@lib/components';
 import type { Cancel } from 'betterdiscord';
-import AUserVoiceLocation, { followingPeople, logger } from '..';
+import { followingPeople, logger } from '..';
 import VoiceStateStore from '@lib/stores/VoiceStateStore';
 import { joinCall } from '../VoiceStateUpdate';
 import ChannelStore from '@lib/stores/ChannelStore';
@@ -19,8 +19,6 @@ export default function PatchUserContext(): Cancel {
     }
 
     return BdApi.ContextMenu.patch('user-context', (res, props) => {
-        if(!AUserVoiceLocation.settings.voiceChatFollowing.enabled) return;
-
         const id = props.user.id as string;
         const isFollowing = followingPeople.has(id);
 

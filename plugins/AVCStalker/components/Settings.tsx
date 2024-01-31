@@ -1,4 +1,6 @@
 import { React } from '@lib/components/index';
+import AUserVoiceLocation from '..';
+import { FormSwitch } from '@lib/components/Form';
 // import type { TextInputProps } from '@lib/components/TextInput';
 // import type { FormItemProps } from '@lib/components/Form';
 // import RawTextInput from '@lib/components/TextInput';
@@ -24,27 +26,27 @@ import { React } from '@lib/components/index';
 // }
 
 export default function Settings(): JSX.Element {
-    // const [maxLogFileSize, setMaxLogFileSize] = React.useState<number>(AUserVoiceLocation.settings.maxLogFileSize);
-    // const [shouldLogFriends, setShouldLogFriends] = React.useState<boolean>(AUserVoiceLocation.settings.whoToLog.friends);
-    // const [shouldLogRandoms, setShouldLogRandoms] = React.useState<boolean>(AUserVoiceLocation.settings.whoToLog.randoms);
-    // const [purgeWhen, setPurgeWhen] = React.useState<number>(AUserVoiceLocation.settings.purgeWhen);
-    // const [shouldPurge, setShouldPurge] = React.useState<boolean>(AUserVoiceLocation.settings.shouldPurge);
+    const [clickVoiceChatButtonClears, setClickVoiceChatButtonClears] = React.useState(AUserVoiceLocation.settings.voiceChatFollowing.clickVoiceChatButtonClears ?? true);
 
-    // React.useEffect(() => {
-    //     AUserVoiceLocation.settings = {
-    //         maxLogFileSize,
-    //         whoToLog: {
-    //             friends: shouldLogFriends,
-    //             randoms: shouldLogRandoms
-    //         },
-    //         purgeWhen,
-    //         shouldPurge
-    //     };
-    // }, [maxLogFileSize, shouldLogFriends, shouldLogRandoms, shouldPurge, purgeWhen]);
+
+    React.useEffect(() => {
+        AUserVoiceLocation.settings = {
+            voiceChatFollowing: {
+                clickVoiceChatButtonClears
+            }
+        };
+    }, [clickVoiceChatButtonClears]);
 
     return (
         <div>
-            <h1>There is nothing here at this time.</h1>
+            <FormSwitch
+                value={clickVoiceChatButtonClears}
+                onChange={((e) => setClickVoiceChatButtonClears(e))}
+                note={'Should clicking the following button clear the following list? Setting made for Ollie.'}
+            >
+                Following Button Clearing
+            </FormSwitch>
+
             {/* <TextInput
                 title={'Log File Max Size (MB)'}
                 value={maxLogFileSize.toString()}

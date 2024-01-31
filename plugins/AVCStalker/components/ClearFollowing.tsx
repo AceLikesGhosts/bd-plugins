@@ -1,11 +1,13 @@
 import { React } from '@lib/components';
-import { Icons, followingPeople } from '..';
+import AUserVoiceLocation, { Icons, followingPeople } from '..';
 import UserStore from '@lib/stores/UserStore';
 
 const PanelButton = BdApi.Webpack.getByStrings('Masks.PANEL_BUTTON');
 
 export default function ClearFollowing(): JSX.Element {
     function clearFollowingPeople() {
+        if(!AUserVoiceLocation.settings.voiceChatFollowing.clickVoiceChatButtonClears) return;
+        
         BdApi.UI.showToast('Cleared following list', { type: 'success' });
         followingPeople.clear();
     }
