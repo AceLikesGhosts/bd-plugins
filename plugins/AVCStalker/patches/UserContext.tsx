@@ -2,7 +2,7 @@ import { React } from '@lib/components';
 import type { Cancel } from 'betterdiscord';
 import { followingPeople, logger } from '..';
 import VoiceStateStore from '@lib/stores/VoiceStateStore';
-import { joinCall } from '../VoiceStateUpdate';
+import { joinCall } from '../util';
 import ChannelStore from '@lib/stores/ChannelStore';
 const { Item } = BdApi.ContextMenu;
 
