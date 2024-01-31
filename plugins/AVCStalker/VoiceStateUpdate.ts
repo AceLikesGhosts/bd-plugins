@@ -1,43 +1,24 @@
 import { followingPeople, logger } from '.';
 import UserStore from '@lib/stores/UserStore';
-import ChannelStore, { type Channel } from '@lib/stores/ChannelStore';
-import VoiceStateStore from '@lib/stores/VoiceStateStore';
-import { ConnectionBit } from './util';
+import ChannelStore from '@lib/stores/ChannelStore';
 import type { UserVoiceState } from '@lib/stores/VoiceStateStore';
+import { joinCall } from './util';
 
-const voiceChannelUtils = BdApi.Webpack.getByKeys('selectVoiceChannel', 'disconnect') as {
-    selectVoiceChannel: (channelId: string) => void;
-    disconnect(): void;
-};
+function followFromVoiceState(vs: UserVoiceState): void {
+    if(!followingPeople.has(vs.userId)) return;
 
-
-// I don't care!
-// eslint-disable-next-line @typescript-eslint/no-invalid-void-type
-export function joinCall(voiceState: UserVoiceState, channel: Channel): NodeJS.Timeout | void {
-    if(!followingPeople.has(voiceState.userId)) return;
-    if(VoiceStateStore.isInChannel(channel.id)) return;
-
-    const VSs = VoiceStateStore.getVoiceStatesForChannel(voiceState.channelId!) as Record<string, UserVoiceState>;
-    if(!VSs) return;
-
-    if(
-        channel.permissionOverwrites_
-        && channel.permissionOverwrites_[UserStore.getCurrentUser().id]
-        && channel.permissionOverwrites_[UserStore.getCurrentUser().id]?.deny & ConnectionBit
-    ) {
-        logger.info(`attempted to join vc but we are denied from joining, setting 250ms timeout before attempting to rejoin`);
-        return setTimeout(() => joinCall(voiceState, channel), 250);
+    if(vs.channelId === null || !vs.channelId) {
+        BdApi.UI.showToast(`${ UserStore.getUser(vs.userId).globalName } left voice chat!`, { type: 'warn' });
+        return;
     }
 
-    const people = Object.keys(VSs).length;
+    const channel = ChannelStore.getChannel(vs.channelId);
+    const msg = `Joining ${ UserStore.getUser(vs.userId).globalName } in #${ channel.name }`;
 
-    if(channel.userLimit_ !== 0 && people >= channel.userLimit_) {
-        logger.info(`attempted to join ${ channel.name } but it was full (${ people } >= ${ channel.userLimit_ }). setting 250ms timeout before attempting to rejoin`);
-        return setTimeout(() => joinCall(voiceState, channel), 250);
-    }
+    logger.info(msg);
+    BdApi.UI.showToast(msg);
 
-    logger.info('joining voice channel');
-    voiceChannelUtils.selectVoiceChannel(voiceState.channelId!);
+    joinCall(vs, channel);
 }
 
 export default function onVoiceChange(voiceState: { type: 'VOICE_STATE_UPDATES'; voiceStates: UserVoiceState[]; }): void {
@@ -46,19 +27,6 @@ export default function onVoiceChange(voiceState: { type: 'VOICE_STATE_UPDATES';
     for(let i = 0; i < voiceState.voiceStates.length; i++) {
         const vs = voiceState.voiceStates[i];
 
-        if(followingPeople.has(vs.userId)) {
-            if(vs.channelId === null || !vs.channelId) {
-                BdApi.UI.showToast(`${ UserStore.getUser(vs.userId).globalName } left voice chat!`, { type: 'warn' });
-                return;
-            }
-
-            const channel = ChannelStore.getChannel(vs.channelId);
-            const msg = `Joining ${ UserStore.getUser(vs.userId).globalName } in #${ channel.name }`;
-
-            logger.info(msg);
-            BdApi.UI.showToast(msg);
-
-            joinCall(vs, channel);
-        }
+        followFromVoiceState(vs);
     }
 }
