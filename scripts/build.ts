@@ -1,90 +1,77 @@
+import path from 'path';
+import fs from 'fs';
+import type { BuildOptions, PluginMetadata } from './util';
+import { distPath, getFoldersInDirectory, makePathIfNotExists, parseArguments, pluginPath, writeBuildFile } from './util';
 import type { WatchBuildResult } from '@vercel/ncc';
 import ncc from '@vercel/ncc';
-import fs from 'fs';
-import path, { sep } from 'path';
-import { processArguments, appData, pluginPath as pluginsPath, getFoldersInDirectory, makePathIfNotExists } from './util';
 
-let argv = process.argv;
-
-if(argv.length === 2) {
-    console.error('Missing packages to build, accepted arguments are ');
-    console.error('`all` (or a package name)');
-    throw 'Bad arguments';
+const NODE_VERSION = process.versions.node.split('.')[0];
+if(Number(NODE_VERSION) < 16) {
+    throw new Error('You are running an outdated version of NodeJS, this build script requires atleast v16.17.0 or above.');
 }
 
-// remove first two args
-// ['node', 'build.js', 'our args'] -> ['our args']; 
-argv = argv.slice(2);
+const args = parseArguments();
 
-const argList = [
-    '--move',
-    '--watch',
-    '--dev',
-];
-const args = processArguments(argv, argList);
+if(args.values.all) {
+    if(args.positionals.length > 0) console.warn('Positional plugin names are discarded due to the `all` flag being passed.');
+    const toBuild = getFoldersInDirectory(pluginPath);
 
-argv = argv.filter((arg) => !argList.includes(arg));
-
-const bdFolderPath: string | null = argv.includes('--bd-path') ? argv[argv.indexOf('--bd-path') + 1] : null;
-
-if(argv.includes('all')) {
-    if(argv.length > 1) {
-        console.warn(`Any arguments passed after 'all' will be voided, all arguments should be provided before.`);
-    }
-
-    const pluginFolders = getFoldersInDirectory(pluginsPath);
-    if(pluginFolders.length === 0) {
-        throw 'No plugins were found in plugins folder.';
-    }
-
-    pluginFolders.forEach((p) => compileProject(path.join(pluginsPath, p)));
+    for(let i: number = 0; i < toBuild.length; i++) compileProject(path.join(pluginPath, toBuild[i]));
 }
 else {
-    argv.forEach((p) => {
-        if(!fs.existsSync(path.join(pluginsPath, p))) {
-            throw 'Failed to find project ' + p + ' in the projects folder, is your pluginPath set incorrectly?';
+    for(let i: number = 0; i < args.positionals.length; i++) {
+        const toBuild = path.join(pluginPath, args.positionals[i]);
+
+        if(!fs.existsSync(toBuild)) {
+            throw 'Invalid plugin name "' + args.positionals[i] + '", are you sure that\'s a valid plugin?';
         }
 
-        compileProject(path.join(pluginsPath, p));
-    });
+        compileProject(toBuild);
+    }
 }
 
-function compileProject(projectPath: string): void {
-    if(!fs.existsSync(projectPath)) {
-        throw 'Attempted to compile a project which does not exist?\nPath: ' + projectPath;
-    }
+/**
+ * Gets the plugin's configuration file, and README
+ * @throws
+ */
+function getPluginMetadata(pluginPath: string, pluginName: string): PluginMetadata {
+    const configFilePath = path.join(pluginPath, 'config.json');
+    if(!fs.existsSync(configFilePath))
+        throw new Error(`Build script failed!\nFailed to find \`config.json\` for project (${ pluginName }).\nPath: ${ pluginPath }`);
 
-    const lastDirectory: string = projectPath.split(sep).pop()!;
+    const config: Record<string, string> = JSON.parse(fs.readFileSync(configFilePath, { encoding: 'utf-8' }));
+    if(!config) throw new Error('Failed to parse `config.json` into a valid JSON object for project' + pluginName);
+
+    const READMEFilePath = path.join(pluginName, 'README');
+    if(!fs.existsSync(READMEFilePath)) return { config, README: null };
+
+    const readmeText = fs.readFileSync(READMEFilePath, { encoding: 'utf-8' });
+    return { config, README: readmeText };
+}
+
+function compileProject(pluginPath: string): void {
+    // gets the last directory of a path, aka the plugin name
+    const pluginName = pluginPath.split(path.sep).pop();
+    if(!pluginName) throw 'Failed to get plugin name from last part of directory string, odd. SEP: ' + path.sep + ', res: ' + pluginName;
 
     let inputPath: string;
-    const ts = path.join(projectPath, 'index.ts');
-    const tsx = path.join(projectPath, 'index.tsx');
-    if(fs.existsSync(ts)) {
-        inputPath = ts;
-    }
-    else if(fs.existsSync(tsx)) {
-        inputPath = tsx;
-    }
-    else {
-        throw new Error('Failed to locate input path.');
-    }
+    const ts = path.join(pluginPath, 'index.ts');
+    const tsx = path.join(pluginPath, 'index.tsx');
 
-    const distPath = path.join(__dirname, '..', 'dist');
-    const distPluginPath = path.join(distPath, lastDirectory);
+    if(fs.existsSync(ts)) inputPath = ts;
+    else if(fs.existsSync(tsx)) inputPath = tsx;
+    else throw new Error('Failed to locate input path.');
 
-    if(fs.existsSync(distPath) && fs.existsSync(distPluginPath)) {
-        console.log(`${ lastDirectory } dist folder exists, removing it to rebuild`);
-        fs.rmSync(distPluginPath, { recursive: true, force: true });
-    }
+    const distPluginPath = path.join(distPath, pluginName);
 
     makePathIfNotExists(distPath);
     makePathIfNotExists(distPluginPath);
 
-    const configJSON = throwInExtras(projectPath, distPath, lastDirectory);
+    const { README, config } = getPluginMetadata(pluginPath, pluginName);
 
     const header = `
 /**
-${ Object.entries(configJSON).map(([k, v], i) => {
+${ Object.entries(config).map(([k, v], i) => {
         if(k === '$schema') {
             return;
         }
@@ -94,80 +81,43 @@ ${ Object.entries(configJSON).map(([k, v], i) => {
 */
     `;
 
-    const pluginFileName = lastDirectory.toString() + '.plugin.js';
+    buildSource({
+        header,
+        inputPath,
+        outFilePath: path.join(distPluginPath, pluginName),
+        sourceMaps: args.values.dev ?? false,
+        watch: args.values.watch ?? false
+    });
 
-    let outFilePath = path.join(distPath, lastDirectory, pluginFileName);
-
-    if(bdFolderPath || args.move) {
-        outFilePath = bdFolderPath ? path.join(bdFolderPath, pluginFileName) : path.join(appData, 'BetterDiscord', 'plugins', pluginFileName);
+    if(README && README !== null) {
+        fs.writeFileSync(path.join(distPluginPath, 'README.md'), README!);
+        console.log(`Wrote README.md`);
     }
-
-    build(inputPath, outFilePath, header, args, args.watch || false);
 }
 
-function build(inputPath: string, outFilePath: string, header: string, args: Record<string, boolean>, watch: boolean) {
-    const build = ncc(
-        inputPath,
-        {
-            cache: false,
-            externals: [],
-            filterAssetBase: process.cwd(),
-            minify: false,
-            sourceMap: args.dev, // Dont ship source maps or else!
-            watch: watch,
-            quiet: true
-        }) as any;
+function buildSource({ header, inputPath, outFilePath, sourceMaps, watch }: BuildOptions): void {
+    const build = ncc(inputPath, {
+        watch,
+        sourceMap: sourceMaps,
+        filterAssetBase: process.cwd(),
+        quiet: true,
+        externals: [],
+        cache: false
+    });
 
     if(watch) {
-        (build as WatchBuildResult).handler(({ err, code, map }) => {
+        (build as unknown as WatchBuildResult).handler(({ err, code, map }) => {
             if(err) {
-                throw err;
+                console.error(err);
+                return;
             }
 
-            writeBuildFile(code, outFilePath, header, map);
+            writeBuildFile(code, outFilePath, header, map!);
         });
     }
     else {
         void (build as Promise<{ code: string; map?: string; }>).then(({ code, map }) => {
-            writeBuildFile(code, outFilePath, header, map);
+            writeBuildFile(code, outFilePath, header, map!);
         });
     }
-}
-
-function writeBuildFile(code: string, outFilePath: string, header: string, map?: string): void {
-    console.log(`Finished building ${ outFilePath }!`);
-
-    const wfConfig = {
-        encoding: 'utf-8',
-        flag: 'w'
-    } as fs.WriteFileOptions;
-
-    fs.writeFileSync(outFilePath, `${ header.trim() }\n${ code }`, wfConfig);
-
-    if(map) {
-        fs.writeFileSync(`${ outFilePath }.map`, map, wfConfig);
-    }
-}
-
-function throwInExtras(pluginPath: string, distPath: string, lastDirectory: string): Record<string, unknown> {
-    // before we compile, we wanna throw in our configuration.
-    const configFile = path.join(pluginPath, 'config.json');
-
-    if(!fs.existsSync(configFile)) {
-        // TODO: make better
-        throw new Error(`Build script failed!\nFailed to find \`config.json\` for project (${ lastDirectory }).\nPath: ${ pluginPath }`);
-    }
-
-    const configText = fs.readFileSync(configFile, { encoding: 'utf-8' });
-    /** @type {Record<string, unknown>} */
-    const configJSON: Record<string, unknown> = JSON.parse(configText);
-
-    const readmePath = path.join(pluginPath, 'README.md');
-    const readmeOut = path.join(distPath, lastDirectory, 'README.md');
-
-    if(fs.existsSync(readmePath)) {
-        fs.writeFileSync(readmeOut, fs.readFileSync(readmePath));
-    }
-
-    return configJSON;
 }

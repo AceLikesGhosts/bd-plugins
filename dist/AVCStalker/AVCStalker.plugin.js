@@ -9,7 +9,7 @@
 * @updateLink https://github.com/AceLikesGhosts/bd-plugins
 * @authorId 327639826075484162
 */
-/******/ (() => { // webpackBootstrap
+require('./sourcemap-register.js');/******/ (() => { // webpackBootstrap
 /******/ 	"use strict";
 /******/ 	var __webpack_modules__ = ({
 
@@ -835,3 +835,4 @@ module.exports = JSON.parse('{"$schema":"../../config_schema.jsonc","name":"AVCS
 /******/ 	
 /******/ })()
 ;
+//# sourceMappingURL=index.js.map

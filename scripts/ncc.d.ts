@@ -1,11 +1,19 @@
 declare module '@vercel/ncc' {
-    interface NoWatchOptions {
-        cache?: boolean;
+    interface Options {
+        cache?: boolean | string;
         externals?: string[];
-        filterAssetBase?: string;
+        filterAssetBase: string;
         minify?: boolean;
         sourceMap?: boolean;
+        assetBuilds?: boolean;
+        sourceMapBasePrefix?: string;
+        sourceMapRegister?: boolean;
+        watch?: boolean;
+        license?: string;
+        target?: string;
+        v8cache?: string;
         quiet?: boolean;
+        debugLog?: boolean;
     }
 
     type HandlerFN = (data: {
@@ -17,17 +25,15 @@ declare module '@vercel/ncc' {
 
     interface WatchBuildResult {
         handler: (fn: HandlerFN) => void;
-
         rebuild: () => void;
-
         close: () => void;
     }
 
     function ncc<T extends boolean = false>(
         input: string,
-        options: NoWatchOptions | WatchOptions
+        options: Options
     ): T extends false ? Promise<{ code: string; map?: string; }> : WatchBuildResult;
 
     export = ncc;
-    export type { WatchOptions, NoWatchOptions, WatchBuildResult };
+    export type { WatchOptions, Options as NoWatchOptions, WatchBuildResult };
 }
