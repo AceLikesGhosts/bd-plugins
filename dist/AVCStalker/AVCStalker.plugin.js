@@ -2,7 +2,7 @@
 * @name AVCStalker
 * @description A simplistic.
 * @author ace. & friez.
-* @version 1.1.10-rc
+* @version 1.2.10-rc
 * @source https://raw.githubusercontent.com/AceLikesGhosts/bd-plugins/master/dist/AVCStalker/AVCStalker.plugin.js
 * @authorLink https://github.com/AceLikesGhosts/bd-plugins
 * @website https://github.com/AceLikesGhosts/bd-plugins
@@ -98,12 +98,45 @@ exports["default"] = BdApi.Webpack.getByKeys('_currentDispatchActionType', '_pro
 
 /***/ }),
 
+/***/ 873:
+/***/ ((__unused_webpack_module, exports) => {
+
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports["default"] = BdApi.Webpack.getByKeys('transitionTo');
+
+
+/***/ }),
+
 /***/ 432:
 /***/ ((__unused_webpack_module, exports) => {
 
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports["default"] = BdApi.Webpack.getStore('ChannelStore');
+
+
+/***/ }),
+
+/***/ 866:
+/***/ ((__unused_webpack_module, exports) => {
+
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports["default"] = BdApi.Webpack.getStore('GuildStore');
+
+
+/***/ }),
+
+/***/ 771:
+/***/ ((__unused_webpack_module, exports) => {
+
+
+// this is actually the raw classes of
+// the dispatcher, store, and some store utils
+// but those are already exported
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports["default"] = BdApi.Webpack.getByKeys('Store', 'useStateFromStores');
 
 
 /***/ }),
@@ -136,54 +169,29 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.joinCall = void 0;
 const _1 = __nccwpck_require__(65);
 const UserStore_1 = __importDefault(__nccwpck_require__(682));
 const ChannelStore_1 = __importDefault(__nccwpck_require__(432));
-const VoiceStateStore_1 = __importDefault(__nccwpck_require__(979));
 const util_1 = __nccwpck_require__(268);
-const voiceChannelUtils = BdApi.Webpack.getByKeys('selectVoiceChannel', 'disconnect');
-// I don't care!
-// eslint-disable-next-line @typescript-eslint/no-invalid-void-type
-function joinCall(voiceState, channel) {
-    if (!_1.followingPeople.has(voiceState.userId))
+function followFromVoiceState(vs) {
+    if (!_1.followingPeople.has(vs.userId))
         return;
-    if (VoiceStateStore_1.default.isInChannel(channel.id))
+    if (vs.channelId === null || !vs.channelId) {
+        BdApi.UI.showToast(`${UserStore_1.default.getUser(vs.userId).globalName} left voice chat!`, { type: 'warn' });
         return;
-    const VSs = VoiceStateStore_1.default.getVoiceStatesForChannel(voiceState.channelId);
-    if (!VSs)
-        return;
-    if (channel.permissionOverwrites_
-        && channel.permissionOverwrites_[UserStore_1.default.getCurrentUser().id]
-        && channel.permissionOverwrites_[UserStore_1.default.getCurrentUser().id]?.deny & util_1.ConnectionBit) {
-        _1.logger.info(`attempted to join vc but we are denied from joining, setting 250ms timeout before attempting to rejoin`);
-        return setTimeout(() => joinCall(voiceState, channel), 250);
     }
-    const people = Object.keys(VSs).length;
-    if (channel.userLimit_ !== 0 && people >= channel.userLimit_) {
-        _1.logger.info(`attempted to join ${channel.name} but it was full (${people} >= ${channel.userLimit_}). setting 250ms timeout before attempting to rejoin`);
-        return setTimeout(() => joinCall(voiceState, channel), 250);
-    }
-    _1.logger.info('joining voice channel');
-    voiceChannelUtils.selectVoiceChannel(voiceState.channelId);
+    const channel = ChannelStore_1.default.getChannel(vs.channelId);
+    const msg = `Joining ${UserStore_1.default.getUser(vs.userId).globalName} in #${channel.name}`;
+    _1.logger.info(msg);
+    BdApi.UI.showToast(msg);
+    (0, util_1.joinCall)(vs, channel);
 }
-exports.joinCall = joinCall;
 function onVoiceChange(voiceState) {
     if (voiceState.type !== 'VOICE_STATE_UPDATES')
         return;
     for (let i = 0; i < voiceState.voiceStates.length; i++) {
         const vs = voiceState.voiceStates[i];
-        if (_1.followingPeople.has(vs.userId)) {
-            if (vs.channelId === null || !vs.channelId) {
-                BdApi.UI.showToast(`${UserStore_1.default.getUser(vs.userId).globalName} left voice chat!`, { type: 'warn' });
-                return;
-            }
-            const channel = ChannelStore_1.default.getChannel(vs.channelId);
-            const msg = `Joining ${UserStore_1.default.getUser(vs.userId).globalName} in #${channel.name}`;
-            _1.logger.info(msg);
-            BdApi.UI.showToast(msg);
-            joinCall(vs, channel);
-        }
+        followFromVoiceState(vs);
     }
 }
 exports["default"] = onVoiceChange;
@@ -296,11 +304,11 @@ const index_1 = __nccwpck_require__(799);
 const __1 = __nccwpck_require__(65);
 const VoiceStateStore_1 = __importDefault(__nccwpck_require__(979));
 const ChannelStore_1 = __importDefault(__nccwpck_require__(432));
+const Transitions_1 = __importDefault(__nccwpck_require__(873));
+const StoreUtils_1 = __importDefault(__nccwpck_require__(771));
 const DiscordTooltip = BdApi.Components.Tooltip;
-const useStateFromStores = BdApi.Webpack.getByKeys('useStateFromStores')?.useStateFromStores;
-const transitions = BdApi.Webpack.getByKeys('transitionTo');
 function JoinVcIcon({ userId }) {
-    const voiceData = useStateFromStores([VoiceStateStore_1.default], () => [VoiceStateStore_1.default.getVoiceStateForUser(userId)] ?? 0);
+    const voiceData = StoreUtils_1.default.useStateFromStores([VoiceStateStore_1.default], () => [VoiceStateStore_1.default.getVoiceStateForUser(userId)] ?? 0);
     const [channel, setChannel] = index_1.React.useState(ChannelStore_1.default.getChannel(voiceData[0]?.channelId ?? '0'));
     const [peopleInVC, setGuildChannelLength] = index_1.React.useState(1);
     index_1.React.useEffect(() => {
@@ -317,7 +325,7 @@ function JoinVcIcon({ userId }) {
                     __1.Icons.GaUserAdd
             }, onClick: (() => {
                 if (voiceData[0]?.channelId) {
-                    transitions.transitionToGuild(channel.guild_id, voiceData[0].channelId);
+                    Transitions_1.default.transitionToGuild(channel.guild_id, voiceData[0].channelId);
                 }
                 else
                     BdApi.UI.showToast('Failed to locate the voice channel they are in', { type: 'error' });
@@ -332,12 +340,32 @@ exports["default"] = JoinVcIcon;
 /***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
 
 
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    __setModuleDefault(result, mod);
+    return result;
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 const index_1 = __nccwpck_require__(799);
-const __1 = __importDefault(__nccwpck_require__(65));
+const __1 = __importStar(__nccwpck_require__(65));
 const Form_1 = __nccwpck_require__(281);
 // import type { TextInputProps } from '@lib/components/TextInput';
 // import type { FormItemProps } from '@lib/components/Form';
@@ -362,18 +390,90 @@ const Form_1 = __nccwpck_require__(281);
 //     );
 // }
 function Settings() {
-    const [clickVoiceChatButtonClears, setClickVoiceChatButtonClears] = index_1.React.useState(__1.default.settings.voiceChatFollowing.clickVoiceChatButtonClears ?? true);
+    const [clickVoiceChatButtonClears, setClickVoiceChatButtonClears] = index_1.React.useState(__1.default.settings.voiceChatFollowing.clickVoiceChatButtonClears ?? __1.DefaultSettings.voiceChatFollowing.clickVoiceChatButtonClears);
+    const [userPopout, setUserPopout] = index_1.React.useState(__1.default.settings.userPopout ?? __1.DefaultSettings.userPopout);
     index_1.React.useEffect(() => {
         __1.default.settings = {
             voiceChatFollowing: {
                 clickVoiceChatButtonClears
-            }
+            },
+            userPopout: userPopout
         };
-    }, [clickVoiceChatButtonClears]);
+    }, [clickVoiceChatButtonClears, userPopout]);
     return (index_1.React.createElement("div", null,
-        index_1.React.createElement(Form_1.FormSwitch, { value: clickVoiceChatButtonClears, onChange: ((e) => setClickVoiceChatButtonClears(e)), note: 'Should clicking the following button clear the following list? Setting made for Ollie.' }, "Following Button Clearing")));
+        index_1.React.createElement(Form_1.FormSwitch, { value: clickVoiceChatButtonClears, onChange: ((e) => setClickVoiceChatButtonClears(e)), note: 'Should clicking the following button clear the following list? Setting made for Ollie.' }, "Following Button Clearing"),
+        index_1.React.createElement(Form_1.FormSwitch, { note: 'Should we show what voice channels someone is in on their user popout?', value: userPopout, onChange: ((e) => setUserPopout(e)) }, "User Popout")));
 }
 exports["default"] = Settings;
+
+
+/***/ }),
+
+/***/ 820:
+/***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
+
+
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+const components_1 = __nccwpck_require__(799);
+const Transitions_1 = __importDefault(__nccwpck_require__(873));
+const ChannelStore_1 = __importDefault(__nccwpck_require__(432));
+const GuildStore_1 = __importDefault(__nccwpck_require__(866));
+const FLEX_CENTER = {
+    display: 'flex',
+    alignContent: 'center',
+    alignItems: 'center',
+    alignSelf: 'center',
+    justifyContent: 'center'
+};
+function PopoutChnanelButton({ channelId, guildId }) {
+    if (!channelId)
+        return null;
+    return components_1.React.createElement("button", { style: { ...FLEX_CENTER, width: '100%', height: '28px', background: 'transparent', marginTop: '4px', border: '2px solid white', borderRadius: '25px' }, onClick: (() => Transitions_1.default.transitionToGuild(guildId, channelId)) },
+        components_1.React.createElement("div", { style: { ...FLEX_CENTER, width: '200px', height: '100%' } },
+            components_1.React.createElement("img", { style: { height: '24px', width: '24px', marginRight: '5px', borderRadius: '10px' }, src: GuildStore_1.default.getGuild(guildId)?.getIconURL(), alt: 'Bad Image' }),
+            components_1.React.createElement("span", { style: { color: 'white' } }, ChannelStore_1.default.getChannel(channelId).name)));
+}
+exports["default"] = PopoutChnanelButton;
+
+
+/***/ }),
+
+/***/ 690:
+/***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
+
+
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+const components_1 = __nccwpck_require__(799);
+const StoreUtils_1 = __importDefault(__nccwpck_require__(771));
+const VoiceStateStore_1 = __importDefault(__nccwpck_require__(979));
+const PopoutChannelButton_1 = __importDefault(__nccwpck_require__(820));
+function Popout({ userId }) {
+    const voiceStates = StoreUtils_1.default.useStateFromStores([VoiceStateStore_1.default], () => {
+        const guilds = VoiceStateStore_1.default.getAllVoiceStates();
+        const guildIds = Object.keys(guilds);
+        const voiceStates = [];
+        for (let i = 0; i < guildIds.length; i++) {
+            const state = guilds[guildIds[i]][userId];
+            if (!state)
+                continue;
+            voiceStates.push({
+                channelId: state.channelId,
+                guildId: guildIds[i]
+            });
+        }
+        return voiceStates;
+    });
+    return (components_1.React.createElement("div", null, voiceStates.map((state) => {
+        return components_1.React.createElement(PopoutChannelButton_1.default, { channelId: state.channelId, guildId: state.guildId });
+    })));
+}
+exports["default"] = Popout;
 
 
 /***/ }),
@@ -386,7 +486,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.followingPeople = exports.logger = exports.Icons = void 0;
+exports.followingPeople = exports.logger = exports.DefaultSettings = exports.Icons = void 0;
 const config_json_1 = __importDefault(__nccwpck_require__(136));
 const UserCallHeader_1 = __importDefault(__nccwpck_require__(184));
 const logger_1 = __importDefault(__nccwpck_require__(95));
@@ -395,6 +495,7 @@ const VoiceStateUpdate_1 = __importDefault(__nccwpck_require__(567));
 const Dispatcher_1 = __importDefault(__nccwpck_require__(115));
 const UserContext_1 = __importDefault(__nccwpck_require__(680));
 const UserAccountMenu_1 = __importDefault(__nccwpck_require__(583));
+const UserPopout_1 = __importDefault(__nccwpck_require__(948));
 // #region cringe result of @vercel/ncc.
 exports.Icons = {
     LiaUserSlashSolid: `<path d="M 3.6992188 2.3007812 L 2.3007812 3.6992188 L 9.1210938 10.519531 C 9.1148472 10.54659 9.1055539 10.572434 9.0996094 10.599609 L 11 12.5 L 11 12.398438 L 15.601562 17 L 15.5 17 L 17.699219 19.199219 C 17.749353 19.210917 17.795909 19.231553 17.845703 19.244141 L 23.660156 25.058594 C 23.670754 25.106568 23.68955 25.150877 23.699219 25.199219 L 25.5 27 L 25.601562 27 L 28.300781 29.699219 L 29.699219 28.300781 L 25.59375 24.195312 C 24.75029 21.314801 22.648326 18.945754 19.900391 17.800781 C 21.800391 16.500781 23 14.4 23 12 C 23 8.1 19.9 5 16 5 C 13.390973 5 11.146509 6.4199607 9.921875 8.5234375 L 3.6992188 2.3007812 z M 16 7 C 18.8 7 21 9.2 21 12 C 21 14.086994 19.776043 15.83791 17.994141 16.595703 L 11.404297 10.005859 C 12.16209 8.2239568 13.913006 7 16 7 z M 9.0996094 13.300781 C 9.4996094 15.200781 10.499609 16.800781 12.099609 17.800781 C 8.4996094 19.300781 6 22.9 6 27 L 8 27 C 8 22.9 11.000391 19.599609 14.900391 19.099609 L 9.0996094 13.300781 z"></path>`,
@@ -404,10 +505,11 @@ exports.Icons = {
     RxCross2: `<path xmlns="http://www.w3.org/2000/svg" fill-rule="evenodd" clip-rule="evenodd" d="M11.7816 4.03157C12.0062 3.80702 12.0062 3.44295 11.7816 3.2184C11.5571 2.99385 11.193 2.99385 10.9685 3.2184L7.50005 6.68682L4.03164 3.2184C3.80708 2.99385 3.44301 2.99385 3.21846 3.2184C2.99391 3.44295 2.99391 3.80702 3.21846 4.03157L6.68688 7.49999L3.21846 10.9684C2.99391 11.193 2.99391 11.557 3.21846 11.7816C3.44301 12.0061 3.80708 12.0061 4.03164 11.7816L7.50005 8.31316L10.9685 11.7816C11.193 12.0061 11.5571 12.0061 11.7816 11.7816C12.0062 11.557 12.0062 11.193 11.7816 10.9684L8.31322 7.49999L11.7816 4.03157Z" fill="currentColor"/>`
 };
 // #endregion end of cringe
-const DefaultSettings = {
+exports.DefaultSettings = {
     voiceChatFollowing: {
         clickVoiceChatButtonClears: true
-    }
+    },
+    userPopout: false
 };
 // export let settings: typeof DefaultSettings = DefaultSettings;
 exports.logger = new logger_1.default(config_json_1.default);
@@ -423,7 +525,7 @@ class AUserVoiceLocation {
     start() {
         const loadedSettings = BdApi.Data.load(config_json_1.default.name, 'settings');
         AUserVoiceLocation.settings = {
-            ...DefaultSettings,
+            ...exports.DefaultSettings,
             ...loadedSettings
         };
         Dispatcher_1.default.subscribe('VOICE_STATE_UPDATES', VoiceStateUpdate_1.default);
@@ -431,6 +533,8 @@ class AUserVoiceLocation {
         (0, UserCallHeader_1.default)();
         exports.logger.info('Patching UserContext');
         this.cancelUserContextPatch = (0, UserContext_1.default)();
+        exports.logger.info('Patching UserPopout');
+        (0, UserPopout_1.default)();
         exports.logger.info('Dom-Patching UserAccountPanel');
         (0, UserAccountMenu_1.default)();
     }
@@ -456,7 +560,7 @@ class AUserVoiceLocation {
         (0, UserAccountMenu_1.default)();
     }
 }
-AUserVoiceLocation.settings = DefaultSettings;
+AUserVoiceLocation.settings = exports.DefaultSettings;
 exports["default"] = AUserVoiceLocation;
 
 
@@ -564,7 +668,7 @@ Object.defineProperty(exports, "__esModule", ({ value: true }));
 const components_1 = __nccwpck_require__(799);
 const __1 = __nccwpck_require__(65);
 const VoiceStateStore_1 = __importDefault(__nccwpck_require__(979));
-const VoiceStateUpdate_1 = __nccwpck_require__(567);
+const util_1 = __nccwpck_require__(268);
 const ChannelStore_1 = __importDefault(__nccwpck_require__(432));
 const { Item } = BdApi.ContextMenu;
 function PatchUserContext() {
@@ -575,7 +679,7 @@ function PatchUserContext() {
             return;
         const channel = ChannelStore_1.default.getChannel(vs.channelId);
         __1.logger.info(`${id} was already in a vc when we said to start following so joining their call (${vs.channelId})`);
-        (0, VoiceStateUpdate_1.joinCall)(vs, channel);
+        (0, util_1.joinCall)(vs, channel);
     }
     return BdApi.ContextMenu.patch('user-context', (res, props) => {
         const id = props.user.id;
@@ -597,13 +701,82 @@ exports["default"] = PatchUserContext;
 
 /***/ }),
 
-/***/ 268:
-/***/ ((__unused_webpack_module, exports) => {
+/***/ 948:
+/***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
 
 
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.ConnectionBit = void 0;
+const components_1 = __nccwpck_require__(799);
+const popout_1 = __importDefault(__nccwpck_require__(690));
+const config_json_1 = __importDefault(__nccwpck_require__(136));
+const __1 = __importDefault(__nccwpck_require__(65));
+// this elm doesnt have enough to fucking patch it, are you fucking serious??
+// WHY COULD THEY HAVE NOT PASSED DOWN THE USER!
+// export default function PatchUserPopout(): void {
+//     // user about me from popout
+//     const [mod, key] = BdApi.Webpack.getWithKey(BdApi.Webpack.Filters.byStrings('bio', 'isUsingGuildBio', 'animateOnHover'));
+//     BdApi.Patcher.after(config.name, mod, key, (_, __, ret: ReactElementJSONRepresentation) => {
+//         // render out component that loops over a user's voice states / active calls from `VoiceStateStore`
+//         // for each vc/voice state we show the VC they're in, allow it to be pressed to navigate to the call
+//         ret.props.children.splice(0, 0, <PopoutPatch />);
+//     });
+// }
+// take 2:
+function PatchUserPopout() {
+    const [mod, key] = BdApi.Webpack.getWithKey(BdApi.Webpack.Filters.byStrings('showCopiableUsername', 'canDM', 'displayProfile'));
+    BdApi.Patcher.after(config_json_1.default.name, mod, key, (_, [{ user }], res) => {
+        if (!__1.default.settings.userPopout)
+            return res;
+        res.props.children.splice(1, 0, components_1.React.createElement(popout_1.default, { userId: user.id }));
+    });
+}
+exports["default"] = PatchUserPopout;
+
+
+/***/ }),
+
+/***/ 268:
+/***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
+
+
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.joinCall = exports.ConnectionBit = void 0;
+const VoiceStateStore_1 = __importDefault(__nccwpck_require__(979));
+const UserStore_1 = __importDefault(__nccwpck_require__(682));
+const _1 = __nccwpck_require__(65);
 exports.ConnectionBit = 0x100000n;
+const voiceChannelUtils = BdApi.Webpack.getByKeys('selectVoiceChannel', 'disconnect');
+// I don't care!
+// eslint-disable-next-line @typescript-eslint/no-invalid-void-type
+function joinCall(voiceState, channel) {
+    if (!_1.followingPeople.has(voiceState.userId))
+        return;
+    if (VoiceStateStore_1.default.isInChannel(channel.id))
+        return;
+    const VSs = VoiceStateStore_1.default.getVoiceStatesForChannel(voiceState.channelId);
+    if (!VSs)
+        return;
+    if (channel.permissionOverwrites_
+        && channel.permissionOverwrites_[UserStore_1.default.getCurrentUser().id]
+        && channel.permissionOverwrites_[UserStore_1.default.getCurrentUser().id]?.deny & exports.ConnectionBit) {
+        _1.logger.info(`attempted to join vc but we are denied from joining, setting 250ms timeout before attempting to rejoin`);
+        return setTimeout(() => joinCall(voiceState, channel), 250);
+    }
+    const people = Object.keys(VSs).length;
+    if (channel.userLimit_ !== 0 && people >= channel.userLimit_) {
+        _1.logger.info(`attempted to join ${channel.name} but it was full (${people} >= ${channel.userLimit_}). setting 250ms timeout before attempting to rejoin`);
+        return setTimeout(() => joinCall(voiceState, channel), 250);
+    }
+    _1.logger.info('joining voice channel');
+    voiceChannelUtils.selectVoiceChannel(voiceState.channelId);
+}
+exports.joinCall = joinCall;
 
 
 /***/ }),
@@ -611,7 +784,7 @@ exports.ConnectionBit = 0x100000n;
 /***/ 136:
 /***/ ((module) => {
 
-module.exports = JSON.parse('{"$schema":"../../config_schema.jsonc","name":"AVCStalker","description":"A simplistic.","author":"ace. & friez.","version":"1.1.10-rc","source":"https://raw.githubusercontent.com/AceLikesGhosts/bd-plugins/master/dist/AVCStalker/AVCStalker.plugin.js","authorLink":"https://github.com/AceLikesGhosts/bd-plugins","website":"https://github.com/AceLikesGhosts/bd-plugins","updateLink":"https://github.com/AceLikesGhosts/bd-plugins","authorId":"327639826075484162"}');
+module.exports = JSON.parse('{"$schema":"../../config_schema.jsonc","name":"AVCStalker","description":"A simplistic.","author":"ace. & friez.","version":"1.2.10-rc","source":"https://raw.githubusercontent.com/AceLikesGhosts/bd-plugins/master/dist/AVCStalker/AVCStalker.plugin.js","authorLink":"https://github.com/AceLikesGhosts/bd-plugins","website":"https://github.com/AceLikesGhosts/bd-plugins","updateLink":"https://github.com/AceLikesGhosts/bd-plugins","authorId":"327639826075484162"}');
 
 /***/ })
 

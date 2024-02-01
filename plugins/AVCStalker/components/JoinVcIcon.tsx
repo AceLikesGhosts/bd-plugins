@@ -3,6 +3,8 @@ import { Icons } from '..';
 import type { UserVoiceState } from '@lib/stores/VoiceStateStore';
 import VoiceStateStore from '@lib/stores/VoiceStateStore';
 import ChannelStore from '@lib/stores/ChannelStore';
+import Transitions from '@lib/modules/Transitions';
+import StoreUtils from '@lib/stores/StoreUtils';
 
 const DiscordTooltip = BdApi.Components.Tooltip;
 
@@ -12,13 +14,8 @@ type Props = {
 
 type Channel = { guild_id: string; };
 
-const useStateFromStores = BdApi.Webpack.getByKeys('useStateFromStores')?.useStateFromStores as <T>(stores: unknown[], cb: () => T) => T;
-const transitions = BdApi.Webpack.getByKeys('transitionTo') as {
-    transitionToGuild: (guildId: string, channelId: string) => void;
-};
-
 export default function JoinVcIcon({ userId }: Props): JSX.Element {
-    const voiceData = useStateFromStores([VoiceStateStore], () => [VoiceStateStore.getVoiceStateForUser(userId)] ?? [undefined]) as [UserVoiceState];
+    const voiceData = StoreUtils.useStateFromStores([VoiceStateStore], () => [VoiceStateStore.getVoiceStateForUser(userId)] ?? [undefined]) as [UserVoiceState];
 
     const [channel, setChannel] = React.useState<Channel>(ChannelStore.getChannel(voiceData[0]?.channelId ?? '0') as Channel);
     const [peopleInVC, setGuildChannelLength] = React.useState<number>(1);
@@ -47,7 +44,7 @@ export default function JoinVcIcon({ userId }: Props): JSX.Element {
                             }}
                             onClick={(() => {
                                 if(voiceData[0]?.channelId) {
-                                    transitions.transitionToGuild(channel.guild_id, voiceData[0]!.channelId);
+                                    Transitions.transitionToGuild(channel.guild_id, voiceData[0]!.channelId);
                                 }
                                 else BdApi.UI.showToast('Failed to locate the voice channel they are in', { type: 'error' });
                             })}

@@ -1,5 +1,5 @@
 import { React } from '@lib/components/index';
-import AUserVoiceLocation from '..';
+import AUserVoiceLocation, { DefaultSettings } from '..';
 import { FormSwitch } from '@lib/components/Form';
 // import type { TextInputProps } from '@lib/components/TextInput';
 // import type { FormItemProps } from '@lib/components/Form';
@@ -26,16 +26,17 @@ import { FormSwitch } from '@lib/components/Form';
 // }
 
 export default function Settings(): JSX.Element {
-    const [clickVoiceChatButtonClears, setClickVoiceChatButtonClears] = React.useState(AUserVoiceLocation.settings.voiceChatFollowing.clickVoiceChatButtonClears ?? true);
-
+    const [clickVoiceChatButtonClears, setClickVoiceChatButtonClears] = React.useState(AUserVoiceLocation.settings.voiceChatFollowing.clickVoiceChatButtonClears ?? DefaultSettings.voiceChatFollowing.clickVoiceChatButtonClears);
+    const [userPopout, setUserPopout] = React.useState<boolean>(AUserVoiceLocation.settings.userPopout ?? DefaultSettings.userPopout);
 
     React.useEffect(() => {
         AUserVoiceLocation.settings = {
             voiceChatFollowing: {
                 clickVoiceChatButtonClears
-            }
+            },
+            userPopout: userPopout
         };
-    }, [clickVoiceChatButtonClears]);
+    }, [clickVoiceChatButtonClears, userPopout]);
 
     return (
         <div>
@@ -45,6 +46,14 @@ export default function Settings(): JSX.Element {
                 note={'Should clicking the following button clear the following list? Setting made for Ollie.'}
             >
                 Following Button Clearing
+            </FormSwitch>
+
+            <FormSwitch
+                note={'Should we show what voice channels someone is in on their user popout?'}
+                value={userPopout}
+                onChange={((e) => setUserPopout(e))}
+            >
+                User Popout
             </FormSwitch>
 
             {/* <TextInput
