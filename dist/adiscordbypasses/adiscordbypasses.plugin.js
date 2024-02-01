@@ -148,16 +148,6 @@ exports["default"] = BdApi.Webpack.getByKeys('MAX_ACCOUNTS');
 
 /***/ }),
 
-/***/ 908:
-/***/ ((__unused_webpack_module, exports) => {
-
-
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports["default"] = BdApi.Webpack.getStore('ApplicationStreamPreviewStore');
-
-
-/***/ }),
-
 /***/ 667:
 /***/ ((__unused_webpack_module, exports) => {
 
@@ -188,32 +178,12 @@ exports["default"] = BdApi.Webpack.getByKeys('setBadge');
 
 /***/ }),
 
-/***/ 906:
-/***/ ((__unused_webpack_module, exports) => {
-
-
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports["default"] = BdApi.Webpack.getStore('PermissionStore');
-
-
-/***/ }),
-
 /***/ 893:
 /***/ ((__unused_webpack_module, exports) => {
 
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports["default"] = BdApi.Webpack.getByKeys('isSpotifyPremium', 'ensureSpotifyPremium');
-
-
-/***/ }),
-
-/***/ 329:
-/***/ ((__unused_webpack_module, exports) => {
-
-
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports["default"] = BdApi.Webpack.getByKeys('getProfile', 'SpotifyAPI');
 
 
 /***/ }),
@@ -228,7 +198,37 @@ exports["default"] = BdApi.Webpack.getByKeys('Timeout', 'DelayedCall');
 
 /***/ }),
 
-/***/ 256:
+/***/ 833:
+/***/ ((__unused_webpack_module, exports) => {
+
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports["default"] = BdApi.Webpack.getStore('ApplicationStreamPreviewStore');
+
+
+/***/ }),
+
+/***/ 111:
+/***/ ((__unused_webpack_module, exports) => {
+
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports["default"] = BdApi.Webpack.getStore('PermissionStore');
+
+
+/***/ }),
+
+/***/ 269:
+/***/ ((__unused_webpack_module, exports) => {
+
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports["default"] = BdApi.Webpack.getByKeys('getProfile', 'SpotifyAPI');
+
+
+/***/ }),
+
+/***/ 682:
 /***/ ((__unused_webpack_module, exports) => {
 
 
@@ -421,7 +421,7 @@ const components_1 = __nccwpck_require__(799);
 const logger_1 = __importDefault(__nccwpck_require__(95));
 const ImagePicker_1 = __nccwpck_require__(749);
 const Form_1 = __nccwpck_require__(281);
-const UserStore_1 = __importDefault(__nccwpck_require__(256));
+const UserStore_1 = __importDefault(__nccwpck_require__(682));
 const NSFWPatch_1 = __importDefault(__nccwpck_require__(192));
 const SpotifyPremium_1 = __importDefault(__nccwpck_require__(931));
 const Timeout_1 = __importDefault(__nccwpck_require__(790));
@@ -571,7 +571,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-const UserStore_1 = __importDefault(__nccwpck_require__(256));
+const UserStore_1 = __importDefault(__nccwpck_require__(682));
 exports["default"] = (main) => {
     main.logger.info('Patching NSFW state.');
     BdApi.Patcher.after('ADiscordBypasses', UserStore_1.default, 'getCurrentUser', (_, __, res) => {
@@ -593,7 +593,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 const DiscordConstants_1 = __importDefault(__nccwpck_require__(667));
-const PermissionStore_1 = __importDefault(__nccwpck_require__(906));
+const PermissionStore_1 = __importDefault(__nccwpck_require__(111));
 exports["default"] = (main) => {
     main.logger.info('Patching PerimssionStore (PTT)');
     BdApi.Patcher.after('ADiscordBypasses', PermissionStore_1.default, 'can', (_, args, res) => {
@@ -616,7 +616,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-const SpotifyProtocolStore_1 = __importDefault(__nccwpck_require__(329));
+const SpotifyProtocolStore_1 = __importDefault(__nccwpck_require__(269));
 const SpotifyChecks_1 = __importDefault(__nccwpck_require__(893));
 const Dispatcher_1 = __importDefault(__nccwpck_require__(115));
 exports["default"] = (main) => {
@@ -650,8 +650,8 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 const ElectronModule_1 = __importDefault(__nccwpck_require__(993));
-const ApplicationStreamPreviewStore_1 = __importDefault(__nccwpck_require__(908));
-const UserStore_1 = __importDefault(__nccwpck_require__(256));
+const ApplicationStreamPreviewStore_1 = __importDefault(__nccwpck_require__(833));
+const UserStore_1 = __importDefault(__nccwpck_require__(682));
 exports["default"] = (main) => {
     main.logger.info('Patching StreamPreview');
     if (!main.settings?.StreamPreview)
