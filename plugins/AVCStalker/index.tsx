@@ -1,4 +1,5 @@
 import type { Cancel, Plugin } from 'betterdiscord';
+import { AppendableMap, type MultipleUserAssociatedVoiceStateThatsTimestamped } from './util';
 import config from './config.json';
 import PatchUserCallHeader from './patches/UserCallHeader';
 import Logger from '@lib/logger';
@@ -34,6 +35,10 @@ export const logger = new Logger(config);
  * to follow
  */
 export const followingPeople = new Set<string>();
+/**
+ * Map of userIDs to Timestamped Voice States
+ */
+export const userVoiceStateLog = new AppendableMap<string, MultipleUserAssociatedVoiceStateThatsTimestamped>();
 
 export default class AUserVoiceLocation implements Plugin {
     static settings: typeof DefaultSettings = DefaultSettings;
@@ -50,7 +55,7 @@ export default class AUserVoiceLocation implements Plugin {
 
         logger.info('Patching UserCallHeader');
         PatchUserCallHeader();
-        logger.info('Patching UserContext');        
+        logger.info('Patching UserContext');
         this.cancelUserContextPatch = PatchUserContext();
         logger.info('Patching UserPopout');
         PatchUserPopout();
