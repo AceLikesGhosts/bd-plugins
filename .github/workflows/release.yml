@@ -22,7 +22,7 @@ jobs:
         run: npm ci
 
       - name: Build
-        run: npm run build all
+        run: npm run build -- --all
 
       - name: Release .plugin.js file
         run: |
