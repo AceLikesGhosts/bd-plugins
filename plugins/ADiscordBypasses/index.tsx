@@ -14,6 +14,7 @@ import GuildVerification from './patches/GuildVerification';
 import StreamPreview from './patches/StreamPreview';
 import PTT from './patches/PTT';
 import AccountSwitcher from './patches/AccountSwitcher';
+import Idle from './patches/Idle';
 
 export default class ADiscordBypasses implements Plugin {
     public readonly logger: Logger;
@@ -31,7 +32,9 @@ export default class ADiscordBypasses implements Plugin {
         SpotifyPremium: false,
         SpotifyPause: false,
         Verification: false,
-        MaxAccounts: false
+        MaxAccounts: false,
+        Idle: false,
+        electronBadge: false
     };
 
     start(): void {
@@ -45,6 +48,7 @@ export default class ADiscordBypasses implements Plugin {
         StreamPreview(this);
         PTT(this);
         AccountSwitcher(this);
+        Idle(this);
     }
 
     stop(): void {
@@ -70,6 +74,8 @@ function DiscordBypassSettings(this: Omit<ADiscordBypasses, 'getSettingsPanel'>)
     const [spotifyPause, setSpotifyPause] = React.useState<DefaultSettings['SpotifyPause']>(this.settings!.SpotifyPause);
     const [Verification, setVerification] = React.useState<DefaultSettings['Verification']>(this.settings!.Verification);
     const [maxAccounts, setMaxAccounts] = React.useState<DefaultSettings['MaxAccounts']>(this.settings!.MaxAccounts);
+    const [Idle, setIdle] = React.useState<DefaultSettings['Idle']>(this.settings!.Idle);
+    const [electronBadge, setElectronBadge] = React.useState<DefaultSettings['electronBadge']>(this.settings!.electronBadge);
 
     React.useEffect(() => {
         this.settings = {
@@ -81,17 +87,19 @@ function DiscordBypassSettings(this: Omit<ADiscordBypasses, 'getSettingsPanel'>)
             MaxAccounts: maxAccounts,
             StreamPreview: streamPreview,
             CustomPreviewImage: customPreviewImage,
-            Verification
+            Verification,
+            Idle,
+            electronBadge
         };
     }, [
-        nsfw, 
-        callTimeout, 
-        PTT, 
-        streamPreview, 
-        customPreviewImage, 
-        isPremium, 
-        spotifyPause, 
-        Verification, 
+        nsfw,
+        callTimeout,
+        PTT,
+        streamPreview,
+        customPreviewImage,
+        isPremium,
+        spotifyPause,
+        Verification,
         maxAccounts
     ]);
 
@@ -128,7 +136,7 @@ function DiscordBypassSettings(this: Omit<ADiscordBypasses, 'getSettingsPanel'>)
             </FormSwitch>
             <ImagePickerItem
                 title='Custom Preview Image'
-                note='Image to render as stream preview. (Must be under 200kb. If no image is provided, no stream preview will be shown.)'
+                note='Image to render as stream preview. (Must be under 200kb. If no image is provided, no stream preview will be shown.) Requires reloading the plugin.'
                 disabled={!streamPreview}
                 value={customPreviewImage}
                 onChange={((v) => setCustomImagePreview(v))}
@@ -160,6 +168,20 @@ function DiscordBypassSettings(this: Omit<ADiscordBypasses, 'getSettingsPanel'>)
                 onChange={((v) => setMaxAccounts(v))}
             >
                 Max account limit bypass
+            </FormSwitch>
+            <FormSwitch
+                note={'Stops Discord from setting your presence to idle when you leave Discord alone.'}
+                value={Idle}
+                onChange={(v) => setIdle(v)}
+            >
+                Anti Idle
+            </FormSwitch>
+            <FormSwitch
+                note={'Stops Discord from displaying different badge icons (i.e. missed messages, and friend requests). Requires reloading the plugin.'}
+                value={electronBadge}
+                onChange={(v) => setElectronBadge(v)}
+            >
+                Missed Messages Badge
             </FormSwitch>
         </div>
     );
