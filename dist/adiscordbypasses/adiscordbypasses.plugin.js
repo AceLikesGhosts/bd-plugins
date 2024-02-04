@@ -2,7 +2,7 @@
 * @name ADiscordBypasses
 * @description A simple rewrite of Tharki's DiscordBypasses.
 * @author ace.
-* @version 0.1.3
+* @version 1.0.0
 * @source https://raw.githubusercontent.com/AceLikesGhosts/bd-plugins/master/dist/ADiscordBypasses/ADiscordBypasses.plugin.js
 * @authorLink https://github.com/AceLikesGhosts/bd-plugins
 * @website https://github.com/AceLikesGhosts/bd-plugins
@@ -204,6 +204,16 @@ exports["default"] = BdApi.Webpack.getByKeys('Timeout', 'DelayedCall');
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports["default"] = BdApi.Webpack.getStore('ApplicationStreamPreviewStore');
+
+
+/***/ }),
+
+/***/ 867:
+/***/ ((__unused_webpack_module, exports) => {
+
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports["default"] = BdApi.Webpack.getStore('IdleStore');
 
 
 /***/ }),
@@ -429,6 +439,7 @@ const GuildVerification_1 = __importDefault(__nccwpck_require__(757));
 const StreamPreview_1 = __importDefault(__nccwpck_require__(955));
 const PTT_1 = __importDefault(__nccwpck_require__(989));
 const AccountSwitcher_1 = __importDefault(__nccwpck_require__(844));
+const Idle_1 = __importDefault(__nccwpck_require__(940));
 class ADiscordBypasses {
     constructor(meta) {
         this.settings = void 0;
@@ -441,7 +452,9 @@ class ADiscordBypasses {
             SpotifyPremium: false,
             SpotifyPause: false,
             Verification: false,
-            MaxAccounts: false
+            MaxAccounts: false,
+            Idle: false,
+            electronBadge: false
         };
         this.logger = new logger_1.default(meta);
     }
@@ -455,6 +468,7 @@ class ADiscordBypasses {
         (0, StreamPreview_1.default)(this);
         (0, PTT_1.default)(this);
         (0, AccountSwitcher_1.default)(this);
+        (0, Idle_1.default)(this);
     }
     stop() {
         this.logger.log('stopped');
@@ -477,6 +491,8 @@ function DiscordBypassSettings() {
     const [spotifyPause, setSpotifyPause] = components_1.React.useState(this.settings.SpotifyPause);
     const [Verification, setVerification] = components_1.React.useState(this.settings.Verification);
     const [maxAccounts, setMaxAccounts] = components_1.React.useState(this.settings.MaxAccounts);
+    const [Idle, setIdle] = components_1.React.useState(this.settings.Idle);
+    const [electronBadge, setElectronBadge] = components_1.React.useState(this.settings.electronBadge);
     components_1.React.useEffect(() => {
         this.settings = {
             NSFW: nsfw,
@@ -487,7 +503,9 @@ function DiscordBypassSettings() {
             MaxAccounts: maxAccounts,
             StreamPreview: streamPreview,
             CustomPreviewImage: customPreviewImage,
-            Verification
+            Verification,
+            Idle,
+            electronBadge
         };
     }, [
         nsfw,
@@ -505,11 +523,13 @@ function DiscordBypassSettings() {
         components_1.React.createElement(Form_1.FormSwitch, { note: 'Lets you stay alone in a call for longer than 5 minutes.', value: callTimeout, onChange: ((v) => setCallTimeout(v)) }, "Call timeout"),
         components_1.React.createElement(Form_1.FormSwitch, { note: 'Lets you use voice activity in channels that enforce the use of push-to-talk.', value: PTT, onChange: ((v) => setPTT(v)) }, "No push-to-talk."),
         components_1.React.createElement(Form_1.FormSwitch, { note: 'Stops your stream preview from being rendered. If an image is provided, the image given will be rendered.', value: streamPreview, onChange: ((v) => setStreamPreview(v)) }, "Custom stream preview"),
-        components_1.React.createElement(ImagePicker_1.ImagePickerItem, { title: 'Custom Preview Image', note: 'Image to render as stream preview. (Must be under 200kb. If no image is provided, no stream preview will be shown.)', disabled: !streamPreview, value: customPreviewImage, onChange: ((v) => setCustomImagePreview(v)) }),
+        components_1.React.createElement(ImagePicker_1.ImagePickerItem, { title: 'Custom Preview Image', note: 'Image to render as stream preview. (Must be under 200kb. If no image is provided, no stream preview will be shown.) Requires reloading the plugin.', disabled: !streamPreview, value: customPreviewImage, onChange: ((v) => setCustomImagePreview(v)) }),
         components_1.React.createElement(Form_1.FormSwitch, { note: 'Allows using the Spotify listen along feature on Discord without premium.', value: isPremium, onChange: ((v) => setSpotifyPremium(v)) }, "Spotify Listen Along"),
         components_1.React.createElement(Form_1.FormSwitch, { note: 'Prevents Discord from pausing your Spotify when streaming or gaming.', value: spotifyPause, onChange: ((v) => setSpotifyPause(v)) }, "Spotify Pause"),
         components_1.React.createElement(Form_1.FormSwitch, { note: 'Removes the 10 minutes wait before being able to join voice channels in newly joined guilds.', value: Verification, onChange: ((v) => setVerification(v)) }, "Guild verification bypass"),
-        components_1.React.createElement(Form_1.FormSwitch, { note: `Removes the maximum account limit in Discord's built-in account switcher.`, value: maxAccounts, onChange: ((v) => setMaxAccounts(v)) }, "Max account limit bypass")));
+        components_1.React.createElement(Form_1.FormSwitch, { note: `Removes the maximum account limit in Discord's built-in account switcher.`, value: maxAccounts, onChange: ((v) => setMaxAccounts(v)) }, "Max account limit bypass"),
+        components_1.React.createElement(Form_1.FormSwitch, { note: 'Stops Discord from setting your presence to idle when you leave Discord alone.', value: Idle, onChange: (v) => setIdle(v) }, "Anti Idle"),
+        components_1.React.createElement(Form_1.FormSwitch, { note: 'Stops Discord from displaying different badge icons (i.e. missed messages, and friend requests). Requires reloading the plugin.', value: electronBadge, onChange: (v) => setElectronBadge(v) }, "Missed Messages Badge")));
 }
 
 
@@ -559,6 +579,26 @@ exports["default"] = (main) => {
         enumerable: true,
     });
 };
+
+
+/***/ }),
+
+/***/ 940:
+/***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
+
+
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+const config_json_1 = __importDefault(__nccwpck_require__(457));
+const IdleStore_1 = __importDefault(__nccwpck_require__(867));
+function Idle(main) {
+    BdApi.Patcher.instead(config_json_1.default.name, IdleStore_1.default, 'getIdleSince', (_, args, res) => main.settings?.Idle ? null : res(...args));
+    BdApi.Patcher.instead(config_json_1.default.name, IdleStore_1.default, 'isAFK', (_, args, res) => main.settings?.Idle ? false : res(...args));
+    BdApi.Patcher.instead(config_json_1.default.name, IdleStore_1.default, 'isIdle', (_, args, res) => main.settings?.Idle ? false : res(...args));
+}
+exports["default"] = Idle;
 
 
 /***/ }),
@@ -706,6 +746,13 @@ exports["default"] = (main) => {
     });
 };
 
+
+/***/ }),
+
+/***/ 457:
+/***/ ((module) => {
+
+module.exports = JSON.parse('{"$schema":"../../config_schema.jsonc","name":"ADiscordBypasses","description":"A simple rewrite of Tharki\'s DiscordBypasses.","author":"ace.","version":"1.0.0","source":"https://raw.githubusercontent.com/AceLikesGhosts/bd-plugins/master/dist/ADiscordBypasses/ADiscordBypasses.plugin.js","authorLink":"https://github.com/AceLikesGhosts/bd-plugins","website":"https://github.com/AceLikesGhosts/bd-plugins","updateLink":"https://github.com/AceLikesGhosts/bd-plugins","authorId":"327639826075484162"}');
 
 /***/ })
 
