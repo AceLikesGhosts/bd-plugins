@@ -28,15 +28,17 @@ import { FormSwitch } from '@lib/components/Form';
 export default function Settings(): JSX.Element {
     const [clickVoiceChatButtonClears, setClickVoiceChatButtonClears] = React.useState(AUserVoiceLocation.settings.voiceChatFollowing.clickVoiceChatButtonClears ?? DefaultSettings.voiceChatFollowing.clickVoiceChatButtonClears);
     const [userPopout, setUserPopout] = React.useState<boolean>(AUserVoiceLocation.settings.userPopout ?? DefaultSettings.userPopout);
+    const [voiceStateLogButton, setVoiceStateLogButton] = React.useState<boolean>(AUserVoiceLocation.settings.voiceStateLogButton ?? DefaultSettings.voiceStateLogButton);
 
     React.useEffect(() => {
         AUserVoiceLocation.settings = {
             voiceChatFollowing: {
                 clickVoiceChatButtonClears
             },
-            userPopout: userPopout
+            userPopout: userPopout,
+            voiceStateLogButton
         };
-    }, [clickVoiceChatButtonClears, userPopout]);
+    }, [clickVoiceChatButtonClears, userPopout, voiceStateLogButton]);
 
     return (
         <div>
@@ -54,6 +56,15 @@ export default function Settings(): JSX.Element {
                 onChange={((e) => setUserPopout(e))}
             >
                 User Popout
+            </FormSwitch>
+
+
+            <FormSwitch
+                note={'Should we show a button to go to voice state logs within the call header?'}
+                value={voiceStateLogButton}
+                onChange={((e) => setVoiceStateLogButton(e))}
+            >
+                Voice State Log Button
             </FormSwitch>
 
             {/* <TextInput

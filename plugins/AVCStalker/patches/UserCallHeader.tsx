@@ -1,5 +1,5 @@
 import { React } from '@lib/components/index';
-import { logger } from '..';
+import AUserVoiceLocation, { logger } from '..';
 import config from '../config.json';
 import JoinVcIcon from '../components/JoinVcIcon';
 
@@ -49,7 +49,16 @@ export default function PatchUserCallHeader(): void {
             logger.info('Patched titlebar to add icon for current call');
         }
         catch(err) {
-            logger.error('Failed to patch titlebar, weird?', err);
+            logger.error('Failed to add `JoinVCIcon` to Toolbar?', err);
+        }
+
+        if(AUserVoiceLocation.settings.voiceStateLogButton) {
+            try {
+                toolbar.props?.children[0]?.splice(5, 0);
+            }
+            catch(err) {
+                console.error(``);
+            }
         }
     });
 }

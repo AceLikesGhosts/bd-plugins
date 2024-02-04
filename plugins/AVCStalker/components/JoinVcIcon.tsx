@@ -6,8 +6,6 @@ import ChannelStore from '@lib/stores/ChannelStore';
 import Transitions from '@lib/modules/Transitions';
 import StoreUtils from '@lib/stores/StoreUtils';
 
-const DiscordTooltip = BdApi.Components.Tooltip;
-
 type Props = {
     userId: string;
 };
@@ -28,7 +26,7 @@ export default function JoinVcIcon({ userId }: Props): JSX.Element {
 
     return (
         <>
-            {voiceData[0]?.channelId ? <DiscordTooltip text='Voice Channel'>
+            {voiceData[0]?.channelId ? <BdApi.Components.Tooltip text='Voice Channel'>
                 {(props: any) =>
                     <div {...props}>
                         <svg
@@ -50,7 +48,7 @@ export default function JoinVcIcon({ userId }: Props): JSX.Element {
                             })}
                         />
                     </div>}
-            </DiscordTooltip> : <div id='hi-you-shouldnt-ever-see-this-div-lol'></div>}
+            </BdApi.Components.Tooltip> : <div id='hi-you-shouldnt-ever-see-this-div-lol'></div>}
         </>
     );
 }
