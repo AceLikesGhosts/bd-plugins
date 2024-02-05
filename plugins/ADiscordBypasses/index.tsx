@@ -15,6 +15,7 @@ import StreamPreview from './patches/StreamPreview';
 import PTT from './patches/PTT';
 import AccountSwitcher from './patches/AccountSwitcher';
 import Idle from './patches/Idle';
+import setBadge from './patches/setBadge';
 
 export default class ADiscordBypasses implements Plugin {
     public readonly logger: Logger;
@@ -49,6 +50,7 @@ export default class ADiscordBypasses implements Plugin {
         PTT(this);
         AccountSwitcher(this);
         Idle(this);
+        setBadge(this);
     }
 
     stop(): void {
@@ -100,7 +102,9 @@ function DiscordBypassSettings(this: Omit<ADiscordBypasses, 'getSettingsPanel'>)
         isPremium,
         spotifyPause,
         Verification,
-        maxAccounts
+        maxAccounts,
+        Idle,
+        electronBadge
     ]);
 
     return (

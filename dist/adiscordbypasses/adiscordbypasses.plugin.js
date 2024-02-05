@@ -2,7 +2,7 @@
 * @name ADiscordBypasses
 * @description A simple rewrite of Tharki's DiscordBypasses.
 * @author ace.
-* @version 1.0.0
+* @version 1.1.1
 * @source https://raw.githubusercontent.com/AceLikesGhosts/bd-plugins/master/dist/ADiscordBypasses/ADiscordBypasses.plugin.js
 * @authorLink https://github.com/AceLikesGhosts/bd-plugins
 * @website https://github.com/AceLikesGhosts/bd-plugins
@@ -440,6 +440,7 @@ const StreamPreview_1 = __importDefault(__nccwpck_require__(955));
 const PTT_1 = __importDefault(__nccwpck_require__(989));
 const AccountSwitcher_1 = __importDefault(__nccwpck_require__(844));
 const Idle_1 = __importDefault(__nccwpck_require__(940));
+const setBadge_1 = __importDefault(__nccwpck_require__(644));
 class ADiscordBypasses {
     constructor(meta) {
         this.settings = void 0;
@@ -469,6 +470,7 @@ class ADiscordBypasses {
         (0, PTT_1.default)(this);
         (0, AccountSwitcher_1.default)(this);
         (0, Idle_1.default)(this);
+        (0, setBadge_1.default)(this);
     }
     stop() {
         this.logger.log('stopped');
@@ -516,7 +518,9 @@ function DiscordBypassSettings() {
         isPremium,
         spotifyPause,
         Verification,
-        maxAccounts
+        maxAccounts,
+        Idle,
+        electronBadge
     ]);
     return (components_1.React.createElement("div", null,
         components_1.React.createElement(Form_1.FormSwitch, { disabled: UserStore_1.default?.getCurrentUser()?.nsfwAllowed && !this.settings?.NSFW, note: `Bypasses the channel restriction when you're too young to enter channels marked as NSFW.`, value: nsfw, onChange: ((v) => setNSFW(v)) }, "NSFW Bypass"),
@@ -749,10 +753,41 @@ exports["default"] = (main) => {
 
 /***/ }),
 
+/***/ 644:
+/***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
+
+
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+const ElectronModule_1 = __importDefault(__nccwpck_require__(993));
+const config_json_1 = __importDefault(__nccwpck_require__(457));
+function setBadge(main) {
+    if (!main.settings?.electronBadge)
+        return;
+    ElectronModule_1.default.setBadge(0);
+    ElectronModule_1.default.setSystemTrayIcon('DEFAULT');
+    BdApi.Patcher.before(config_json_1.default.name, ElectronModule_1.default, 'setBadge', (_, args) => {
+        if (main.settings?.electronBadge)
+            args[0] = 0;
+        return args;
+    });
+    BdApi.Patcher.before(config_json_1.default.name, ElectronModule_1.default, 'setSystemTrayIcon', (_, args) => {
+        if (main.settings?.electronBadge && args[0] === 'UNREAD')
+            args[0] = 'DEFUALT';
+        return args;
+    });
+}
+exports["default"] = setBadge;
+
+
+/***/ }),
+
 /***/ 457:
 /***/ ((module) => {
 
-module.exports = JSON.parse('{"$schema":"../../config_schema.jsonc","name":"ADiscordBypasses","description":"A simple rewrite of Tharki\'s DiscordBypasses.","author":"ace.","version":"1.0.0","source":"https://raw.githubusercontent.com/AceLikesGhosts/bd-plugins/master/dist/ADiscordBypasses/ADiscordBypasses.plugin.js","authorLink":"https://github.com/AceLikesGhosts/bd-plugins","website":"https://github.com/AceLikesGhosts/bd-plugins","updateLink":"https://github.com/AceLikesGhosts/bd-plugins","authorId":"327639826075484162"}');
+module.exports = JSON.parse('{"$schema":"../../config_schema.jsonc","name":"ADiscordBypasses","description":"A simple rewrite of Tharki\'s DiscordBypasses.","author":"ace.","version":"1.1.1","source":"https://raw.githubusercontent.com/AceLikesGhosts/bd-plugins/master/dist/ADiscordBypasses/ADiscordBypasses.plugin.js","authorLink":"https://github.com/AceLikesGhosts/bd-plugins","website":"https://github.com/AceLikesGhosts/bd-plugins","updateLink":"https://github.com/AceLikesGhosts/bd-plugins","authorId":"327639826075484162"}');
 
 /***/ })
 
