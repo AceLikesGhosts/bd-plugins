@@ -2,7 +2,7 @@
 * @name ADiscordBypasses
 * @description A simple rewrite of Tharki's DiscordBypasses.
 * @author ace.
-* @version 1.1.1
+* @version 1.1.2
 * @source https://raw.githubusercontent.com/AceLikesGhosts/bd-plugins/master/dist/ADiscordBypasses/ADiscordBypasses.plugin.js
 * @authorLink https://github.com/AceLikesGhosts/bd-plugins
 * @website https://github.com/AceLikesGhosts/bd-plugins
@@ -775,7 +775,7 @@ function setBadge(main) {
     });
     BdApi.Patcher.before(config_json_1.default.name, ElectronModule_1.default, 'setSystemTrayIcon', (_, args) => {
         if (main.settings?.electronBadge && args[0] === 'UNREAD')
-            args[0] = 'DEFUALT';
+            args[0] = 'DEFAULT';
         return args;
     });
 }
@@ -787,7 +787,7 @@ exports["default"] = setBadge;
 /***/ 457:
 /***/ ((module) => {
 
-module.exports = JSON.parse('{"$schema":"../../config_schema.jsonc","name":"ADiscordBypasses","description":"A simple rewrite of Tharki\'s DiscordBypasses.","author":"ace.","version":"1.1.1","source":"https://raw.githubusercontent.com/AceLikesGhosts/bd-plugins/master/dist/ADiscordBypasses/ADiscordBypasses.plugin.js","authorLink":"https://github.com/AceLikesGhosts/bd-plugins","website":"https://github.com/AceLikesGhosts/bd-plugins","updateLink":"https://github.com/AceLikesGhosts/bd-plugins","authorId":"327639826075484162"}');
+module.exports = JSON.parse('{"$schema":"../../config_schema.jsonc","name":"ADiscordBypasses","description":"A simple rewrite of Tharki\'s DiscordBypasses.","author":"ace.","version":"1.1.2","source":"https://raw.githubusercontent.com/AceLikesGhosts/bd-plugins/master/dist/ADiscordBypasses/ADiscordBypasses.plugin.js","authorLink":"https://github.com/AceLikesGhosts/bd-plugins","website":"https://github.com/AceLikesGhosts/bd-plugins","updateLink":"https://github.com/AceLikesGhosts/bd-plugins","authorId":"327639826075484162"}');
 
 /***/ })
 

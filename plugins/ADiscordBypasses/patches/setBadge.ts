@@ -11,9 +11,9 @@ export default function setBadge(main: ADiscordBypasses): void {
         if(main.settings?.electronBadge) args[0] = 0;
         return args;
     });
-
+    
     BdApi.Patcher.before(config.name, ElectronModule, 'setSystemTrayIcon', (_, args) => {
-        if(main.settings?.electronBadge && args[0] === 'UNREAD') args[0] = 'DEFUALT';
+        if(main.settings?.electronBadge && args[0] === 'UNREAD') args[0] = 'DEFAULT';
         return args;
     });
 }
