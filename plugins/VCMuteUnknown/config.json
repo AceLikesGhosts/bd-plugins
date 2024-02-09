@@ -1,0 +1,12 @@
+{
+    "$schema": "../../config_schema.jsonc",
+    "name": "VCMuteUnknown",
+    "description": ".",
+    "author": "ace.",
+    "version": "0.0.1-rc",
+    "source": "https://raw.githubusercontent.com/AceLikesGhosts/bd-plugins/master/dist/VCMuteUnknown/VCMuteUnknown.plugin.js",
+    "authorLink": "https://github.com/AceLikesGhosts/bd-plugins",
+    "website": "https://github.com/AceLikesGhosts/bd-plugins",
+    "updateLink": "https://github.com/AceLikesGhosts/bd-plugins",
+    "authorId": "327639826075484162"
+}

@@ -10,6 +10,7 @@ export interface UserVoiceState {
     selfStream: boolean;
     suppress: boolean;
     requestToSpeakTimestamp: null;
+    oldChannelId: string | null;
 }
 
 interface VoiceStateStore {
