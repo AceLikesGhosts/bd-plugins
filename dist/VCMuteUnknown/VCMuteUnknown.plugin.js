@@ -1,8 +1,8 @@
 /**
 * @name VCMuteUnknown
-* @description .
+* @description Allows for muting, disabling camera, and soundboard of a person upon them joining a voice channel if they are not added.
 * @author ace.
-* @version 0.0.1-rc
+* @version 1.0.0
 * @source https://raw.githubusercontent.com/AceLikesGhosts/bd-plugins/master/dist/VCMuteUnknown/VCMuteUnknown.plugin.js
 * @authorLink https://github.com/AceLikesGhosts/bd-plugins
 * @website https://github.com/AceLikesGhosts/bd-plugins
@@ -145,10 +145,21 @@ function Settings() {
     const [muteSoundboard, setMuteSoundboard] = components_1.React.useState(__1.default.settings.muteSoundboard ?? __1.default.DefaultSettings.muteSoundboard);
     const [ignoreFriends, setIgnoreFriends] = components_1.React.useState(__1.default.settings.ignoreFriends ?? __1.default.DefaultSettings.ignoreFriends);
     const [ignoreMutuals, setIgnoreMutuals] = components_1.React.useState(__1.default.settings.ignoreMutuals ?? __1.default.DefaultSettings.ignoreMutuals);
+    const [disableVideo, setDisableVideo] = components_1.React.useState(__1.default.settings.disableVideo ?? __1.default.DefaultSettings.disableVideo);
+    components_1.React.useEffect(() => {
+        __1.default.settings = {
+            mute,
+            muteSoundboard,
+            ignoreFriends,
+            ignoreMutuals,
+            disableVideo
+        };
+    }, [mute, muteSoundboard, ignoreFriends, ignoreMutuals, disableVideo]);
     return (components_1.React.createElement("div", null,
         components_1.React.createElement(components_1.RawComponents.Text, { variant: 'text-xs', className: Margins.marginBottom20 }, "Made with \uD83D\uDC96 for my beloved lulu-uwu-pookie-bear"),
         components_1.React.createElement(Form_1.FormSwitch, { value: mute, onChange: ((e) => setMute(e)), note: 'Local mutes newly joining people upon them joining the voice channel.' }, "Local Mute"),
         components_1.React.createElement(Form_1.FormSwitch, { value: muteSoundboard, onChange: ((e) => setMuteSoundboard(e)), note: 'Local mutes soundboards upon newly joining people joining the voice channel.' }, "Local Mute Soundboard"),
+        components_1.React.createElement(Form_1.FormSwitch, { value: disableVideo, onChange: ((e) => setDisableVideo(e)), note: 'Disables the user\'s video upon them joining.' }, "Local Disable Video"),
         components_1.React.createElement(Form_1.FormSwitch, { value: ignoreFriends, onChange: ((e) => setIgnoreFriends(e)), note: 'Should we ignore friends who join the voice channel?' }, "Ignore Friends"),
         components_1.React.createElement(Form_1.FormSwitch, { value: ignoreMutuals, onChange: ((e) => setIgnoreMutuals(e)), note: 'Should we ignore anybody that we have mutuals with?' }, "Ignore Mutuals")));
 }
@@ -178,6 +189,7 @@ class VCMuteUnknown {
         this.mediaUserHelpers = null;
         this.mediaEngineStore = null;
         this.soundboardStore = null;
+        this.VideoToggleStates = null;
         this.ourId = null;
         this.ourChannelId = null;
     }
@@ -216,12 +228,21 @@ class VCMuteUnknown {
                 else
                     this.logger.info('user was already soundboard muted so we are not doing anything', vs.userId);
             }
+            if (VCMuteUnknown.settings.disableVideo) {
+                if (!this.mediaEngineStore?.isLocalVideoDisabled(vs.userId)) {
+                    this.logger.log('local disable video due to them joining voice channel: ', vs.userId);
+                    this.mediaUserHelpers?.setDisableLocalVideo(vs.userId, this.VideoToggleStates.DISABLED, 'default');
+                }
+                else
+                    this.logger.info('user was already video disabled so we are not doing anything', vs.userId);
+            }
         }
     }
     start() {
         this.logger.log('started');
         this.mediaUserHelpers = BdApi.Webpack.getByKeys('toggleLocalMute', 'toggleSelfDeaf', 'toggleSelfMute');
         this.mediaEngineStore = BdApi.Webpack.getStore('MediaEngineStore');
+        this.VideoToggleStates = BdApi.Webpack.getByKeys('VideoToggleState')?.VideoToggleState;
         this.soundboardStore = BdApi.Webpack.getStore('SoundboardStore');
         this.ourId = UserStore_1.default.getCurrentUser().id;
         Dispatcher_1.default.subscribe('VOICE_STATE_UPDATES', this.handleUserJoin.bind(this));
@@ -239,7 +260,8 @@ VCMuteUnknown.DefaultSettings = {
     mute: true,
     muteSoundboard: true,
     ignoreMutuals: false,
-    ignoreFriends: true
+    ignoreFriends: true,
+    disableVideo: true
 };
 VCMuteUnknown.settings = VCMuteUnknown.DefaultSettings;
 exports["default"] = VCMuteUnknown;
@@ -250,7 +272,7 @@ exports["default"] = VCMuteUnknown;
 /***/ 846:
 /***/ ((module) => {
 
-module.exports = JSON.parse('{"$schema":"../../config_schema.jsonc","name":"VCMuteUnknown","description":".","author":"ace.","version":"0.0.1-rc","source":"https://raw.githubusercontent.com/AceLikesGhosts/bd-plugins/master/dist/VCMuteUnknown/VCMuteUnknown.plugin.js","authorLink":"https://github.com/AceLikesGhosts/bd-plugins","website":"https://github.com/AceLikesGhosts/bd-plugins","updateLink":"https://github.com/AceLikesGhosts/bd-plugins","authorId":"327639826075484162"}');
+module.exports = JSON.parse('{"$schema":"../../config_schema.jsonc","name":"VCMuteUnknown","description":"Allows for muting, disabling camera, and soundboard of a person upon them joining a voice channel if they are not added.","author":"ace.","version":"1.0.0","source":"https://raw.githubusercontent.com/AceLikesGhosts/bd-plugins/master/dist/VCMuteUnknown/VCMuteUnknown.plugin.js","authorLink":"https://github.com/AceLikesGhosts/bd-plugins","website":"https://github.com/AceLikesGhosts/bd-plugins","updateLink":"https://github.com/AceLikesGhosts/bd-plugins","authorId":"327639826075484162"}');
 
 /***/ })
 

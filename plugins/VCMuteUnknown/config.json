@@ -1,9 +1,9 @@
 {
     "$schema": "../../config_schema.jsonc",
     "name": "VCMuteUnknown",
-    "description": ".",
+    "description": "Allows for muting, disabling camera, and soundboard of a person upon them joining a voice channel if they are not added.",
     "author": "ace.",
-    "version": "0.0.1-rc",
+    "version": "1.0.0",
     "source": "https://raw.githubusercontent.com/AceLikesGhosts/bd-plugins/master/dist/VCMuteUnknown/VCMuteUnknown.plugin.js",
     "authorLink": "https://github.com/AceLikesGhosts/bd-plugins",
     "website": "https://github.com/AceLikesGhosts/bd-plugins",

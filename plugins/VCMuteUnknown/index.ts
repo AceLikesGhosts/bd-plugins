@@ -11,10 +11,12 @@ import Logger from '@lib/logger';
 interface MediaUserHelper {
     toggleLocalMute(id: string): void;
     toggleLocalSoundboardMute(id: string): void;
+    setDisableLocalVideo(userId: string, videoToggleState: string, context?: 'default' | 'stream', persist?: boolean, isAutomatic?: boolean): void;
 }
 
 interface MediaEngineStore {
     isLocalMute(id: string): boolean;
+    isLocalVideoDisabled(id: string): boolean;
 }
 
 interface SoundboardStore {
@@ -28,6 +30,8 @@ export default class VCMuteUnknown implements Plugin {
     private mediaEngineStore: MediaEngineStore | null = null;
     private soundboardStore: SoundboardStore | null = null;
 
+    private VideoToggleStates: Record<string, string> | null = null;
+
     private ourId: string | null = null;
     private ourChannelId: string | null = null;
 
@@ -35,7 +39,8 @@ export default class VCMuteUnknown implements Plugin {
         mute: true,
         muteSoundboard: true,
         ignoreMutuals: false,
-        ignoreFriends: true
+        ignoreFriends: true,
+        disableVideo: true
     };
 
     static settings: typeof VCMuteUnknown.DefaultSettings = VCMuteUnknown.DefaultSettings;
@@ -74,6 +79,14 @@ export default class VCMuteUnknown implements Plugin {
                 }
                 else this.logger.info('user was already soundboard muted so we are not doing anything', vs.userId);
             }
+
+            if(VCMuteUnknown.settings.disableVideo) {
+                if(!this.mediaEngineStore?.isLocalVideoDisabled(vs.userId)) {
+                    this.logger.log('local disable video due to them joining voice channel: ', vs.userId);
+                    this.mediaUserHelpers?.setDisableLocalVideo(vs.userId, this.VideoToggleStates!.DISABLED, 'default');
+                }
+                else this.logger.info('user was already video disabled so we are not doing anything', vs.userId);
+            }
         }
     }
 
@@ -81,6 +94,7 @@ export default class VCMuteUnknown implements Plugin {
         this.logger.log('started');
         this.mediaUserHelpers = BdApi.Webpack.getByKeys('toggleLocalMute', 'toggleSelfDeaf', 'toggleSelfMute');
         this.mediaEngineStore = BdApi.Webpack.getStore('MediaEngineStore');
+        this.VideoToggleStates = BdApi.Webpack.getByKeys('VideoToggleState')?.VideoToggleState;
         this.soundboardStore = BdApi.Webpack.getStore('SoundboardStore');
         this.ourId = UserStore.getCurrentUser().id;
         Dispatcher.subscribe('VOICE_STATE_UPDATES', this.handleUserJoin.bind(this));

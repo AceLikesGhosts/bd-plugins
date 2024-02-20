@@ -9,6 +9,17 @@ export default function Settings(): JSX.Element {
     const [muteSoundboard, setMuteSoundboard] = React.useState<boolean>(VCMuteUnknown.settings.muteSoundboard ?? VCMuteUnknown.DefaultSettings.muteSoundboard);
     const [ignoreFriends, setIgnoreFriends] = React.useState<boolean>(VCMuteUnknown.settings.ignoreFriends ?? VCMuteUnknown.DefaultSettings.ignoreFriends);
     const [ignoreMutuals, setIgnoreMutuals] = React.useState<boolean>(VCMuteUnknown.settings.ignoreMutuals ?? VCMuteUnknown.DefaultSettings.ignoreMutuals);
+    const [disableVideo, setDisableVideo] = React.useState<boolean>(VCMuteUnknown.settings.disableVideo ?? VCMuteUnknown.DefaultSettings.disableVideo);
+
+    React.useEffect(() => {
+        VCMuteUnknown.settings = {
+            mute,
+            muteSoundboard,
+            ignoreFriends,
+            ignoreMutuals,
+            disableVideo
+        };
+    }, [mute, muteSoundboard, ignoreFriends, ignoreMutuals, disableVideo]);
 
     return (
         <div>
@@ -33,6 +44,14 @@ export default function Settings(): JSX.Element {
                 note={'Local mutes soundboards upon newly joining people joining the voice channel.'}
             >
                 Local Mute Soundboard
+            </FormSwitch>
+
+            <FormSwitch
+                value={disableVideo}
+                onChange={((e) => setDisableVideo(e))}
+                note={'Disables the user\'s video upon them joining.'}
+            >
+                Local Disable Video
             </FormSwitch>
 
             <FormSwitch
