@@ -2,7 +2,7 @@ import { React } from '@lib/components';
 import PopoutPatch from '../components/popout';
 import config from '../config.json';
 import type { User } from '@lib/stores/UserStore';
-import AUserVoiceLocation from '..';
+import AVCStalker from '..';
 
 export interface ReactElementJSONRepresentation {
     props: {
@@ -40,7 +40,7 @@ export default function PatchUserPopout(): void {
         (mod as Record<string, (({ user }: { user: User; }) => ReactElementJSONRepresentation)>),
         key,
         (_, [{ user }], res): any => {
-            if(!AUserVoiceLocation.settings.userPopout) return res;
+            if(!AVCStalker.settings.userPopout) return res;
             res.props.children.splice(1, 0, <PopoutPatch userId={user.id} />);
         });
 }

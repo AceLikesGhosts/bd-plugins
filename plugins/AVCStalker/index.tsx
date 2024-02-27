@@ -35,13 +35,13 @@ export const logger = new Logger(config);
  */
 export const followingPeople = new Set<string>();
 
-export default class AUserVoiceLocation implements Plugin {
+export default class AVCStalker implements Plugin {
     static settings: typeof DefaultSettings = DefaultSettings;
     public cancelUserContextPatch: Cancel | null = null;
 
     start(): void {
         const loadedSettings = BdApi.Data.load(config.name, 'settings');
-        AUserVoiceLocation.settings = {
+        AVCStalker.settings = {
             ...DefaultSettings,
             ...loadedSettings
         };
@@ -66,8 +66,8 @@ export default class AUserVoiceLocation implements Plugin {
         logger.info('Unsubscribed from VOICE_STATE_UPDATES (vc monitoring');
         Dispatcher.unsubscribe('VOICE_STATE_UPDATES', onVoiceChange);
 
-        logger.info('Saving settings', AUserVoiceLocation.settings);
-        BdApi.Data.save(config.name, 'settings', AUserVoiceLocation.settings);
+        logger.info('Saving settings', AVCStalker.settings);
+        BdApi.Data.save(config.name, 'settings', AVCStalker.settings);
 
 
         const elm = document.getElementById('ClearFollowing');

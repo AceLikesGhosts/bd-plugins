@@ -1,5 +1,5 @@
 import { React } from '@lib/components/index';
-import AUserVoiceLocation, { DefaultSettings } from '..';
+import AVCStalker, { DefaultSettings } from '..';
 import { FormSwitch } from '@lib/components/Form';
 // import type { TextInputProps } from '@lib/components/TextInput';
 // import type { FormItemProps } from '@lib/components/Form';
@@ -26,11 +26,11 @@ import { FormSwitch } from '@lib/components/Form';
 // }
 
 export default function Settings(): JSX.Element {
-    const [clickVoiceChatButtonClears, setClickVoiceChatButtonClears] = React.useState(AUserVoiceLocation.settings.voiceChatFollowing.clickVoiceChatButtonClears ?? DefaultSettings.voiceChatFollowing.clickVoiceChatButtonClears);
-    const [userPopout, setUserPopout] = React.useState<boolean>(AUserVoiceLocation.settings.userPopout ?? DefaultSettings.userPopout);
+    const [clickVoiceChatButtonClears, setClickVoiceChatButtonClears] = React.useState(AVCStalker.settings.voiceChatFollowing.clickVoiceChatButtonClears ?? DefaultSettings.voiceChatFollowing.clickVoiceChatButtonClears);
+    const [userPopout, setUserPopout] = React.useState<boolean>(AVCStalker.settings.userPopout ?? DefaultSettings.userPopout);
 
     React.useEffect(() => {
-        AUserVoiceLocation.settings = {
+        AVCStalker.settings = {
             voiceChatFollowing: {
                 clickVoiceChatButtonClears
             },
