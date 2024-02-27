@@ -11,7 +11,6 @@ export default function PatchUserAccountMenu(): void {
     if(!container) {
         logger.info(`Failed to find 'container' making new one`);
         container = document.createElement('div');
-        // container.id = 'ClearFollowing';
         container.setAttribute('id', 'ClearFollowing');
     }
 

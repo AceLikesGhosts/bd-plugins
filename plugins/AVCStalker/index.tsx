@@ -69,12 +69,8 @@ export default class AVCStalker implements Plugin {
         logger.info('Saving settings', AVCStalker.settings);
         BdApi.Data.save(config.name, 'settings', AVCStalker.settings);
 
-
         const elm = document.getElementById('ClearFollowing');
         if(elm) elm.remove();
-
-        // logger.info('Saving creepy stalker data to json file');
-        // saveToFile();
     }
 
     getSettingsPanel(): () => JSX.Element {

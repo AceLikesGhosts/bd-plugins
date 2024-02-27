@@ -4,13 +4,16 @@ import { followingPeople, logger } from '.';
 import { type Channel } from '@lib/stores/ChannelStore';
 import type { UserVoiceState } from '@lib/stores/VoiceStateStore';
 
+// TODO: de-hardcode this bitfield and pull it from Webpack, but for now
+// this isn't going to change, and if it does they are going to notify on their
+// proper documentation page as this is a supported bitfield from
+// https://discord.dev/
 export const ConnectionBit = 0x100000n;
 
 const voiceChannelUtils = BdApi.Webpack.getByKeys('selectVoiceChannel', 'disconnect') as {
     selectVoiceChannel: (channelId: string) => void;
     disconnect(): void;
 };
-
 
 // I don't care!
 // eslint-disable-next-line @typescript-eslint/no-invalid-void-type
