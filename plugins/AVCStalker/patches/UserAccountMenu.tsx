@@ -16,7 +16,12 @@ export default function PatchUserAccountMenu(): void {
     }
 
     // TODO: this is shit, and language dependent, TOO BAD!
-    const statusContainer = document.querySelector('[aria-label="Set Status"]') as { style?: Record<string, unknown> };
+    const statusContainer = document.querySelector('[aria-label="Set Status"]') as { style?: Record<string, unknown>; };
+    if(!statusContainer) {
+        logger.critical('Failed to find statusContainer with query "[aria-label="Set Status"]", expected HTMLElement but recieved ', statusContainer);
+        return;
+    }
+
     if(statusContainer?.style?.minWidth !== '87px') {
         statusContainer!.style!.minWidth = '87px';
     }
