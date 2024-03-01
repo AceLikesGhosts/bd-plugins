@@ -9,9 +9,19 @@
 * @updateLink https://github.com/AceLikesGhosts/bd-plugins
 * @authorId 327639826075484162
 */
-/******/ (() => { // webpackBootstrap
+require('./sourcemap-register.js');/******/ (() => { // webpackBootstrap
 /******/ 	"use strict";
 /******/ 	var __webpack_modules__ = ({
+
+/***/ 317:
+/***/ ((__unused_webpack_module, exports) => {
+
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports["default"] = BdApi.Webpack.getByKeys('debounce');
+
+
+/***/ }),
 
 /***/ 281:
 /***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
@@ -22,6 +32,18 @@ Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.FormNotice = exports.FormSwitch = exports.FormDivider = exports.FormLabel = exports.FormText = exports.FormTitle = exports.FormItem = exports.FormSection = void 0;
 const _1 = __nccwpck_require__(799);
 _a = _1.RawComponents, exports.FormSection = _a.FormSection, exports.FormItem = _a.FormItem, exports.FormTitle = _a.FormTitle, exports.FormText = _a.FormText, exports.FormLabel = _a.FormLabel, exports.FormDivider = _a.FormDivider, exports.FormSwitch = _a.FormSwitch, exports.FormNotice = _a.FormNotice;
+
+
+/***/ }),
+
+/***/ 571:
+/***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
+
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+const _1 = __nccwpck_require__(799);
+const { TextInput } = _1.RawComponents;
+exports["default"] = TextInput;
 
 
 /***/ }),
@@ -128,6 +150,16 @@ exports["default"] = BdApi.Webpack.getStore('GuildStore');
 
 /***/ }),
 
+/***/ 366:
+/***/ ((__unused_webpack_module, exports) => {
+
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports["default"] = BdApi.Webpack.getStore('RelationshipStore');
+
+
+/***/ }),
+
 /***/ 771:
 /***/ ((__unused_webpack_module, exports) => {
 
@@ -157,44 +189,6 @@ exports["default"] = BdApi.Webpack.getStore('UserStore');
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports["default"] = BdApi.Webpack.getByKeys('getVoiceStateForUser');
-
-
-/***/ }),
-
-/***/ 567:
-/***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
-
-
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-const _1 = __nccwpck_require__(65);
-const UserStore_1 = __importDefault(__nccwpck_require__(682));
-const ChannelStore_1 = __importDefault(__nccwpck_require__(432));
-const util_1 = __nccwpck_require__(268);
-function followFromVoiceState(vs) {
-    if (!_1.followingPeople.has(vs.userId))
-        return;
-    if (vs.channelId === null || !vs.channelId) {
-        BdApi.UI.showToast(`${UserStore_1.default.getUser(vs.userId).globalName} left voice chat!`, { type: 'warn' });
-        return;
-    }
-    const channel = ChannelStore_1.default.getChannel(vs.channelId);
-    const msg = `Joining ${UserStore_1.default.getUser(vs.userId).globalName} in #${channel.name}`;
-    _1.logger.info(msg);
-    BdApi.UI.showToast(msg);
-    (0, util_1.joinCall)(vs, channel);
-}
-function onVoiceChange(voiceState) {
-    if (voiceState.type !== 'VOICE_STATE_UPDATES')
-        return;
-    for (let i = 0; i < voiceState.voiceStates.length; i++) {
-        const vs = voiceState.voiceStates[i];
-        followFromVoiceState(vs);
-    }
-}
-exports["default"] = onVoiceChange;
 
 
 /***/ }),
@@ -233,28 +227,29 @@ Object.defineProperty(exports, "__esModule", ({ value: true }));
 const components_1 = __nccwpck_require__(799);
 const __1 = __importStar(__nccwpck_require__(65));
 const UserStore_1 = __importDefault(__nccwpck_require__(682));
+const Following_1 = __nccwpck_require__(343);
 const PanelButton = BdApi.Webpack.getByStrings('Masks.PANEL_BUTTON');
 function ClearFollowing() {
     function clearFollowingPeople() {
         if (!__1.default.settings.voiceChatFollowing.clickVoiceChatButtonClears)
             return;
         BdApi.UI.showToast('Cleared following list', { type: 'success' });
-        __1.followingPeople.clear();
+        Following_1.followingPeople.clear();
     }
     function removeFromFollowing(id, username) {
-        __1.followingPeople.delete(id);
+        Following_1.followingPeople.delete(id);
         BdApi.UI.showToast(`Removed ${username} from following queue`);
     }
     return components_1.React.createElement(PanelButton, { icon: (() => components_1.React.createElement("svg", { viewBox: '0 0 24 24', height: 20, width: 20, dangerouslySetInnerHTML: { __html: __1.Icons.GoPeople } })), tooltipText: 'Clear Following', onClick: (() => clearFollowingPeople()), onContextMenu: (e) => {
             const menuItems = [];
-            if (__1.followingPeople.size === 0)
+            if (Following_1.followingPeople.size === 0)
                 menuItems.push({
                     type: 'text',
                     label: 'You are not following anybody',
                     action: () => void 0
                 });
             else
-                __1.followingPeople.forEach((userId) => {
+                Following_1.followingPeople.forEach((userId) => {
                     const user = UserStore_1.default.getUser(userId);
                     menuItems.push({
                         type: 'text',
@@ -363,46 +358,84 @@ var __importStar = (this && this.__importStar) || function (mod) {
     __setModuleDefault(result, mod);
     return result;
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 const index_1 = __nccwpck_require__(799);
 const __1 = __importStar(__nccwpck_require__(65));
+const components_1 = __nccwpck_require__(799);
 const Form_1 = __nccwpck_require__(281);
-// import type { TextInputProps } from '@lib/components/TextInput';
-// import type { FormItemProps } from '@lib/components/Form';
-// import RawTextInput from '@lib/components/TextInput';
-// import { FormItem, FormSwitch } from '@lib/components/Form';
-// import { Margins } from '@lib/components';
-// import AUserVoiceLocation from '..';
-// import _ from '@lib/common/Lodash';
-// function TextInput(props: TextInputProps & FormItemProps) {
-//     return (
-//         <FormItem
-//             style={{
-//                 width: '50%'
-//             }}
-//             className={Margins.marginBottom20}
-//             {...props}
-//         >
-//             <RawTextInput
-//                 {...props}
-//             />
-//         </FormItem>
-//     );
-// }
+const TextInput_1 = __importDefault(__nccwpck_require__(571));
+const Lodash_1 = __importDefault(__nccwpck_require__(317));
+function TextInput(props) {
+    return (index_1.React.createElement(Form_1.FormItem, { style: {
+            width: '50%'
+        }, className: components_1.Margins.marginBottom20, ...props },
+        index_1.React.createElement(TextInput_1.default, { ...props })));
+}
 function Settings() {
     const [clickVoiceChatButtonClears, setClickVoiceChatButtonClears] = index_1.React.useState(__1.default.settings.voiceChatFollowing.clickVoiceChatButtonClears ?? __1.DefaultSettings.voiceChatFollowing.clickVoiceChatButtonClears);
     const [userPopout, setUserPopout] = index_1.React.useState(__1.default.settings.userPopout ?? __1.DefaultSettings.userPopout);
+    const [isVCLoggingEnabled, setVCLoggingEnabled] = index_1.React.useState(__1.default.settings.vcLogging.enabled);
+    const [vcLoggingMaxSize, setVCLoggingMaxSize] = index_1.React.useState(__1.default.settings.vcLogging.maxSize);
+    const [logFriends, setLogFriends] = index_1.React.useState(__1.default.settings.vcLogging.logFriends);
+    const [filePath, setFilePath] = index_1.React.useState(__1.default.settings.vcLogging.filePath);
+    const [isInvidual, setInvididual] = index_1.React.useState(__1.default.settings.contextMenu.individual);
+    const [showLogButton, setShowLogButton] = index_1.React.useState(__1.default.settings.contextMenu.showLogButton);
+    const [showWhitelistButton, setShowWhitelistButton] = index_1.React.useState(__1.default.settings.contextMenu.showWhitelistButton);
+    const [contextName, setContextName] = index_1.React.useState(__1.default.settings.contextMenu.name);
     index_1.React.useEffect(() => {
         __1.default.settings = {
             voiceChatFollowing: {
                 clickVoiceChatButtonClears
             },
-            userPopout: userPopout
+            userPopout,
+            vcLogging: {
+                enabled: isVCLoggingEnabled,
+                maxSize: vcLoggingMaxSize,
+                whitelisted: __1.default.settings.vcLogging.whitelisted,
+                logFriends,
+                filePath
+            },
+            contextMenu: {
+                individual: isInvidual,
+                showLogButton,
+                name: contextName,
+                showWhitelistButton
+            }
         };
-    }, [clickVoiceChatButtonClears, userPopout]);
+    }, [
+        clickVoiceChatButtonClears,
+        userPopout,
+        isVCLoggingEnabled,
+        vcLoggingMaxSize,
+        logFriends,
+        isInvidual,
+        contextName
+    ]);
     return (index_1.React.createElement("div", null,
+        index_1.React.createElement(Form_1.FormTitle, { tag: 'h2' }, "General Settings"),
         index_1.React.createElement(Form_1.FormSwitch, { value: clickVoiceChatButtonClears, onChange: ((e) => setClickVoiceChatButtonClears(e)), note: 'Should clicking the following button clear the following list? Setting made for Ollie.' }, "Following Button Clearing"),
-        index_1.React.createElement(Form_1.FormSwitch, { note: 'Should we show what voice channels someone is in on their user popout?', value: userPopout, onChange: ((e) => setUserPopout(e)) }, "User Popout")));
+        index_1.React.createElement(Form_1.FormSwitch, { note: 'Should we show what voice channels someone is in on their user popout?', value: userPopout, onChange: ((e) => setUserPopout(e)) }, "User Popout"),
+        index_1.React.createElement(Form_1.FormDivider, null),
+        index_1.React.createElement(Form_1.FormTitle, { tag: 'h2' }, "Voice Chat Logging"),
+        index_1.React.createElement(Form_1.FormSwitch, { note: 'Should we log out voice states for later analysis?', value: isVCLoggingEnabled, onChange: ((e) => setVCLoggingEnabled(e)) }, "Enable Logging"),
+        index_1.React.createElement(TextInput, { title: 'Maximum File Size (megabytes)', value: String(vcLoggingMaxSize), onChange: ((e) => {
+                if (!Lodash_1.default.isNumber(e))
+                    return;
+                setVCLoggingMaxSize(Number(e));
+            }) }),
+        index_1.React.createElement(Form_1.FormSwitch, { note: 'Should we always log friend\'s voice states?', value: logFriends, onChange: ((e) => setLogFriends(e)) }, "Log Friends"),
+        index_1.React.createElement(TextInput, { title: 'The location where we should save our VoiceState logs. Use "%plugins%" for plugin folder.', value: filePath, onChange: ((e) => setFilePath(e)) }),
+        index_1.React.createElement(Form_1.FormDivider, null),
+        index_1.React.createElement(Form_1.FormTitle, { tag: 'h2' }, "Context Menu"),
+        index_1.React.createElement(Form_1.FormSwitch, { note: 'Makes each button show as an individual button on the context menu rather than under a group.', value: isInvidual, onChange: ((e) => setInvididual(e)) }, "Individual Context Menu Buttons"),
+        index_1.React.createElement(Form_1.FormSwitch, { note: 'Should we show a button to open voice state logs on the user context menu?', value: showLogButton, onChange: ((e) => setShowLogButton(e)) }, "Show Log Button"),
+        index_1.React.createElement(Form_1.FormSwitch, { note: 'Should we show a button that allows for adding a user to our active VoiceState logging?', value: showWhitelistButton, onChange: ((e) => setShowWhitelistButton(e)) }, "Show VoiceLog Whitelist Button"),
+        index_1.React.createElement(TextInput, { title: 'Context Menu Name', disabled: isInvidual, value: contextName, onChange: ((e) => {
+                setContextName(e);
+            }) })));
 }
 exports["default"] = Settings;
 
@@ -478,6 +511,74 @@ exports["default"] = Popout;
 
 /***/ }),
 
+/***/ 100:
+/***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
+
+
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.get = void 0;
+const fs_1 = __importDefault(__nccwpck_require__(147));
+const __1 = __importDefault(__nccwpck_require__(65));
+/**
+ * Reads data from the disc, and returns it, then discards anything nonrelevant for the GC to manage.
+ * This will be expensive if there is a lot of data.
+ * @warning EXPENSIVE OPERATION!
+ */
+function get(relevantId) {
+    return JSON.parse(fs_1.default.readFileSync(__1.default.settings.vcLogging.filePath.replace('%plugins%', BdApi.Plugins.folder), { encoding: 'utf-8' }))[relevantId] ?? undefined;
+}
+exports.get = get;
+
+
+/***/ }),
+
+/***/ 496:
+/***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
+
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.get = exports.append = void 0;
+const __1 = __nccwpck_require__(65);
+const FileData_1 = __nccwpck_require__(100);
+/**
+ * Cache in memory of relevant user id to voice states.
+ */
+const memoryCache = new Map();
+/**
+ * Appends data to our log file.
+ * @param tsVoiceState - The voice state we are appending to our logs
+ * @param relevantId - The user who is relevant/who this log relates to.
+ */
+function append(tsVoiceState, relevantId) {
+    if (!relevantId) {
+        // TODO: remove this expansion
+        relevantId = tsVoiceState.userId;
+        __1.logger.info(`changed relevantId to tsVoiceState`, tsVoiceState.userId);
+    }
+    __1.logger.info(`updated voice state cache`);
+    memoryCache.set(relevantId, [
+        ...memoryCache.get(relevantId) ?? [],
+        tsVoiceState
+    ]);
+}
+exports.append = append;
+/**
+ * @warning Invokes `fileDataGet` which will read the log file.
+ */
+function get(relevantId) {
+    return [
+        ...memoryCache.get(relevantId) ?? [],
+        ...(0, FileData_1.get)(relevantId) ?? []
+    ];
+}
+exports.get = get;
+
+
+/***/ }),
+
 /***/ 65:
 /***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
 
@@ -486,12 +587,12 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.followingPeople = exports.logger = exports.DefaultSettings = exports.Icons = void 0;
+exports.logger = exports.DefaultSettings = exports.Icons = void 0;
 const config_json_1 = __importDefault(__nccwpck_require__(136));
 const UserCallHeader_1 = __importDefault(__nccwpck_require__(184));
 const logger_1 = __importDefault(__nccwpck_require__(95));
 const Settings_1 = __importDefault(__nccwpck_require__(423));
-const VoiceStateUpdate_1 = __importDefault(__nccwpck_require__(567));
+const voiceState_1 = __importDefault(__nccwpck_require__(414));
 const Dispatcher_1 = __importDefault(__nccwpck_require__(115));
 const UserContext_1 = __importDefault(__nccwpck_require__(680));
 const UserAccountMenu_1 = __importDefault(__nccwpck_require__(583));
@@ -509,26 +610,36 @@ exports.DefaultSettings = {
     voiceChatFollowing: {
         clickVoiceChatButtonClears: true
     },
-    userPopout: false
+    userPopout: false,
+    vcLogging: {
+        enabled: false,
+        // list of user ids
+        whitelisted: [],
+        // megabytes
+        maxSize: 1000,
+        logFriends: true,
+        filePath: '%plugins%/AVCStalker_VSLogs.json'
+    },
+    contextMenu: {
+        individual: false,
+        showLogButton: false,
+        showWhitelistButton: false,
+        name: 'Voice Utilities'
+    }
 };
 // export let settings: typeof DefaultSettings = DefaultSettings;
 exports.logger = new logger_1.default(config_json_1.default);
-/**
- * Set of userIDs to follow, aka who we care about
- * to follow
- */
-exports.followingPeople = new Set();
-class AUserVoiceLocation {
+class AVCStalker {
     constructor() {
         this.cancelUserContextPatch = null;
     }
     start() {
         const loadedSettings = BdApi.Data.load(config_json_1.default.name, 'settings');
-        AUserVoiceLocation.settings = {
+        AVCStalker.settings = {
             ...exports.DefaultSettings,
             ...loadedSettings
         };
-        Dispatcher_1.default.subscribe('VOICE_STATE_UPDATES', VoiceStateUpdate_1.default);
+        Dispatcher_1.default.subscribe('VOICE_STATE_UPDATES', voiceState_1.default);
         exports.logger.info('Patching UserCallHeader');
         (0, UserCallHeader_1.default)();
         exports.logger.info('Patching UserContext');
@@ -543,14 +654,12 @@ class AUserVoiceLocation {
         BdApi.Patcher.unpatchAll(config_json_1.default.name);
         this.cancelUserContextPatch();
         exports.logger.info('Unsubscribed from VOICE_STATE_UPDATES (vc monitoring');
-        Dispatcher_1.default.unsubscribe('VOICE_STATE_UPDATES', VoiceStateUpdate_1.default);
-        exports.logger.info('Saving settings', AUserVoiceLocation.settings);
-        BdApi.Data.save(config_json_1.default.name, 'settings', AUserVoiceLocation.settings);
+        Dispatcher_1.default.unsubscribe('VOICE_STATE_UPDATES', voiceState_1.default);
+        exports.logger.info('Saving settings', AVCStalker.settings);
+        BdApi.Data.save(config_json_1.default.name, 'settings', AVCStalker.settings);
         const elm = document.getElementById('ClearFollowing');
         if (elm)
             elm.remove();
-        // logger.info('Saving creepy stalker data to json file');
-        // saveToFile();
     }
     getSettingsPanel() {
         return Settings_1.default;
@@ -560,8 +669,8 @@ class AUserVoiceLocation {
         (0, UserAccountMenu_1.default)();
     }
 }
-AUserVoiceLocation.settings = exports.DefaultSettings;
-exports["default"] = AUserVoiceLocation;
+AVCStalker.settings = exports.DefaultSettings;
+exports["default"] = AVCStalker;
 
 
 /***/ }),
@@ -585,7 +694,6 @@ function PatchUserAccountMenu() {
     if (!container) {
         __1.logger.info(`Failed to find 'container' making new one`);
         container = document.createElement('div');
-        // container.id = 'ClearFollowing';
         container.setAttribute('id', 'ClearFollowing');
     }
     // TODO: this is shit, and language dependent, TOO BAD!
@@ -665,15 +773,39 @@ exports["default"] = PatchUserCallHeader;
 /***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
 
 
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    __setModuleDefault(result, mod);
+    return result;
+};
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 const components_1 = __nccwpck_require__(799);
-const __1 = __nccwpck_require__(65);
+const __1 = __importStar(__nccwpck_require__(65));
 const VoiceStateStore_1 = __importDefault(__nccwpck_require__(979));
-const util_1 = __nccwpck_require__(268);
 const ChannelStore_1 = __importDefault(__nccwpck_require__(432));
+const util_1 = __nccwpck_require__(268);
+const Following_1 = __nccwpck_require__(343);
 const { Item } = BdApi.ContextMenu;
 function PatchUserContext() {
     __1.logger.info('Patched UserContext');
@@ -687,17 +819,38 @@ function PatchUserContext() {
     }
     return BdApi.ContextMenu.patch('user-context', (res, props) => {
         const id = props.user.id;
-        const isFollowing = __1.followingPeople.has(id);
-        res.props.children.push(components_1.React.createElement(Item, { label: isFollowing ? 'Unfollow' : 'Follow', id: 'follow-call', action: (() => {
+        const isFollowing = Following_1.followingPeople.has(id);
+        const followButton = components_1.React.createElement(Item, { label: isFollowing ? 'Unfollow' : 'Follow', id: 'follow-call', action: (() => {
                 if (isFollowing)
-                    __1.followingPeople.delete(id);
+                    Following_1.followingPeople.delete(id);
                 else {
                     __1.logger.info(`now following ${id}`);
-                    __1.followingPeople.add(id);
+                    Following_1.followingPeople.add(id);
                     findVCAndJoin(id);
                 }
-                ;
-            }) }));
+            }) });
+        // TODO: stop wasting resources by creating this even if we don't render it!
+        const logButton = components_1.React.createElement(Item, { label: 'Open Voice Logs', id: 'voice-logs', action: (() => {
+                // TODO: open logs
+                // openLogs(id);
+            }) });
+        // TODO: stop wasting resources by creating this even if we don't render it!
+        const whitelistButton = components_1.React.createElement(Item, { label: 'Add To Whitelist', id: 'whitelist-button', action: (() => {
+                __1.logger.info(`added ${id} to whitelisted (vclogs)`);
+                __1.default.settings.vcLogging.whitelisted.push(id);
+            }) });
+        if (__1.default.settings.contextMenu.individual) {
+            res.props.children.push(followButton);
+            if (__1.default.settings.contextMenu.showLogButton)
+                res.props.children.push(logButton);
+            if (__1.default.settings.contextMenu.showWhitelistButton)
+                res.props.children.push(whitelistButton);
+        }
+        else
+            res.props.children.push(components_1.React.createElement(Item, { label: __1.default.settings.contextMenu.name, id: 'vcstalker-group' },
+                followButton,
+                __1.default.settings.contextMenu.showLogButton ? logButton : void 0,
+                __1.default.settings.contextMenu.showWhitelistButton ? whitelistButton : void 0));
     });
 }
 exports["default"] = PatchUserContext;
@@ -717,18 +870,6 @@ const components_1 = __nccwpck_require__(799);
 const popout_1 = __importDefault(__nccwpck_require__(690));
 const config_json_1 = __importDefault(__nccwpck_require__(136));
 const __1 = __importDefault(__nccwpck_require__(65));
-// this elm doesnt have enough to fucking patch it, are you fucking serious??
-// WHY COULD THEY HAVE NOT PASSED DOWN THE USER!
-// export default function PatchUserPopout(): void {
-//     // user about me from popout
-//     const [mod, key] = BdApi.Webpack.getWithKey(BdApi.Webpack.Filters.byStrings('bio', 'isUsingGuildBio', 'animateOnHover'));
-//     BdApi.Patcher.after(config.name, mod, key, (_, __, ret: ReactElementJSONRepresentation) => {
-//         // render out component that loops over a user's voice states / active calls from `VoiceStateStore`
-//         // for each vc/voice state we show the VC they're in, allow it to be pressed to navigate to the call
-//         ret.props.children.splice(0, 0, <PopoutPatch />);
-//     });
-// }
-// take 2:
 function PatchUserPopout() {
     const [mod, key] = BdApi.Webpack.getWithKey(BdApi.Webpack.Filters.byStrings('showCopiableUsername', 'canDM', 'displayProfile'));
     BdApi.Patcher.after(config_json_1.default.name, mod, key, (_, [{ user }], res) => {
@@ -754,12 +895,17 @@ exports.joinCall = exports.ConnectionBit = void 0;
 const VoiceStateStore_1 = __importDefault(__nccwpck_require__(979));
 const UserStore_1 = __importDefault(__nccwpck_require__(682));
 const _1 = __nccwpck_require__(65);
+const Following_1 = __nccwpck_require__(343);
+// TODO: de-hardcode this bitfield and pull it from Webpack, but for now
+// this isn't going to change, and if it does they are going to notify on their
+// proper documentation page as this is a supported bitfield from
+// https://discord.dev/
 exports.ConnectionBit = 0x100000n;
 const voiceChannelUtils = BdApi.Webpack.getByKeys('selectVoiceChannel', 'disconnect');
 // I don't care!
 // eslint-disable-next-line @typescript-eslint/no-invalid-void-type
 function joinCall(voiceState, channel) {
-    if (!_1.followingPeople.has(voiceState.userId))
+    if (!Following_1.followingPeople.has(voiceState.userId))
         return;
     if (VoiceStateStore_1.default.isInChannel(channel.id))
         return;
@@ -782,6 +928,144 @@ function joinCall(voiceState, channel) {
 }
 exports.joinCall = joinCall;
 
+
+/***/ }),
+
+/***/ 343:
+/***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
+
+
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.followFromVoiceState = exports.followingPeople = void 0;
+const ChannelStore_1 = __importDefault(__nccwpck_require__(432));
+const UserStore_1 = __importDefault(__nccwpck_require__(682));
+const __1 = __nccwpck_require__(65);
+const util_1 = __nccwpck_require__(268);
+/**
+ * Set of userIDs to follow, aka who we care about
+ * to follow
+ */
+exports.followingPeople = new Set();
+function followFromVoiceState(vs) {
+    if (vs.channelId === null || !vs.channelId) {
+        BdApi.UI.showToast(`${UserStore_1.default.getUser(vs.userId).globalName} left voice chat!`, { type: 'warn' });
+        return;
+    }
+    const channel = ChannelStore_1.default.getChannel(vs.channelId);
+    const msg = `Joining ${UserStore_1.default.getUser(vs.userId).globalName} in #${channel.name}`;
+    __1.logger.info(msg);
+    BdApi.UI.showToast(msg);
+    (0, util_1.joinCall)(vs, channel);
+}
+exports.followFromVoiceState = followFromVoiceState;
+
+
+/***/ }),
+
+/***/ 554:
+/***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
+
+
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.shouldLog = void 0;
+const __1 = __importDefault(__nccwpck_require__(65));
+const RelationshipStore_1 = __importDefault(__nccwpck_require__(366));
+const VoiceStateStore_1 = __importDefault(__nccwpck_require__(979));
+function shouldLog(voiceState) {
+    // If we have them in our whitelisted users to log out, just ignore the rest and say OK!
+    if (__1.default.settings.vcLogging.whitelisted.includes(voiceState.userId))
+        return [voiceState.userId, true];
+    // We have them added, the rest of their state doesn't matter.
+    if (RelationshipStore_1.default.isFriend(voiceState.userId))
+        return [voiceState.userId, true];
+    // Disconnected from call.
+    if (!voiceState.channelId)
+        return [voiceState.userId, true];
+    // simple checks are gone, now we need to check if any of our friends
+    // are in that VC
+    const inVC = VoiceStateStore_1.default.getVoiceStatesForChannel(voiceState.channelId);
+    for (const userId in inVC) {
+        // find if user is whitelisted or a friend (failed first check of user emitting the
+        // voice state update, so attempt to find someone else within the call.)
+        const state = inVC[userId];
+        if (__1.default.settings.vcLogging.whitelisted.includes(state.userId))
+            return [state.userId, true];
+        if (RelationshipStore_1.default.isFriend(state.userId))
+            return [state.userId, true];
+    }
+    return [undefined, false];
+}
+exports.shouldLog = shouldLog;
+
+
+/***/ }),
+
+/***/ 414:
+/***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
+
+
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    __setModuleDefault(result, mod);
+    return result;
+};
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+const Following_1 = __nccwpck_require__(343);
+const Logging_1 = __nccwpck_require__(554);
+const data_1 = __nccwpck_require__(496);
+const __1 = __importStar(__nccwpck_require__(65));
+function onVoiceChange(voiceState) {
+    if (voiceState.type !== 'VOICE_STATE_UPDATES')
+        return;
+    for (let i = 0; i < voiceState.voiceStates.length; i++) {
+        const vs = voiceState.voiceStates[i];
+        if (Following_1.followingPeople.has(vs.userId))
+            (0, Following_1.followFromVoiceState)(vs);
+        if (__1.default.settings.vcLogging.enabled) {
+            const [userId, ok] = (0, Logging_1.shouldLog)(vs);
+            __1.logger.info(`checking if its ok to log for vs`, vs, userId, ok);
+            __1.logger.info(`ok?: `, ok);
+            if (ok)
+                (0, data_1.append)({
+                    ...vs,
+                    when: Date.now()
+                }, userId);
+        }
+    }
+}
+exports["default"] = onVoiceChange;
+
+
+/***/ }),
+
+/***/ 147:
+/***/ ((module) => {
+
+module.exports = require("fs");
 
 /***/ }),
 
@@ -839,3 +1123,4 @@ module.exports = JSON.parse('{"$schema":"../../config_schema.jsonc","name":"AVCS
 /******/ 	
 /******/ })()
 ;
+//# sourceMappingURL=index.js.map

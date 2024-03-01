@@ -4,7 +4,7 @@ import PatchUserCallHeader from './patches/UserCallHeader';
 import Logger from '@lib/logger';
 
 import Settings from './components/Settings';
-import onVoiceChange from './VoiceStateUpdate';
+import onVoiceChange from './voiceState';
 import Dispatcher from '@lib/modules/Dispatcher';
 import PatchUserContext from './patches/UserContext';
 import PatchUserAccountMenu from './patches/UserAccountMenu';
@@ -23,17 +23,26 @@ export const DefaultSettings = {
     voiceChatFollowing: {
         clickVoiceChatButtonClears: true
     },
-    userPopout: false
+    userPopout: false,
+    vcLogging: {
+        enabled: false,
+        // list of user ids
+        whitelisted: [] as string[],
+        // megabytes
+        maxSize: 1000,
+        logFriends: true,
+        filePath: '%plugins%/AVCStalker_VSLogs.json'
+    },
+    contextMenu: {
+        individual: false,
+        showLogButton: false,
+        showWhitelistButton: false,
+        name: 'Voice Utilities'
+    }
 };
 
 // export let settings: typeof DefaultSettings = DefaultSettings;
 export const logger = new Logger(config);
-
-/**
- * Set of userIDs to follow, aka who we care about
- * to follow
- */
-export const followingPeople = new Set<string>();
 
 export default class AVCStalker implements Plugin {
     static settings: typeof DefaultSettings = DefaultSettings;
@@ -50,7 +59,7 @@ export default class AVCStalker implements Plugin {
 
         logger.info('Patching UserCallHeader');
         PatchUserCallHeader();
-        logger.info('Patching UserContext');        
+        logger.info('Patching UserContext');
         this.cancelUserContextPatch = PatchUserContext();
         logger.info('Patching UserPopout');
         PatchUserPopout();

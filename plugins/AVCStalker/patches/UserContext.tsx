@@ -1,9 +1,11 @@
 import { React } from '@lib/components';
 import type { Cancel } from 'betterdiscord';
-import { followingPeople, logger } from '..';
+import type { User } from '@lib/stores/UserStore';
+import AVCStalker, { logger } from '..';
 import VoiceStateStore from '@lib/stores/VoiceStateStore';
-import { joinCall } from '../util';
 import ChannelStore from '@lib/stores/ChannelStore';
+import { joinCall } from '../util';
+import { followingPeople } from '../voiceState/Following';
 const { Item } = BdApi.ContextMenu;
 
 export default function PatchUserContext(): Cancel {
@@ -18,11 +20,11 @@ export default function PatchUserContext(): Cancel {
         joinCall(vs, channel);
     }
 
-    return BdApi.ContextMenu.patch('user-context', (res, props) => {
-        const id = props.user.id as string;
+    return BdApi.ContextMenu.patch('user-context', (res: { props: { children: React.ReactElement[]; }; }, props: { user: User; }) => {
+        const id = props.user.id;
         const isFollowing = followingPeople.has(id);
 
-        res.props.children.push(<Item
+        const followButton = <Item
             label={isFollowing ? 'Unfollow' : 'Follow'}
             id='follow-call'
             action={(() => {
@@ -32,8 +34,44 @@ export default function PatchUserContext(): Cancel {
                     followingPeople.add(id);
 
                     findVCAndJoin(id);
-                };
+                }
             })}
-        />);
+        />;
+
+        // TODO: stop wasting resources by creating this even if we don't render it!
+        const logButton = <Item
+            label={'Open Voice Logs'}
+            id='voice-logs'
+            action={(() => {
+                // TODO: open logs
+                // openLogs(id);
+            })}
+        />;
+
+        // TODO: stop wasting resources by creating this even if we don't render it!
+        const whitelistButton = <Item
+            label={'Add To Whitelist'}
+            id='whitelist-button'
+            action={(() => {
+                logger.info(`added ${id} to whitelisted (vclogs)`);
+                AVCStalker.settings.vcLogging.whitelisted.push(id);
+            })}
+        />;
+
+        if(AVCStalker.settings.contextMenu.individual) {
+            res.props.children.push(followButton);
+            if(AVCStalker.settings.contextMenu.showLogButton) res.props.children.push(logButton);
+            if(AVCStalker.settings.contextMenu.showWhitelistButton) res.props.children.push(whitelistButton);
+        }
+        else res.props.children.push(
+            <Item
+                label={AVCStalker.settings.contextMenu.name}
+                id='vcstalker-group'
+            >
+                {followButton}
+                {AVCStalker.settings.contextMenu.showLogButton ? logButton : void 0}
+                {AVCStalker.settings.contextMenu.showWhitelistButton ? whitelistButton : void 0}
+            </Item>
+        );
     });
 }

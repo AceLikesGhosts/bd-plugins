@@ -1,6 +1,7 @@
 import { React } from '@lib/components';
-import AVCStalker, { Icons, followingPeople } from '..';
+import AVCStalker, { Icons } from '..';
 import UserStore from '@lib/stores/UserStore';
+import { followingPeople } from '../voiceState/Following';
 
 const PanelButton = BdApi.Webpack.getByStrings('Masks.PANEL_BUTTON');
 

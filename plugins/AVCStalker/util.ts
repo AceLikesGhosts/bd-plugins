@@ -1,8 +1,9 @@
 import VoiceStateStore from '@lib/stores/VoiceStateStore';
 import UserStore from '@lib/stores/UserStore';
-import { followingPeople, logger } from '.';
+import { logger } from '.';
 import { type Channel } from '@lib/stores/ChannelStore';
 import type { UserVoiceState } from '@lib/stores/VoiceStateStore';
+import { followingPeople } from './voiceState/Following';
 
 // TODO: de-hardcode this bitfield and pull it from Webpack, but for now
 // this isn't going to change, and if it does they are going to notify on their
