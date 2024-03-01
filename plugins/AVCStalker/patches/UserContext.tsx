@@ -6,6 +6,7 @@ import VoiceStateStore from '@lib/stores/VoiceStateStore';
 import ChannelStore from '@lib/stores/ChannelStore';
 import { joinCall } from '../util';
 import { followingPeople } from '../voiceState/Following';
+import openModalFor from '../components/modal';
 const { Item } = BdApi.ContextMenu;
 
 export default function PatchUserContext(): Cancel {
@@ -43,8 +44,8 @@ export default function PatchUserContext(): Cancel {
             label={'Open Voice Logs'}
             id='voice-logs'
             action={(() => {
-                // TODO: open logs
-                // openLogs(id);
+                logger.info(`opened voice state logs for: `, id);
+                openModalFor(id);
             })}
         />;
 
@@ -53,7 +54,7 @@ export default function PatchUserContext(): Cancel {
             label={'Add To Whitelist'}
             id='whitelist-button'
             action={(() => {
-                logger.info(`added ${id} to whitelisted (vclogs)`);
+                logger.info(`added ${ id } to whitelisted (vclogs)`);
                 AVCStalker.settings.vcLogging.whitelisted.push(id);
             })}
         />;

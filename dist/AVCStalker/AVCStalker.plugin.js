@@ -120,6 +120,22 @@ exports["default"] = BdApi.Webpack.getByKeys('_currentDispatchActionType', '_pro
 
 /***/ }),
 
+/***/ 336:
+/***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
+
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+const components_1 = __nccwpck_require__(799);
+exports["default"] = {
+    openModal: components_1.RawComponents.openModal,
+    closeModal: components_1.RawComponents.closeModal,
+    ModalRoot: components_1.RawComponents.ModalRoot,
+    ModalSize: components_1.RawComponents.ModalSize
+};
+
+
+/***/ }),
+
 /***/ 873:
 /***/ ((__unused_webpack_module, exports) => {
 
@@ -438,6 +454,66 @@ function Settings() {
             }) })));
 }
 exports["default"] = Settings;
+
+
+/***/ }),
+
+/***/ 150:
+/***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
+
+
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+const components_1 = __nccwpck_require__(799);
+const ModalsModule_1 = __importDefault(__nccwpck_require__(336));
+const ModalSettings_1 = __importDefault(__nccwpck_require__(180));
+function Modal(props) {
+    return (components_1.React.createElement(ModalsModule_1.default.ModalRoot, { ...props },
+        components_1.React.createElement(ModalSettings_1.default, null)));
+}
+exports["default"] = Modal;
+
+
+/***/ }),
+
+/***/ 180:
+/***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
+
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+const components_1 = __nccwpck_require__(799);
+function ModalSettings() {
+    return (components_1.React.createElement("div", null,
+        components_1.React.createElement("p", null, "settings")));
+}
+exports["default"] = ModalSettings;
+
+
+/***/ }),
+
+/***/ 959:
+/***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
+
+
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+const AVCStalker_1 = __nccwpck_require__(65);
+const ModalsModule_1 = __importDefault(__nccwpck_require__(336));
+const Modal_1 = __importDefault(__nccwpck_require__(150));
+/**
+ * Opens a popup Modal to show voice states for a user/everyone correlated
+ */
+function openModalFor(userId) {
+    AVCStalker_1.logger.info(`opening voicestate modal for ${userId}`);
+    void ModalsModule_1.default.openModal((props) => {
+        return Modal_1.default.call(null, props);
+    });
+}
+exports["default"] = openModalFor;
 
 
 /***/ }),
@@ -806,6 +882,7 @@ const VoiceStateStore_1 = __importDefault(__nccwpck_require__(979));
 const ChannelStore_1 = __importDefault(__nccwpck_require__(432));
 const util_1 = __nccwpck_require__(268);
 const Following_1 = __nccwpck_require__(343);
+const modal_1 = __importDefault(__nccwpck_require__(959));
 const { Item } = BdApi.ContextMenu;
 function PatchUserContext() {
     __1.logger.info('Patched UserContext');
@@ -831,8 +908,8 @@ function PatchUserContext() {
             }) });
         // TODO: stop wasting resources by creating this even if we don't render it!
         const logButton = components_1.React.createElement(Item, { label: 'Open Voice Logs', id: 'voice-logs', action: (() => {
-                // TODO: open logs
-                // openLogs(id);
+                __1.logger.info(`opened voice state logs for: `, id);
+                (0, modal_1.default)(id);
             }) });
         // TODO: stop wasting resources by creating this even if we don't render it!
         const whitelistButton = components_1.React.createElement(Item, { label: 'Add To Whitelist', id: 'whitelist-button', action: (() => {
