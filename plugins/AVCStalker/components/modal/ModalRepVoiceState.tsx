@@ -20,12 +20,17 @@ export default function ModalRepVoiceState({ newestState, lastState }: StateData
                 />
 
                 <Flex direction={Flex.Direction.HORIZONTAL} style={{ width: '75%', maxWidth: '800px' }}>
-                    <Text variant='text-md/bold' style={{ marginRight: '3px' }}>
-                        {user.username}
-                    </Text>
+                    <div onClick={(() => {
+                        (window as unknown as { DiscordNative: { clipboard: { copy: (message: string) => void; }; }; }).DiscordNative.clipboard.copy(user.id);
+                        BdApi.UI.showToast(`Copied ${user.username}'s ID.`, { type: 'success' });
+                    })}>
+                        <Text variant='text-md/bold' style={{ marginRight: '3px' }}>
+                            {user.username}
+                        </Text>
+                    </div>
                     <Text variant='text-md/normal' style={{ textOverflow: 'ellipsis', whiteSpace: 'nowrap', overflow: 'hidden', width: '50%' }}>
                         {getVoiceStateDifferenceMessage(newestState, lastState)}.
-                    </Text> 
+                    </Text>
                 </Flex>
 
                 <Text variant='text-sm/normal' style={{ marginRight: '16px' }}>

@@ -10,32 +10,6 @@ import Text from '@lib/components/Text';
 import { memoryCache } from 'plugins/AVCStalker/data';
 import { del } from 'plugins/AVCStalker/data/FileData';
 
-// export default function ModalSettings(props: UserIdProps & { setUserIds: (ids: string[]) => void; }): JSX.Element {
-//     return (
-//         <div style={{ flexDirection: 'row', display: 'flex', justifyContent: 'flex-start', marginLeft: '16px', marginBottom: '10px', marginTop: '10px' }}>
-//             <FormItem title={'user Ids'}>
-//                 <TextInput
-//                     value={props.userIds.toString()}
-//                     onChange={((e) => {
-//                         let splitBy = e.split(',');
-//                         if(splitBy.length === 0) splitBy = e.split(', ');
-//                         if(splitBy.length === 0) {
-//                             logger.critical(`failed to split string into user ids`, e);
-//                             return;
-//                         }
-
-//                         props.setUserIds(splitBy);
-//                     })}
-//                 />
-//             </FormItem>
-
-//             <Button color={Button.Colors.RED} size={Button.Sizes.MEDIUM}>
-//                 Clear Logs
-//             </Button>
-//         </div>
-//     );
-// }
-
 export default function ModalSettings(props: UserIdProps & { setUserIds: (ids: string[]) => void; showCorrelated: boolean; setShowCorrelated: (state: boolean) => void; }): JSX.Element {
     return (
         <Flex direction={Flex.Direction.HORIZONTAL} align={Flex.Align.CENTER} style={{ marginLeft: '16px', marginBottom: '10px', marginTop: '10px', maxHeight: '48px' }}>

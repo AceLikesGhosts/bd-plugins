@@ -2,7 +2,7 @@
 * @name AVCStalker
 * @description In God we trust.
 * @author ace.
-* @version 2.0.0
+* @version 2.1.0
 * @source https://raw.githubusercontent.com/AceLikesGhosts/bd-plugins/master/dist/AVCStalker/AVCStalker.plugin.js
 * @authorLink https://github.com/AceLikesGhosts/bd-plugins
 * @website https://github.com/AceLikesGhosts/bd-plugins
@@ -623,7 +623,11 @@ function ModalRepVoiceState({ newestState, lastState }) {
         components_1.React.createElement(Flex_1.default, { direction: Flex_1.default.Direction.HORIZONTAL, align: Flex_1.default.Align.CENTER },
             components_1.React.createElement(Avatar_1.default.Avatar, { src: `https://cdn.discordapp.com/avatars/${user.id}/${user.avatar}`, size: Avatar_1.default.AvatarSizes.SIZE_32, status: null }),
             components_1.React.createElement(Flex_1.default, { direction: Flex_1.default.Direction.HORIZONTAL, style: { width: '75%', maxWidth: '800px' } },
-                components_1.React.createElement(Text_1.default, { variant: 'text-md/bold', style: { marginRight: '3px' } }, user.username),
+                components_1.React.createElement("div", { onClick: (() => {
+                        window.DiscordNative.clipboard.copy(user.id);
+                        BdApi.UI.showToast(`Copied ${user.username}'s ID.`, { type: 'success' });
+                    }) },
+                    components_1.React.createElement(Text_1.default, { variant: 'text-md/bold', style: { marginRight: '3px' } }, user.username)),
                 components_1.React.createElement(Text_1.default, { variant: 'text-md/normal', style: { textOverflow: 'ellipsis', whiteSpace: 'nowrap', overflow: 'hidden', width: '50%' } },
                     (0, voiceState_1.getVoiceStateDifferenceMessage)(newestState, lastState),
                     ".")),
@@ -653,29 +657,6 @@ const Flex_1 = __importDefault(__nccwpck_require__(348));
 const Text_1 = __importDefault(__nccwpck_require__(921));
 const data_1 = __nccwpck_require__(496);
 const FileData_1 = __nccwpck_require__(100);
-// export default function ModalSettings(props: UserIdProps & { setUserIds: (ids: string[]) => void; }): JSX.Element {
-//     return (
-//         <div style={{ flexDirection: 'row', display: 'flex', justifyContent: 'flex-start', marginLeft: '16px', marginBottom: '10px', marginTop: '10px' }}>
-//             <FormItem title={'user Ids'}>
-//                 <TextInput
-//                     value={props.userIds.toString()}
-//                     onChange={((e) => {
-//                         let splitBy = e.split(',');
-//                         if(splitBy.length === 0) splitBy = e.split(', ');
-//                         if(splitBy.length === 0) {
-//                             logger.critical(`failed to split string into user ids`, e);
-//                             return;
-//                         }
-//                         props.setUserIds(splitBy);
-//                     })}
-//                 />
-//             </FormItem>
-//             <Button color={Button.Colors.RED} size={Button.Sizes.MEDIUM}>
-//                 Clear Logs
-//             </Button>
-//         </div>
-//     );
-// }
 function ModalSettings(props) {
     return (components_1.React.createElement(Flex_1.default, { direction: Flex_1.default.Direction.HORIZONTAL, align: Flex_1.default.Align.CENTER, style: { marginLeft: '16px', marginBottom: '10px', marginTop: '10px', maxHeight: '48px' } },
         components_1.React.createElement(Form_1.FormItem, { style: { marginRight: '15px' } },
@@ -1485,7 +1466,7 @@ module.exports = require("fs");
 /***/ 136:
 /***/ ((module) => {
 
-module.exports = JSON.parse('{"$schema":"../../config_schema.jsonc","name":"AVCStalker","description":"In God we trust.","author":"ace.","version":"2.0.0","source":"https://raw.githubusercontent.com/AceLikesGhosts/bd-plugins/master/dist/AVCStalker/AVCStalker.plugin.js","authorLink":"https://github.com/AceLikesGhosts/bd-plugins","website":"https://github.com/AceLikesGhosts/bd-plugins","updateLink":"https://github.com/AceLikesGhosts/bd-plugins","authorId":"327639826075484162"}');
+module.exports = JSON.parse('{"$schema":"../../config_schema.jsonc","name":"AVCStalker","description":"In God we trust.","author":"ace.","version":"2.1.0","source":"https://raw.githubusercontent.com/AceLikesGhosts/bd-plugins/master/dist/AVCStalker/AVCStalker.plugin.js","authorLink":"https://github.com/AceLikesGhosts/bd-plugins","website":"https://github.com/AceLikesGhosts/bd-plugins","updateLink":"https://github.com/AceLikesGhosts/bd-plugins","authorId":"327639826075484162"}');
 
 /***/ })
 
