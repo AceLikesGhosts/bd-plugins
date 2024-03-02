@@ -657,6 +657,7 @@ const Flex_1 = __importDefault(__nccwpck_require__(348));
 const Text_1 = __importDefault(__nccwpck_require__(921));
 const data_1 = __nccwpck_require__(496);
 const FileData_1 = __nccwpck_require__(100);
+const UserStore_1 = __importDefault(__nccwpck_require__(682));
 function ModalSettings(props) {
     return (components_1.React.createElement(Flex_1.default, { direction: Flex_1.default.Direction.HORIZONTAL, align: Flex_1.default.Align.CENTER, style: { marginLeft: '16px', marginBottom: '10px', marginTop: '10px', maxHeight: '48px' } },
         components_1.React.createElement(Form_1.FormItem, { style: { marginRight: '15px' } },
@@ -674,7 +675,7 @@ function ModalSettings(props) {
             components_1.React.createElement(Text_1.default, { variant: 'eyebrow', style: { marginRight: '5px' } }, "Show Correlated Logs"),
             components_1.React.createElement(Switch_1.default, { checked: props.showCorrelated, onChange: ((e) => props.setShowCorrelated(e)) })),
         components_1.React.createElement(Button_1.default, { color: Button_1.default.Colors.RED, size: Button_1.default.Sizes.MEDIUM, style: { marginRight: '16px' }, onClick: (() => {
-                BdApi.UI.showConfirmationModal('aaa', 'aaa', {
+                BdApi.UI.showConfirmationModal('Clear Logs', `Are you sure that you want to remove all logs for user(s) ${props.userIds.map((id) => UserStore_1.default.getUser(id).username).join(', ')}`, {
                     danger: true,
                     onConfirm() {
                         props.userIds.forEach((userId) => {
@@ -1466,7 +1467,7 @@ module.exports = require("fs");
 /***/ 136:
 /***/ ((module) => {
 
-module.exports = JSON.parse('{"$schema":"../../config_schema.jsonc","name":"AVCStalker","description":"In God we trust.","author":"ace.","version":"2.1.0","source":"https://raw.githubusercontent.com/AceLikesGhosts/bd-plugins/master/dist/AVCStalker/AVCStalker.plugin.js","authorLink":"https://github.com/AceLikesGhosts/bd-plugins","website":"https://github.com/AceLikesGhosts/bd-plugins","updateLink":"https://github.com/AceLikesGhosts/bd-plugins","authorId":"327639826075484162"}');
+module.exports = JSON.parse('{"$schema":"../../config_schema.jsonc","name":"AVCStalker","description":"In God we trust.","author":"ace.","version":"2.2.0","source":"https://raw.githubusercontent.com/AceLikesGhosts/bd-plugins/master/dist/AVCStalker/AVCStalker.plugin.js","authorLink":"https://github.com/AceLikesGhosts/bd-plugins","website":"https://github.com/AceLikesGhosts/bd-plugins","updateLink":"https://github.com/AceLikesGhosts/bd-plugins","authorId":"327639826075484162"}');
 
 /***/ })
 

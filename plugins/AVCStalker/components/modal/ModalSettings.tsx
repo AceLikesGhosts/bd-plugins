@@ -9,6 +9,7 @@ import Flex from '@lib/components/Flex';
 import Text from '@lib/components/Text';
 import { memoryCache } from 'plugins/AVCStalker/data';
 import { del } from 'plugins/AVCStalker/data/FileData';
+import UserStore from '@lib/stores/UserStore';
 
 export default function ModalSettings(props: UserIdProps & { setUserIds: (ids: string[]) => void; showCorrelated: boolean; setShowCorrelated: (state: boolean) => void; }): JSX.Element {
     return (
@@ -40,7 +41,7 @@ export default function ModalSettings(props: UserIdProps & { setUserIds: (ids: s
                 size={Button.Sizes.MEDIUM}
                 style={{ marginRight: '16px' }}
                 onClick={(() => {
-                    BdApi.UI.showConfirmationModal('aaa', 'aaa', {
+                    BdApi.UI.showConfirmationModal('Clear Logs', `Are you sure that you want to remove all logs for user(s) ${props.userIds.map((id) => UserStore.getUser(id).username).join(', ')}`, {
                         danger: true,
                         onConfirm() {
                             props.userIds.forEach((userId) => {
