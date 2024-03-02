@@ -35,6 +35,7 @@ export default function ModalData(props: UserIdProps): JSX.Element {
             output.push(...userStates);
         }
 
+        output.sort((x, y) => y.newestState.when - x.newestState.when);
         return output;
     }
 
