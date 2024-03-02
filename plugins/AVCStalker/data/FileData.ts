@@ -19,6 +19,23 @@ export function get(relevantId: string): TimestampedUserVoiceState[] | undefined
     }
 }
 
+export function del(relevantId: string): void {
+    const filePath = AVCStalker.settings.vcLogging.filePath.replace('%plugins%', BdApi.Plugins.folder);
+
+    try {
+        const data = JSON.parse(
+            fs.readFileSync(AVCStalker.settings.vcLogging.filePath.replace('%plugins%', BdApi.Plugins.folder), { encoding: 'utf-8' })
+        );
+
+        data[relevantId] = [];
+        fs.writeFileSync(filePath, JSON.stringify(data), { encoding: 'utf-8' });
+    }
+    catch(err) {
+        logger.critical(`Failed to delete log data (VoiceStateLogs) `, err, relevantId);
+        return undefined;
+    }
+}
+
 export function save(): void {
     try {
         const filePath = AVCStalker.settings.vcLogging.filePath.replace('%plugins%', BdApi.Plugins.folder);

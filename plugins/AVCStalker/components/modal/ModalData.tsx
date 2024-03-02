@@ -7,13 +7,13 @@ import type { UserIdProps } from '.';
 
 export type StateData = { newestState: TimestampedUserVoiceState, lastState: TimestampedUserVoiceState; };
 
-export default function ModalData(props: UserIdProps): JSX.Element {
+export default function ModalData(props: UserIdProps & { showCorrelated: boolean; }): JSX.Element {
     const [data, setData] = React.useState<StateData[]>(getData());
 
     React.useEffect(() => {
         // 10/10 code
         setData(getData());
-    }, [props.userIds]);
+    }, [props.userIds, props.showCorrelated]);
 
     function getData(): StateData[] {
         const output: StateData[] = [];
@@ -25,6 +25,7 @@ export default function ModalData(props: UserIdProps): JSX.Element {
             let prevState = null;
             for(let j: number = 0; j < data.length; j++) {
                 const newState = data[j];
+                if(!props.showCorrelated && !props.userIds.includes(newState.userId)) continue;
 
                 if(prevState)
                     userStates.push({ newestState: newState, lastState: prevState });
@@ -47,7 +48,7 @@ export default function ModalData(props: UserIdProps): JSX.Element {
                         newestState={states.newestState}
                         lastState={states.lastState}
                     />
-                ) : <FormText type='h1'>No data to display...</FormText>
+                ) : <FormText style={{ marginLeft: '16px' }} type='h1'>No data to display...</FormText>
             }
         </div>
     );

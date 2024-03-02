@@ -1,6 +1,6 @@
 import type { UserVoiceState } from '@lib/stores/VoiceStateStore';
 import { followFromVoiceState, followingPeople } from './Following';
-import { shouldLog } from './Logging';
+import { getCorrelatedPeople, isFriendOrWhitelisted } from './Logging';
 import { append } from '../data';
 import AVCStalker, { logger } from '..';
 import ChannelStore from '@lib/stores/ChannelStore';
@@ -24,8 +24,9 @@ export function getVoiceStateDifferenceMessage(newest: UserVoiceState, old: User
     if(newest.selfVideo !== old.selfVideo) return newest.selfVideo ? 'started video' : 'stopped video';
     if(newest.deaf !== old.deaf) return newest.deaf ? 'got server deafened' : 'got unserver deafened';
     if(newest.mute !== old.mute) return newest.mute ? 'got server muted' : 'got unserver muted';
+    if(newest.sessionId !== old.sessionId) return 'changed platforms';
 
-    return 'unknown? (most likely platform swap)';
+    return 'unknown? (no previous data)';
 }
 
 export default function onVoiceChange(voiceState: { type: 'VOICE_STATE_UPDATES'; voiceStates: UserVoiceState[]; }): void {
@@ -37,14 +38,14 @@ export default function onVoiceChange(voiceState: { type: 'VOICE_STATE_UPDATES';
         if(followingPeople.has(vs.userId)) followFromVoiceState(vs);
 
         if(AVCStalker.settings.vcLogging.enabled) {
-            const [userId, ok] = shouldLog(vs);
-            logger.debug(`checking if its ok to log for vs`, vs, userId, ok);
-            logger.debug(`ok?: `, ok);
-            if(ok)
-                append({
-                    ...vs,
-                    when: Date.now()
-                }, userId);
+            if(isFriendOrWhitelisted(vs)) append({ ...vs, when: Date.now() }, vs.userId);
+
+            if(!AVCStalker.settings.vcLogging.logCorrelatedPeople) continue;
+
+            const correlatedUserIds = getCorrelatedPeople(vs);
+            // There was nobody correlated
+            if(!correlatedUserIds || correlatedUserIds.length === 0) continue;
+            for(let j = 0; j < correlatedUserIds.length; j++) append({ ...vs, when: Date.now() }, correlatedUserIds[j]);
         }
     }
 }

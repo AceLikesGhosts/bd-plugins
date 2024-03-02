@@ -1,29 +1,38 @@
 import AVCStalker from '..';
 import RelationshipStore from '@lib/stores/RelationshipStore';
+import UserStore from '@lib/stores/UserStore';
 import type { UserVoiceState } from '@lib/stores/VoiceStateStore';
 import VoiceStateStore from '@lib/stores/VoiceStateStore';
 
-export function shouldLog(voiceState: UserVoiceState): [string | undefined, boolean] {
-    // If we have them in our whitelisted users to log out, just ignore the rest and say OK!
-    if(AVCStalker.settings.vcLogging.whitelisted.includes(voiceState.userId)) return [voiceState.userId, true];
-    // We have them added, the rest of their state doesn't matter.
-    if(AVCStalker.settings.vcLogging.logFriends && RelationshipStore.isFriend(voiceState.userId)) return [voiceState.userId, true];
+const ourId = UserStore.getCurrentUser().id;
 
-    if(voiceState.channelId === null) return [undefined, false];
+export function isFriendOrWhitelisted(voiceState: UserVoiceState): boolean {
+    if(voiceState.userId === ourId) return false;
+    if(AVCStalker.settings.vcLogging.whitelisted.includes(voiceState.userId)) return true;
+    if(AVCStalker.settings.vcLogging.logFriends) return RelationshipStore.isFriend(voiceState.userId);
+    return false;
+}
 
-    // if we don't have searching everyone enabled, gtfo!
-    if(!AVCStalker.settings.vcLogging.logCorrelatedPeople) return [undefined, false];
-    
-    // simple checks are gone, now we need to check if any of our friends
-    // are in that VC
+export function getCorrelatedPeople(voiceState: UserVoiceState): string[] | undefined {
+    // VOICE_STATE_UPDATE -> 
+    //     isFriend() || isWhitelisted() -> append to log file;
+    // then if logCorrelated:
+    //     loop over each person in VC:
+    //          if one of our friends is in that vc, return the friend's id
+    //          so that we can correlate the VoiceState to our Friend's ID
+
+
+    // not in a VC, cant check correlated people, gtfo!
+    if(voiceState.channelId === null) return undefined;
+
     const inVC = VoiceStateStore.getVoiceStatesForChannel(voiceState.channelId);
+    const outputIds: string[] = [];
+
     for(const userId in inVC) {
-        // find if user is whitelisted or a friend (failed first check of user emitting the
-        // voice state update, so attempt to find someone else within the call.)
         const state = inVC[userId];
-        if(AVCStalker.settings.vcLogging.whitelisted.includes(state.userId)) return [state.userId, true];
-        if(AVCStalker.settings.vcLogging.logFriends && RelationshipStore.isFriend(state.userId)) return [state.userId, true];
+        
+        if(isFriendOrWhitelisted(state)) outputIds.push(state.userId);
     }
 
-    return [undefined, false];
+    return outputIds;
 }

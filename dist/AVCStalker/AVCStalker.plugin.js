@@ -1,8 +1,8 @@
 /**
 * @name AVCStalker
-* @description A simplistic.
-* @author ace. & friez.
-* @version 1.9.1-rc
+* @description In God we trust.
+* @author ace.
+* @version 2.0.0
 * @source https://raw.githubusercontent.com/AceLikesGhosts/bd-plugins/master/dist/AVCStalker/AVCStalker.plugin.js
 * @authorLink https://github.com/AceLikesGhosts/bd-plugins
 * @website https://github.com/AceLikesGhosts/bd-plugins
@@ -37,6 +37,17 @@ exports["default"] = {
 
 /***/ }),
 
+/***/ 776:
+/***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
+
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+const _1 = __nccwpck_require__(799);
+exports["default"] = _1.RawComponents.Button;
+
+
+/***/ }),
+
 /***/ 348:
 /***/ ((__unused_webpack_module, exports) => {
 
@@ -56,6 +67,18 @@ Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.FormNotice = exports.FormSwitch = exports.FormDivider = exports.FormLabel = exports.FormText = exports.FormTitle = exports.FormItem = exports.FormSection = void 0;
 const _1 = __nccwpck_require__(799);
 _a = _1.RawComponents, exports.FormSection = _a.FormSection, exports.FormItem = _a.FormItem, exports.FormTitle = _a.FormTitle, exports.FormText = _a.FormText, exports.FormLabel = _a.FormLabel, exports.FormDivider = _a.FormDivider, exports.FormSwitch = _a.FormSwitch, exports.FormNotice = _a.FormNotice;
+
+
+/***/ }),
+
+/***/ 419:
+/***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
+
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+const _1 = __nccwpck_require__(799);
+const { Switch: RawSwitch } = _1.RawComponents;
+exports["default"] = RawSwitch;
 
 
 /***/ }),
@@ -523,10 +546,11 @@ const ModalData_1 = __importDefault(__nccwpck_require__(887));
 const Form_1 = __nccwpck_require__(281);
 function Modal(props) {
     const [userIds, setUserIds] = components_1.React.useState([props.userId]);
+    const [showCorrelated, setShowCorrelated] = components_1.React.useState(true);
     return (components_1.React.createElement(ModalsModule_1.default.ModalRoot, { size: ModalsModule_1.default.ModalSize.LARGE, ...props },
-        components_1.React.createElement(ModalSettings_1.default, { userIds: userIds, setUserIds: setUserIds }),
+        components_1.React.createElement(ModalSettings_1.default, { userIds: userIds, setUserIds: setUserIds, showCorrelated: showCorrelated, setShowCorrelated: setShowCorrelated }),
         components_1.React.createElement(Form_1.FormDivider, null),
-        components_1.React.createElement(ModalData_1.default, { userIds: userIds })));
+        components_1.React.createElement(ModalData_1.default, { userIds: userIds, showCorrelated: showCorrelated })));
 }
 exports["default"] = Modal;
 
@@ -550,7 +574,7 @@ function ModalData(props) {
     components_1.React.useEffect(() => {
         // 10/10 code
         setData(getData());
-    }, [props.userIds]);
+    }, [props.userIds, props.showCorrelated]);
     function getData() {
         const output = [];
         for (let i = 0; i < props.userIds.length; i++) {
@@ -559,6 +583,8 @@ function ModalData(props) {
             let prevState = null;
             for (let j = 0; j < data.length; j++) {
                 const newState = data[j];
+                if (!props.showCorrelated && !props.userIds.includes(newState.userId))
+                    continue;
                 if (prevState)
                     userStates.push({ newestState: newState, lastState: prevState });
                 prevState = newState;
@@ -569,7 +595,7 @@ function ModalData(props) {
         return output;
     }
     return (components_1.React.createElement("div", { style: { marginTop: '10px', overflowY: 'scroll', overflowX: 'hidden' } }, !!data.length ?
-        data.map((states) => components_1.React.createElement(ModalRepVoiceState_1.default, { newestState: states.newestState, lastState: states.lastState })) : components_1.React.createElement(Form_1.FormText, { type: 'h1' }, "No data to display...")));
+        data.map((states) => components_1.React.createElement(ModalRepVoiceState_1.default, { newestState: states.newestState, lastState: states.lastState })) : components_1.React.createElement(Form_1.FormText, { style: { marginLeft: '16px' }, type: 'h1' }, "No data to display...")));
 }
 exports["default"] = ModalData;
 
@@ -596,17 +622,15 @@ function ModalRepVoiceState({ newestState, lastState }) {
     return (components_1.React.createElement(Flex_1.default, { direction: Flex_1.default.Direction.HORIZONTAL, align: Flex_1.default.Align.START, style: { marginLeft: '16px' } },
         components_1.React.createElement(Flex_1.default, { direction: Flex_1.default.Direction.HORIZONTAL, align: Flex_1.default.Align.CENTER },
             components_1.React.createElement(Avatar_1.default.Avatar, { src: `https://cdn.discordapp.com/avatars/${user.id}/${user.avatar}`, size: Avatar_1.default.AvatarSizes.SIZE_32, status: null }),
-            components_1.React.createElement(Flex_1.default, { direction: Flex_1.default.Direction.HORIZONTAL, style: { width: '75%', } },
+            components_1.React.createElement(Flex_1.default, { direction: Flex_1.default.Direction.HORIZONTAL, style: { width: '75%', maxWidth: '800px' } },
                 components_1.React.createElement(Text_1.default, { variant: 'text-md/bold', style: { marginRight: '3px' } }, user.username),
-                components_1.React.createElement(Text_1.default, { variant: 'text-md/normal', style: { textOverflow: 'ellipsis', whiteSpace: 'nowrap', overflow: 'hidden' } },
+                components_1.React.createElement(Text_1.default, { variant: 'text-md/normal', style: { textOverflow: 'ellipsis', whiteSpace: 'nowrap', overflow: 'hidden', width: '50%' } },
                     (0, voiceState_1.getVoiceStateDifferenceMessage)(newestState, lastState),
                     ".")),
             components_1.React.createElement(Text_1.default, { variant: 'text-sm/normal', style: { marginRight: '16px' } },
                 components_1.React.createElement(Timestamp_1.default, { timestamp: new Date(newestState.when) })))));
 }
 exports["default"] = ModalRepVoiceState;
-// Fri Mar 01 2024 19:43:21 GMT-0800 (Pacific Standard Time)
-// Date.now()
 
 
 /***/ }),
@@ -621,12 +645,41 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 const components_1 = __nccwpck_require__(799);
 const Form_1 = __nccwpck_require__(281);
+const Switch_1 = __importDefault(__nccwpck_require__(419));
 const TextInput_1 = __importDefault(__nccwpck_require__(571));
 const AVCStalker_1 = __nccwpck_require__(65);
+const Button_1 = __importDefault(__nccwpck_require__(776));
+const Flex_1 = __importDefault(__nccwpck_require__(348));
+const Text_1 = __importDefault(__nccwpck_require__(921));
+const data_1 = __nccwpck_require__(496);
+const FileData_1 = __nccwpck_require__(100);
+// export default function ModalSettings(props: UserIdProps & { setUserIds: (ids: string[]) => void; }): JSX.Element {
+//     return (
+//         <div style={{ flexDirection: 'row', display: 'flex', justifyContent: 'flex-start', marginLeft: '16px', marginBottom: '10px', marginTop: '10px' }}>
+//             <FormItem title={'user Ids'}>
+//                 <TextInput
+//                     value={props.userIds.toString()}
+//                     onChange={((e) => {
+//                         let splitBy = e.split(',');
+//                         if(splitBy.length === 0) splitBy = e.split(', ');
+//                         if(splitBy.length === 0) {
+//                             logger.critical(`failed to split string into user ids`, e);
+//                             return;
+//                         }
+//                         props.setUserIds(splitBy);
+//                     })}
+//                 />
+//             </FormItem>
+//             <Button color={Button.Colors.RED} size={Button.Sizes.MEDIUM}>
+//                 Clear Logs
+//             </Button>
+//         </div>
+//     );
+// }
 function ModalSettings(props) {
-    return (components_1.React.createElement("div", { style: { flexDirection: 'row', display: 'flex', justifyContent: 'flex-start', marginLeft: '16px', marginBottom: '10px' } },
-        components_1.React.createElement(Form_1.FormItem, { title: 'user Ids' },
-            components_1.React.createElement(TextInput_1.default, { value: props.userIds.toString(), onChange: ((e) => {
+    return (components_1.React.createElement(Flex_1.default, { direction: Flex_1.default.Direction.HORIZONTAL, align: Flex_1.default.Align.CENTER, style: { marginLeft: '16px', marginBottom: '10px', marginTop: '10px', maxHeight: '48px' } },
+        components_1.React.createElement(Form_1.FormItem, { style: { marginRight: '15px' } },
+            components_1.React.createElement(TextInput_1.default, { value: props.userIds.toString(), placeholder: 'User IDs', onChange: ((e) => {
                     let splitBy = e.split(',');
                     if (splitBy.length === 0)
                         splitBy = e.split(', ');
@@ -635,7 +688,24 @@ function ModalSettings(props) {
                         return;
                     }
                     props.setUserIds(splitBy);
-                }) }))));
+                }) })),
+        components_1.React.createElement(Flex_1.default, { direction: Flex_1.default.Direction.HORIZONTAL, align: Flex_1.default.Align.CENTER },
+            components_1.React.createElement(Text_1.default, { variant: 'eyebrow', style: { marginRight: '5px' } }, "Show Correlated Logs"),
+            components_1.React.createElement(Switch_1.default, { checked: props.showCorrelated, onChange: ((e) => props.setShowCorrelated(e)) })),
+        components_1.React.createElement(Button_1.default, { color: Button_1.default.Colors.RED, size: Button_1.default.Sizes.MEDIUM, style: { marginRight: '16px' }, onClick: (() => {
+                BdApi.UI.showConfirmationModal('aaa', 'aaa', {
+                    danger: true,
+                    onConfirm() {
+                        props.userIds.forEach((userId) => {
+                            data_1.memoryCache.set(userId, []);
+                            (0, FileData_1.del)(userId);
+                        });
+                    },
+                    onCancel() { },
+                    confirmText: 'Delete Logs For User(s)',
+                    cancelText: 'Cancel'
+                });
+            }) }, "Clear Logs")));
 }
 exports["default"] = ModalSettings;
 
@@ -768,7 +838,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.save = exports.get = void 0;
+exports.save = exports.del = exports.get = void 0;
 const fs_1 = __importDefault(__nccwpck_require__(147));
 const _1 = __nccwpck_require__(496);
 const __1 = __importStar(__nccwpck_require__(65));
@@ -787,6 +857,19 @@ function get(relevantId) {
     }
 }
 exports.get = get;
+function del(relevantId) {
+    const filePath = __1.default.settings.vcLogging.filePath.replace('%plugins%', BdApi.Plugins.folder);
+    try {
+        const data = JSON.parse(fs_1.default.readFileSync(__1.default.settings.vcLogging.filePath.replace('%plugins%', BdApi.Plugins.folder), { encoding: 'utf-8' }));
+        data[relevantId] = [];
+        fs_1.default.writeFileSync(filePath, JSON.stringify(data), { encoding: 'utf-8' });
+    }
+    catch (err) {
+        __1.logger.critical(`Failed to delete log data (VoiceStateLogs) `, err, relevantId);
+        return undefined;
+    }
+}
+exports.del = del;
 function save() {
     try {
         const filePath = __1.default.settings.vcLogging.filePath.replace('%plugins%', BdApi.Plugins.folder);
@@ -1259,37 +1342,42 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.shouldLog = void 0;
+exports.getCorrelatedPeople = exports.isFriendOrWhitelisted = void 0;
 const __1 = __importDefault(__nccwpck_require__(65));
 const RelationshipStore_1 = __importDefault(__nccwpck_require__(366));
+const UserStore_1 = __importDefault(__nccwpck_require__(682));
 const VoiceStateStore_1 = __importDefault(__nccwpck_require__(979));
-function shouldLog(voiceState) {
-    // If we have them in our whitelisted users to log out, just ignore the rest and say OK!
+const ourId = UserStore_1.default.getCurrentUser().id;
+function isFriendOrWhitelisted(voiceState) {
+    if (voiceState.userId === ourId)
+        return false;
     if (__1.default.settings.vcLogging.whitelisted.includes(voiceState.userId))
-        return [voiceState.userId, true];
-    // We have them added, the rest of their state doesn't matter.
-    if (__1.default.settings.vcLogging.logFriends && RelationshipStore_1.default.isFriend(voiceState.userId))
-        return [voiceState.userId, true];
-    if (voiceState.channelId === null)
-        return [undefined, false];
-    // if we don't have searching everyone enabled, gtfo!
-    if (!__1.default.settings.vcLogging.logCorrelatedPeople)
-        return [undefined, false];
-    // simple checks are gone, now we need to check if any of our friends
-    // are in that VC
-    const inVC = VoiceStateStore_1.default.getVoiceStatesForChannel(voiceState.channelId);
-    for (const userId in inVC) {
-        // find if user is whitelisted or a friend (failed first check of user emitting the
-        // voice state update, so attempt to find someone else within the call.)
-        const state = inVC[userId];
-        if (__1.default.settings.vcLogging.whitelisted.includes(state.userId))
-            return [state.userId, true];
-        if (__1.default.settings.vcLogging.logFriends && RelationshipStore_1.default.isFriend(state.userId))
-            return [state.userId, true];
-    }
-    return [undefined, false];
+        return true;
+    if (__1.default.settings.vcLogging.logFriends)
+        return RelationshipStore_1.default.isFriend(voiceState.userId);
+    return false;
 }
-exports.shouldLog = shouldLog;
+exports.isFriendOrWhitelisted = isFriendOrWhitelisted;
+function getCorrelatedPeople(voiceState) {
+    // VOICE_STATE_UPDATE -> 
+    //     isFriend() || isWhitelisted() -> append to log file;
+    // then if logCorrelated:
+    //     loop over each person in VC:
+    //          if one of our friends is in that vc, return the friend's id
+    //          so that we can correlate the VoiceState to our Friend's ID
+    // not in a VC, cant check correlated people, gtfo!
+    if (voiceState.channelId === null)
+        return undefined;
+    const inVC = VoiceStateStore_1.default.getVoiceStatesForChannel(voiceState.channelId);
+    const outputIds = [];
+    for (const userId in inVC) {
+        const state = inVC[userId];
+        if (isFriendOrWhitelisted(state))
+            outputIds.push(state.userId);
+    }
+    return outputIds;
+}
+exports.getCorrelatedPeople = getCorrelatedPeople;
 
 
 /***/ }),
@@ -1356,7 +1444,9 @@ function getVoiceStateDifferenceMessage(newest, old) {
         return newest.deaf ? 'got server deafened' : 'got unserver deafened';
     if (newest.mute !== old.mute)
         return newest.mute ? 'got server muted' : 'got unserver muted';
-    return 'unknown? (most likely platform swap)';
+    if (newest.sessionId !== old.sessionId)
+        return 'changed platforms';
+    return 'unknown? (no previous data)';
 }
 exports.getVoiceStateDifferenceMessage = getVoiceStateDifferenceMessage;
 function onVoiceChange(voiceState) {
@@ -1367,14 +1457,16 @@ function onVoiceChange(voiceState) {
         if (Following_1.followingPeople.has(vs.userId))
             (0, Following_1.followFromVoiceState)(vs);
         if (__1.default.settings.vcLogging.enabled) {
-            const [userId, ok] = (0, Logging_1.shouldLog)(vs);
-            __1.logger.debug(`checking if its ok to log for vs`, vs, userId, ok);
-            __1.logger.debug(`ok?: `, ok);
-            if (ok)
-                (0, data_1.append)({
-                    ...vs,
-                    when: Date.now()
-                }, userId);
+            if ((0, Logging_1.isFriendOrWhitelisted)(vs))
+                (0, data_1.append)({ ...vs, when: Date.now() }, vs.userId);
+            if (!__1.default.settings.vcLogging.logCorrelatedPeople)
+                continue;
+            const correlatedUserIds = (0, Logging_1.getCorrelatedPeople)(vs);
+            // There was nobody correlated
+            if (!correlatedUserIds || correlatedUserIds.length === 0)
+                continue;
+            for (let j = 0; j < correlatedUserIds.length; j++)
+                (0, data_1.append)({ ...vs, when: Date.now() }, correlatedUserIds[j]);
         }
     }
 }
@@ -1393,7 +1485,7 @@ module.exports = require("fs");
 /***/ 136:
 /***/ ((module) => {
 
-module.exports = JSON.parse('{"$schema":"../../config_schema.jsonc","name":"AVCStalker","description":"A simplistic.","author":"ace. & friez.","version":"1.9.1-rc","source":"https://raw.githubusercontent.com/AceLikesGhosts/bd-plugins/master/dist/AVCStalker/AVCStalker.plugin.js","authorLink":"https://github.com/AceLikesGhosts/bd-plugins","website":"https://github.com/AceLikesGhosts/bd-plugins","updateLink":"https://github.com/AceLikesGhosts/bd-plugins","authorId":"327639826075484162"}');
+module.exports = JSON.parse('{"$schema":"../../config_schema.jsonc","name":"AVCStalker","description":"In God we trust.","author":"ace.","version":"2.0.0","source":"https://raw.githubusercontent.com/AceLikesGhosts/bd-plugins/master/dist/AVCStalker/AVCStalker.plugin.js","authorLink":"https://github.com/AceLikesGhosts/bd-plugins","website":"https://github.com/AceLikesGhosts/bd-plugins","updateLink":"https://github.com/AceLikesGhosts/bd-plugins","authorId":"327639826075484162"}');
 
 /***/ })
 

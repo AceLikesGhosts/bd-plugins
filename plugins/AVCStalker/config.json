@@ -1,9 +1,9 @@
 {
     "$schema": "../../config_schema.jsonc",
     "name": "AVCStalker",
-    "description": "A simplistic.",
-    "author": "ace. & friez.",
-    "version": "1.9.1-rc",
+    "description": "In God we trust.",
+    "author": "ace.",
+    "version": "2.0.0",
     "source": "https://raw.githubusercontent.com/AceLikesGhosts/bd-plugins/master/dist/AVCStalker/AVCStalker.plugin.js",
     "authorLink": "https://github.com/AceLikesGhosts/bd-plugins",
     "website": "https://github.com/AceLikesGhosts/bd-plugins",

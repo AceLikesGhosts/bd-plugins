@@ -19,13 +19,13 @@ export default function ModalRepVoiceState({ newestState, lastState }: StateData
                     status={null}
                 />
 
-                <Flex direction={Flex.Direction.HORIZONTAL} style={{ width: '75%', }}>
+                <Flex direction={Flex.Direction.HORIZONTAL} style={{ width: '75%', maxWidth: '800px' }}>
                     <Text variant='text-md/bold' style={{ marginRight: '3px' }}>
                         {user.username}
                     </Text>
-                    <Text variant='text-md/normal' style={{ textOverflow: 'ellipsis', whiteSpace: 'nowrap', overflow: 'hidden' }}>
+                    <Text variant='text-md/normal' style={{ textOverflow: 'ellipsis', whiteSpace: 'nowrap', overflow: 'hidden', width: '50%' }}>
                         {getVoiceStateDifferenceMessage(newestState, lastState)}.
-                    </Text>
+                    </Text> 
                 </Flex>
 
                 <Text variant='text-sm/normal' style={{ marginRight: '16px' }}>
@@ -37,6 +37,3 @@ export default function ModalRepVoiceState({ newestState, lastState }: StateData
         </Flex>
     );
 }
-
-// Fri Mar 01 2024 19:43:21 GMT-0800 (Pacific Standard Time)
-// Date.now()
