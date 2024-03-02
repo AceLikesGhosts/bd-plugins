@@ -4,11 +4,12 @@ import PatchUserCallHeader from './patches/UserCallHeader';
 import Logger from '@lib/logger';
 
 import Settings from './components/Settings';
-import onVoiceChange from './VoiceStateUpdate';
+import onVoiceChange from './voiceState';
 import Dispatcher from '@lib/modules/Dispatcher';
 import PatchUserContext from './patches/UserContext';
 import PatchUserAccountMenu from './patches/UserAccountMenu';
 import PatchUserPopout from './patches/UserPopout';
+import { save } from './data/FileData';
 
 // #region cringe result of @vercel/ncc.
 export const Icons = {
@@ -23,25 +24,34 @@ export const DefaultSettings = {
     voiceChatFollowing: {
         clickVoiceChatButtonClears: true
     },
-    userPopout: false
+    userPopout: false,
+    vcLogging: {
+        enabled: false,
+        // list of user ids
+        whitelisted: [] as string[],
+        // megabytes
+        maxSize: 1000,
+        logFriends: true,
+        logCorrelatedPeople: false,
+        filePath: '%plugins%/AVCStalker_VSLogs.json'
+    },
+    contextMenu: {
+        individual: true,
+        showLogButton: false,
+        showWhitelistButton: false,
+        name: 'Voice Utilities'
+    }
 };
 
-// export let settings: typeof DefaultSettings = DefaultSettings;
 export const logger = new Logger(config);
 
-/**
- * Set of userIDs to follow, aka who we care about
- * to follow
- */
-export const followingPeople = new Set<string>();
-
-export default class AUserVoiceLocation implements Plugin {
+export default class AVCStalker implements Plugin {
     static settings: typeof DefaultSettings = DefaultSettings;
     public cancelUserContextPatch: Cancel | null = null;
 
     start(): void {
         const loadedSettings = BdApi.Data.load(config.name, 'settings');
-        AUserVoiceLocation.settings = {
+        AVCStalker.settings = {
             ...DefaultSettings,
             ...loadedSettings
         };
@@ -50,7 +60,7 @@ export default class AUserVoiceLocation implements Plugin {
 
         logger.info('Patching UserCallHeader');
         PatchUserCallHeader();
-        logger.info('Patching UserContext');        
+        logger.info('Patching UserContext');
         this.cancelUserContextPatch = PatchUserContext();
         logger.info('Patching UserPopout');
         PatchUserPopout();
@@ -61,20 +71,20 @@ export default class AUserVoiceLocation implements Plugin {
     stop(): void {
         logger.info('Unpatching everything under the name of ', config.name);
         BdApi.Patcher.unpatchAll(config.name);
+
         this.cancelUserContextPatch!();
 
         logger.info('Unsubscribed from VOICE_STATE_UPDATES (vc monitoring');
         Dispatcher.unsubscribe('VOICE_STATE_UPDATES', onVoiceChange);
 
-        logger.info('Saving settings', AUserVoiceLocation.settings);
-        BdApi.Data.save(config.name, 'settings', AUserVoiceLocation.settings);
+        logger.info('Saving settings', AVCStalker.settings);
+        BdApi.Data.save(config.name, 'settings', AVCStalker.settings);
 
+        logger.info('Saving VC logs');
+        save();
 
         const elm = document.getElementById('ClearFollowing');
         if(elm) elm.remove();
-
-        // logger.info('Saving creepy stalker data to json file');
-        // saveToFile();
     }
 
     getSettingsPanel(): () => JSX.Element {

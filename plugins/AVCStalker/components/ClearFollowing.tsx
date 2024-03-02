@@ -1,12 +1,13 @@
 import { React } from '@lib/components';
-import AUserVoiceLocation, { Icons, followingPeople } from '..';
+import AVCStalker, { Icons } from '..';
 import UserStore from '@lib/stores/UserStore';
+import { followingPeople } from '../voiceState/Following';
 
 const PanelButton = BdApi.Webpack.getByStrings('Masks.PANEL_BUTTON');
 
 export default function ClearFollowing(): JSX.Element {
     function clearFollowingPeople() {
-        if(!AUserVoiceLocation.settings.voiceChatFollowing.clickVoiceChatButtonClears) return;
+        if(!AVCStalker.settings.voiceChatFollowing.clickVoiceChatButtonClears) return;
         
         BdApi.UI.showToast('Cleared following list', { type: 'success' });
         followingPeople.clear();
