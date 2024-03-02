@@ -9,6 +9,7 @@ import Dispatcher from '@lib/modules/Dispatcher';
 import PatchUserContext from './patches/UserContext';
 import PatchUserAccountMenu from './patches/UserAccountMenu';
 import PatchUserPopout from './patches/UserPopout';
+import { save } from './data/FileData';
 
 // #region cringe result of @vercel/ncc.
 export const Icons = {
@@ -31,17 +32,17 @@ export const DefaultSettings = {
         // megabytes
         maxSize: 1000,
         logFriends: true,
+        logCorrelatedPeople: false,
         filePath: '%plugins%/AVCStalker_VSLogs.json'
     },
     contextMenu: {
-        individual: false,
+        individual: true,
         showLogButton: false,
         showWhitelistButton: false,
         name: 'Voice Utilities'
     }
 };
 
-// export let settings: typeof DefaultSettings = DefaultSettings;
 export const logger = new Logger(config);
 
 export default class AVCStalker implements Plugin {
@@ -70,6 +71,7 @@ export default class AVCStalker implements Plugin {
     stop(): void {
         logger.info('Unpatching everything under the name of ', config.name);
         BdApi.Patcher.unpatchAll(config.name);
+
         this.cancelUserContextPatch!();
 
         logger.info('Unsubscribed from VOICE_STATE_UPDATES (vc monitoring');
@@ -77,6 +79,9 @@ export default class AVCStalker implements Plugin {
 
         logger.info('Saving settings', AVCStalker.settings);
         BdApi.Data.save(config.name, 'settings', AVCStalker.settings);
+
+        logger.info('Saving VC logs');
+        save();
 
         const elm = document.getElementById('ClearFollowing');
         if(elm) elm.remove();

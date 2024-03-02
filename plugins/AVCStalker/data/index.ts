@@ -5,7 +5,7 @@ import type { UserVoiceState } from '@lib/stores/VoiceStateStore';
 /**
  * Cache in memory of relevant user id to voice states.
  */
-const memoryCache = new Map<string, TimestampedUserVoiceState[]>();
+export const memoryCache = new Map<string, TimestampedUserVoiceState[]>();
 
 export interface TimestampedUserVoiceState extends UserVoiceState {
     /**

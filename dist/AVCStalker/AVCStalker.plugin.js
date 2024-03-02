@@ -2,14 +2,14 @@
 * @name AVCStalker
 * @description A simplistic.
 * @author ace. & friez.
-* @version 1.3.10
+* @version 1.9.0-rc
 * @source https://raw.githubusercontent.com/AceLikesGhosts/bd-plugins/master/dist/AVCStalker/AVCStalker.plugin.js
 * @authorLink https://github.com/AceLikesGhosts/bd-plugins
 * @website https://github.com/AceLikesGhosts/bd-plugins
 * @updateLink https://github.com/AceLikesGhosts/bd-plugins
 * @authorId 327639826075484162
 */
-require('./sourcemap-register.js');/******/ (() => { // webpackBootstrap
+/******/ (() => { // webpackBootstrap
 /******/ 	"use strict";
 /******/ 	var __webpack_modules__ = ({
 
@@ -19,6 +19,30 @@ require('./sourcemap-register.js');/******/ (() => { // webpackBootstrap
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports["default"] = BdApi.Webpack.getByKeys('debounce');
+
+
+/***/ }),
+
+/***/ 219:
+/***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
+
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+const _1 = __nccwpck_require__(799);
+exports["default"] = {
+    Avatar: _1.RawComponents.Avatar,
+    AvatarSizes: BdApi.Webpack.getByKeys('AvatarSizes')?.AvatarSizes
+};
+
+
+/***/ }),
+
+/***/ 348:
+/***/ ((__unused_webpack_module, exports) => {
+
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports["default"] = BdApi.Webpack.getByKeys('Child', 'Justify');
 
 
 /***/ }),
@@ -36,6 +60,17 @@ _a = _1.RawComponents, exports.FormSection = _a.FormSection, exports.FormItem = 
 
 /***/ }),
 
+/***/ 921:
+/***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
+
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+const _1 = __nccwpck_require__(799);
+exports["default"] = _1.RawComponents.Text;
+
+
+/***/ }),
+
 /***/ 571:
 /***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
 
@@ -44,6 +79,16 @@ Object.defineProperty(exports, "__esModule", ({ value: true }));
 const _1 = __nccwpck_require__(799);
 const { TextInput } = _1.RawComponents;
 exports["default"] = TextInput;
+
+
+/***/ }),
+
+/***/ 671:
+/***/ ((__unused_webpack_module, exports) => {
+
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports["default"] = BdApi.Webpack.getByStrings('MESSAGE_EDITED_TIMESTAMP_A11Y_LABEL');
 
 
 /***/ }),
@@ -396,6 +441,7 @@ function Settings() {
     const [isVCLoggingEnabled, setVCLoggingEnabled] = index_1.React.useState(__1.default.settings.vcLogging.enabled);
     const [vcLoggingMaxSize, setVCLoggingMaxSize] = index_1.React.useState(__1.default.settings.vcLogging.maxSize);
     const [logFriends, setLogFriends] = index_1.React.useState(__1.default.settings.vcLogging.logFriends);
+    const [logCorrelatedPeople, setLogCorrelatedPeople] = index_1.React.useState(__1.default.settings.vcLogging.logCorrelatedPeople);
     const [filePath, setFilePath] = index_1.React.useState(__1.default.settings.vcLogging.filePath);
     const [isInvidual, setInvididual] = index_1.React.useState(__1.default.settings.contextMenu.individual);
     const [showLogButton, setShowLogButton] = index_1.React.useState(__1.default.settings.contextMenu.showLogButton);
@@ -412,7 +458,8 @@ function Settings() {
                 maxSize: vcLoggingMaxSize,
                 whitelisted: __1.default.settings.vcLogging.whitelisted,
                 logFriends,
-                filePath
+                filePath,
+                logCorrelatedPeople
             },
             contextMenu: {
                 individual: isInvidual,
@@ -428,7 +475,9 @@ function Settings() {
         vcLoggingMaxSize,
         logFriends,
         isInvidual,
-        contextName
+        contextName,
+        showWhitelistButton,
+        showLogButton
     ]);
     return (index_1.React.createElement("div", null,
         index_1.React.createElement(Form_1.FormTitle, { tag: 'h2' }, "General Settings"),
@@ -437,12 +486,13 @@ function Settings() {
         index_1.React.createElement(Form_1.FormDivider, null),
         index_1.React.createElement(Form_1.FormTitle, { tag: 'h2' }, "Voice Chat Logging"),
         index_1.React.createElement(Form_1.FormSwitch, { note: 'Should we log out voice states for later analysis?', value: isVCLoggingEnabled, onChange: ((e) => setVCLoggingEnabled(e)) }, "Enable Logging"),
-        index_1.React.createElement(TextInput, { title: 'Maximum File Size (megabytes)', value: String(vcLoggingMaxSize), onChange: ((e) => {
+        index_1.React.createElement(TextInput, { title: 'Maximum File Size (megabytes)', value: String(vcLoggingMaxSize), disabled: true, onChange: ((e) => {
                 if (!Lodash_1.default.isNumber(e))
                     return;
                 setVCLoggingMaxSize(Number(e));
             }) }),
         index_1.React.createElement(Form_1.FormSwitch, { note: 'Should we always log friend\'s voice states?', value: logFriends, onChange: ((e) => setLogFriends(e)) }, "Log Friends"),
+        index_1.React.createElement(Form_1.FormSwitch, { note: 'Should we attempt to check if someone we have whitelisted/friended is in their call and log their state if so? WARNING: THIS WILL LAG YOUR DISCORD IF YOU ARE IN BIG SERVERS!', value: logCorrelatedPeople, onChange: ((e) => setLogCorrelatedPeople(e)) }, "Log Correlated People"),
         index_1.React.createElement(TextInput, { title: 'The location where we should save our VoiceState logs. Use "%plugins%" for plugin folder.', value: filePath, onChange: ((e) => setFilePath(e)) }),
         index_1.React.createElement(Form_1.FormDivider, null),
         index_1.React.createElement(Form_1.FormTitle, { tag: 'h2' }, "Context Menu"),
@@ -469,24 +519,122 @@ Object.defineProperty(exports, "__esModule", ({ value: true }));
 const components_1 = __nccwpck_require__(799);
 const ModalsModule_1 = __importDefault(__nccwpck_require__(336));
 const ModalSettings_1 = __importDefault(__nccwpck_require__(180));
+const ModalData_1 = __importDefault(__nccwpck_require__(887));
+const Form_1 = __nccwpck_require__(281);
 function Modal(props) {
-    return (components_1.React.createElement(ModalsModule_1.default.ModalRoot, { ...props },
-        components_1.React.createElement(ModalSettings_1.default, null)));
+    const [userIds, setUserIds] = components_1.React.useState([props.userId]);
+    return (components_1.React.createElement(ModalsModule_1.default.ModalRoot, { size: ModalsModule_1.default.ModalSize.LARGE, ...props },
+        components_1.React.createElement(ModalSettings_1.default, { userIds: userIds, setUserIds: setUserIds }),
+        components_1.React.createElement(Form_1.FormDivider, null),
+        components_1.React.createElement(ModalData_1.default, { userIds: userIds })));
 }
 exports["default"] = Modal;
 
 
 /***/ }),
 
-/***/ 180:
-/***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
+/***/ 887:
+/***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
 
 
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 const components_1 = __nccwpck_require__(799);
-function ModalSettings() {
-    return (components_1.React.createElement("div", null,
-        components_1.React.createElement("p", null, "settings")));
+const ModalRepVoiceState_1 = __importDefault(__nccwpck_require__(20));
+const data_1 = __nccwpck_require__(496);
+const Form_1 = __nccwpck_require__(281);
+function ModalData(props) {
+    const [data, setData] = components_1.React.useState(getData());
+    components_1.React.useEffect(() => {
+        // 10/10 code
+        setData(getData());
+    }, [props.userIds]);
+    function getData() {
+        const output = [];
+        for (let i = 0; i < props.userIds.length; i++) {
+            const data = (0, data_1.get)(props.userIds[i]);
+            const userStates = [];
+            let prevState = null;
+            for (let j = 0; j < data.length; j++) {
+                const newState = data[j];
+                if (prevState)
+                    userStates.push({ newestState: newState, lastState: prevState });
+                prevState = newState;
+            }
+            output.push(...userStates);
+        }
+        return output;
+    }
+    return (components_1.React.createElement("div", { style: { marginTop: '10px', overflowY: 'scroll', overflowX: 'hidden' } }, !!data.length ?
+        data.map((states) => components_1.React.createElement(ModalRepVoiceState_1.default, { newestState: states.newestState, lastState: states.lastState })) : components_1.React.createElement(Form_1.FormText, { type: 'h1' }, "No data to display...")));
+}
+exports["default"] = ModalData;
+
+
+/***/ }),
+
+/***/ 20:
+/***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
+
+
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+const components_1 = __nccwpck_require__(799);
+const Flex_1 = __importDefault(__nccwpck_require__(348));
+const Avatar_1 = __importDefault(__nccwpck_require__(219));
+const Text_1 = __importDefault(__nccwpck_require__(921));
+const Timestamp_1 = __importDefault(__nccwpck_require__(671));
+const UserStore_1 = __importDefault(__nccwpck_require__(682));
+const voiceState_1 = __nccwpck_require__(414);
+function ModalRepVoiceState({ newestState, lastState }) {
+    const user = UserStore_1.default.getUser(newestState.userId);
+    return (components_1.React.createElement(Flex_1.default, { direction: Flex_1.default.Direction.HORIZONTAL, align: Flex_1.default.Align.START, style: { marginLeft: '16px' } },
+        components_1.React.createElement(Flex_1.default, { direction: Flex_1.default.Direction.HORIZONTAL, align: Flex_1.default.Align.CENTER },
+            components_1.React.createElement(Avatar_1.default.Avatar, { src: `https://cdn.discordapp.com/avatars/${user.id}/${user.avatar}`, size: Avatar_1.default.AvatarSizes.SIZE_32, status: null }),
+            components_1.React.createElement(Flex_1.default, { direction: Flex_1.default.Direction.HORIZONTAL, style: { width: '75%', } },
+                components_1.React.createElement(Text_1.default, { variant: 'text-md/bold', style: { marginRight: '3px' } }, user.username),
+                components_1.React.createElement(Text_1.default, { variant: 'text-md/normal', style: { textOverflow: 'ellipsis', whiteSpace: 'nowrap', overflow: 'hidden' } },
+                    (0, voiceState_1.getVoiceStateDifferenceMessage)(newestState, lastState),
+                    ".")),
+            components_1.React.createElement(Text_1.default, { variant: 'text-sm/normal', style: { marginRight: '16px' } },
+                components_1.React.createElement(Timestamp_1.default, { timestamp: new Date(newestState.when) })))));
+}
+exports["default"] = ModalRepVoiceState;
+// Fri Mar 01 2024 19:43:21 GMT-0800 (Pacific Standard Time)
+// Date.now()
+
+
+/***/ }),
+
+/***/ 180:
+/***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
+
+
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+const components_1 = __nccwpck_require__(799);
+const Form_1 = __nccwpck_require__(281);
+const TextInput_1 = __importDefault(__nccwpck_require__(571));
+const AVCStalker_1 = __nccwpck_require__(65);
+function ModalSettings(props) {
+    return (components_1.React.createElement("div", { style: { flexDirection: 'row', display: 'flex', justifyContent: 'flex-start', marginLeft: '16px', marginBottom: '10px' } },
+        components_1.React.createElement(Form_1.FormItem, { title: 'user Ids' },
+            components_1.React.createElement(TextInput_1.default, { value: props.userIds.toString(), onChange: ((e) => {
+                    let splitBy = e.split(',');
+                    if (splitBy.length === 0)
+                        splitBy = e.split(', ');
+                    if (splitBy.length === 0) {
+                        AVCStalker_1.logger.critical(`failed to split string into user ids`, e);
+                        return;
+                    }
+                    props.setUserIds(splitBy);
+                }) }))));
 }
 exports["default"] = ModalSettings;
 
@@ -501,6 +649,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
+const components_1 = __nccwpck_require__(799);
 const AVCStalker_1 = __nccwpck_require__(65);
 const ModalsModule_1 = __importDefault(__nccwpck_require__(336));
 const Modal_1 = __importDefault(__nccwpck_require__(150));
@@ -510,7 +659,7 @@ const Modal_1 = __importDefault(__nccwpck_require__(150));
 function openModalFor(userId) {
     AVCStalker_1.logger.info(`opening voicestate modal for ${userId}`);
     void ModalsModule_1.default.openModal((props) => {
-        return Modal_1.default.call(null, props);
+        return components_1.React.createElement(Modal_1.default, { ...props, userId });
     });
 }
 exports["default"] = openModalFor;
@@ -591,22 +740,74 @@ exports["default"] = Popout;
 /***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
 
 
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    __setModuleDefault(result, mod);
+    return result;
+};
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.get = void 0;
+exports.save = exports.get = void 0;
 const fs_1 = __importDefault(__nccwpck_require__(147));
-const __1 = __importDefault(__nccwpck_require__(65));
+const _1 = __nccwpck_require__(496);
+const __1 = __importStar(__nccwpck_require__(65));
 /**
  * Reads data from the disc, and returns it, then discards anything nonrelevant for the GC to manage.
  * This will be expensive if there is a lot of data.
  * @warning EXPENSIVE OPERATION!
  */
 function get(relevantId) {
-    return JSON.parse(fs_1.default.readFileSync(__1.default.settings.vcLogging.filePath.replace('%plugins%', BdApi.Plugins.folder), { encoding: 'utf-8' }))[relevantId] ?? undefined;
+    try {
+        return JSON.parse(fs_1.default.readFileSync(__1.default.settings.vcLogging.filePath.replace('%plugins%', BdApi.Plugins.folder), { encoding: 'utf-8' }))[relevantId] ?? undefined;
+    }
+    catch (err) {
+        __1.logger.critical(`Failed to read file cache for VoiceStateLogs: `, err);
+        return undefined;
+    }
 }
 exports.get = get;
+function save() {
+    try {
+        const filePath = __1.default.settings.vcLogging.filePath.replace('%plugins%', BdApi.Plugins.folder);
+        const data = JSON.parse(fs_1.default.readFileSync(filePath, { encoding: 'utf-8' }));
+        _1.memoryCache.forEach((value) => {
+            const userId = value[0].userId;
+            if (!userId)
+                throw new Error(`Failed to save VCStalker log data, unable to find userId on first element of memory cache ${value[0]} ${value}`);
+            data[userId] = [
+                ...data[userId] ?? [],
+                ...value
+            ];
+        });
+        fs_1.default.writeFileSync(filePath, JSON.stringify(data), { encoding: 'utf-8' });
+        __1.logger.info(`wrote out VCStalker log data`, data, filePath);
+    }
+    catch (err) {
+        __1.logger.critical(`FAILED TO SAVE DATA??`, err);
+        return;
+    }
+}
+exports.save = save;
 
 
 /***/ }),
@@ -616,13 +817,13 @@ exports.get = get;
 
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.get = exports.append = void 0;
+exports.get = exports.append = exports.memoryCache = void 0;
 const __1 = __nccwpck_require__(65);
 const FileData_1 = __nccwpck_require__(100);
 /**
  * Cache in memory of relevant user id to voice states.
  */
-const memoryCache = new Map();
+exports.memoryCache = new Map();
 /**
  * Appends data to our log file.
  * @param tsVoiceState - The voice state we are appending to our logs
@@ -635,8 +836,8 @@ function append(tsVoiceState, relevantId) {
         __1.logger.info(`changed relevantId to tsVoiceState`, tsVoiceState.userId);
     }
     __1.logger.info(`updated voice state cache`);
-    memoryCache.set(relevantId, [
-        ...memoryCache.get(relevantId) ?? [],
+    exports.memoryCache.set(relevantId, [
+        ...exports.memoryCache.get(relevantId) ?? [],
         tsVoiceState
     ]);
 }
@@ -646,7 +847,7 @@ exports.append = append;
  */
 function get(relevantId) {
     return [
-        ...memoryCache.get(relevantId) ?? [],
+        ...exports.memoryCache.get(relevantId) ?? [],
         ...(0, FileData_1.get)(relevantId) ?? []
     ];
 }
@@ -673,6 +874,7 @@ const Dispatcher_1 = __importDefault(__nccwpck_require__(115));
 const UserContext_1 = __importDefault(__nccwpck_require__(680));
 const UserAccountMenu_1 = __importDefault(__nccwpck_require__(583));
 const UserPopout_1 = __importDefault(__nccwpck_require__(948));
+const FileData_1 = __nccwpck_require__(100);
 // #region cringe result of @vercel/ncc.
 exports.Icons = {
     LiaUserSlashSolid: `<path d="M 3.6992188 2.3007812 L 2.3007812 3.6992188 L 9.1210938 10.519531 C 9.1148472 10.54659 9.1055539 10.572434 9.0996094 10.599609 L 11 12.5 L 11 12.398438 L 15.601562 17 L 15.5 17 L 17.699219 19.199219 C 17.749353 19.210917 17.795909 19.231553 17.845703 19.244141 L 23.660156 25.058594 C 23.670754 25.106568 23.68955 25.150877 23.699219 25.199219 L 25.5 27 L 25.601562 27 L 28.300781 29.699219 L 29.699219 28.300781 L 25.59375 24.195312 C 24.75029 21.314801 22.648326 18.945754 19.900391 17.800781 C 21.800391 16.500781 23 14.4 23 12 C 23 8.1 19.9 5 16 5 C 13.390973 5 11.146509 6.4199607 9.921875 8.5234375 L 3.6992188 2.3007812 z M 16 7 C 18.8 7 21 9.2 21 12 C 21 14.086994 19.776043 15.83791 17.994141 16.595703 L 11.404297 10.005859 C 12.16209 8.2239568 13.913006 7 16 7 z M 9.0996094 13.300781 C 9.4996094 15.200781 10.499609 16.800781 12.099609 17.800781 C 8.4996094 19.300781 6 22.9 6 27 L 8 27 C 8 22.9 11.000391 19.599609 14.900391 19.099609 L 9.0996094 13.300781 z"></path>`,
@@ -694,16 +896,16 @@ exports.DefaultSettings = {
         // megabytes
         maxSize: 1000,
         logFriends: true,
+        logCorrelatedPeople: false,
         filePath: '%plugins%/AVCStalker_VSLogs.json'
     },
     contextMenu: {
-        individual: false,
+        individual: true,
         showLogButton: false,
         showWhitelistButton: false,
         name: 'Voice Utilities'
     }
 };
-// export let settings: typeof DefaultSettings = DefaultSettings;
 exports.logger = new logger_1.default(config_json_1.default);
 class AVCStalker {
     constructor() {
@@ -733,6 +935,8 @@ class AVCStalker {
         Dispatcher_1.default.unsubscribe('VOICE_STATE_UPDATES', voiceState_1.default);
         exports.logger.info('Saving settings', AVCStalker.settings);
         BdApi.Data.save(config_json_1.default.name, 'settings', AVCStalker.settings);
+        exports.logger.info('Saving VC logs');
+        (0, FileData_1.save)();
         const elm = document.getElementById('ClearFollowing');
         if (elm)
             elm.remove();
@@ -911,10 +1115,14 @@ function PatchUserContext() {
                 __1.logger.info(`opened voice state logs for: `, id);
                 (0, modal_1.default)(id);
             }) });
+        const isWhitelisted = __1.default.settings.vcLogging.whitelisted.includes(id);
         // TODO: stop wasting resources by creating this even if we don't render it!
-        const whitelistButton = components_1.React.createElement(Item, { label: 'Add To Whitelist', id: 'whitelist-button', action: (() => {
-                __1.logger.info(`added ${id} to whitelisted (vclogs)`);
-                __1.default.settings.vcLogging.whitelisted.push(id);
+        const whitelistButton = components_1.React.createElement(Item, { label: isWhitelisted ? 'Remove From Whitelist' : 'Add To Whitelist', id: 'whitelist-button', action: (() => {
+                __1.logger.info(`${isWhitelisted ? 'removed' : 'added'} ${id} to whitelisted (vclogs)`);
+                if (isWhitelisted)
+                    __1.default.settings.vcLogging.whitelisted.splice(__1.default.settings.vcLogging.whitelisted.indexOf(id), 1);
+                else
+                    __1.default.settings.vcLogging.whitelisted.push(id);
             }) });
         if (__1.default.settings.contextMenu.individual) {
             res.props.children.push(followButton);
@@ -1059,11 +1267,13 @@ function shouldLog(voiceState) {
     if (__1.default.settings.vcLogging.whitelisted.includes(voiceState.userId))
         return [voiceState.userId, true];
     // We have them added, the rest of their state doesn't matter.
-    if (RelationshipStore_1.default.isFriend(voiceState.userId))
+    if (__1.default.settings.vcLogging.logFriends && RelationshipStore_1.default.isFriend(voiceState.userId))
         return [voiceState.userId, true];
-    // Disconnected from call.
-    if (!voiceState.channelId)
-        return [voiceState.userId, true];
+    if (voiceState.channelId === null)
+        return [undefined, false];
+    // if we don't have searching everyone enabled, gtfo!
+    if (!__1.default.settings.vcLogging.logCorrelatedPeople)
+        return [undefined, false];
     // simple checks are gone, now we need to check if any of our friends
     // are in that VC
     const inVC = VoiceStateStore_1.default.getVoiceStatesForChannel(voiceState.channelId);
@@ -1073,7 +1283,7 @@ function shouldLog(voiceState) {
         const state = inVC[userId];
         if (__1.default.settings.vcLogging.whitelisted.includes(state.userId))
             return [state.userId, true];
-        if (RelationshipStore_1.default.isFriend(state.userId))
+        if (__1.default.settings.vcLogging.logFriends && RelationshipStore_1.default.isFriend(state.userId))
             return [state.userId, true];
     }
     return [undefined, false];
@@ -1110,11 +1320,44 @@ var __importStar = (this && this.__importStar) || function (mod) {
     __setModuleDefault(result, mod);
     return result;
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.getVoiceStateDifferenceMessage = void 0;
 const Following_1 = __nccwpck_require__(343);
 const Logging_1 = __nccwpck_require__(554);
 const data_1 = __nccwpck_require__(496);
 const __1 = __importStar(__nccwpck_require__(65));
+const ChannelStore_1 = __importDefault(__nccwpck_require__(432));
+const GuildStore_1 = __importDefault(__nccwpck_require__(866));
+function getVoiceStateDifferenceMessage(newest, old) {
+    if (newest.channelId !== old.channelId || newest.channelId === null) {
+        if (!newest.channelId && !newest.oldChannelId) {
+            __1.logger.critical('Newest had no past nor current, wtf?', newest);
+            return 'left channel (unknown)';
+        }
+        const channel = ChannelStore_1.default.getChannel(newest.channelId ?? newest.oldChannelId);
+        const guild = GuildStore_1.default.getGuild(channel.guild_id);
+        if (newest.channelId === null)
+            return `left ${channel.name} in ${guild?.name ?? 'unknown'}`;
+        return `moved to ${channel.name} in ${guild?.name ?? 'unknown'}`;
+    }
+    if (newest.selfMute !== old.selfMute)
+        return newest.selfMute ? 'muted' : 'unmuted';
+    if (newest.selfDeaf !== old.selfDeaf)
+        return newest.selfDeaf ? 'deafened' : 'undeafened';
+    if (newest.selfStream !== old.selfStream)
+        return newest.selfStream ? 'started streaming' : 'stopped streaming';
+    if (newest.selfVideo !== old.selfVideo)
+        return newest.selfVideo ? 'started video' : 'stopped video';
+    if (newest.deaf !== old.deaf)
+        return newest.deaf ? 'got server deafened' : 'got unserver deafened';
+    if (newest.mute !== old.mute)
+        return newest.mute ? 'got server muted' : 'got unserver muted';
+    return 'unknown? (most likely platform swap)';
+}
+exports.getVoiceStateDifferenceMessage = getVoiceStateDifferenceMessage;
 function onVoiceChange(voiceState) {
     if (voiceState.type !== 'VOICE_STATE_UPDATES')
         return;
@@ -1124,8 +1367,8 @@ function onVoiceChange(voiceState) {
             (0, Following_1.followFromVoiceState)(vs);
         if (__1.default.settings.vcLogging.enabled) {
             const [userId, ok] = (0, Logging_1.shouldLog)(vs);
-            __1.logger.info(`checking if its ok to log for vs`, vs, userId, ok);
-            __1.logger.info(`ok?: `, ok);
+            __1.logger.debug(`checking if its ok to log for vs`, vs, userId, ok);
+            __1.logger.debug(`ok?: `, ok);
             if (ok)
                 (0, data_1.append)({
                     ...vs,
@@ -1149,7 +1392,7 @@ module.exports = require("fs");
 /***/ 136:
 /***/ ((module) => {
 
-module.exports = JSON.parse('{"$schema":"../../config_schema.jsonc","name":"AVCStalker","description":"A simplistic.","author":"ace. & friez.","version":"1.3.10","source":"https://raw.githubusercontent.com/AceLikesGhosts/bd-plugins/master/dist/AVCStalker/AVCStalker.plugin.js","authorLink":"https://github.com/AceLikesGhosts/bd-plugins","website":"https://github.com/AceLikesGhosts/bd-plugins","updateLink":"https://github.com/AceLikesGhosts/bd-plugins","authorId":"327639826075484162"}');
+module.exports = JSON.parse('{"$schema":"../../config_schema.jsonc","name":"AVCStalker","description":"A simplistic.","author":"ace. & friez.","version":"1.9.0-rc","source":"https://raw.githubusercontent.com/AceLikesGhosts/bd-plugins/master/dist/AVCStalker/AVCStalker.plugin.js","authorLink":"https://github.com/AceLikesGhosts/bd-plugins","website":"https://github.com/AceLikesGhosts/bd-plugins","updateLink":"https://github.com/AceLikesGhosts/bd-plugins","authorId":"327639826075484162"}');
 
 /***/ })
 
@@ -1200,4 +1443,3 @@ module.exports = JSON.parse('{"$schema":"../../config_schema.jsonc","name":"AVCS
 /******/ 	
 /******/ })()
 ;
-//# sourceMappingURL=index.js.map

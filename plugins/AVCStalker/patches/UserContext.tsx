@@ -49,13 +49,15 @@ export default function PatchUserContext(): Cancel {
             })}
         />;
 
+        const isWhitelisted = AVCStalker.settings.vcLogging.whitelisted.includes(id);
         // TODO: stop wasting resources by creating this even if we don't render it!
         const whitelistButton = <Item
-            label={'Add To Whitelist'}
+            label={isWhitelisted ? 'Remove From Whitelist' : 'Add To Whitelist'}
             id='whitelist-button'
             action={(() => {
-                logger.info(`added ${ id } to whitelisted (vclogs)`);
-                AVCStalker.settings.vcLogging.whitelisted.push(id);
+                logger.info(`${ isWhitelisted ? 'removed' : 'added'} ${ id } to whitelisted (vclogs)`);
+                if(isWhitelisted) AVCStalker.settings.vcLogging.whitelisted.splice(AVCStalker.settings.vcLogging.whitelisted.indexOf(id), 1);
+                else AVCStalker.settings.vcLogging.whitelisted.push(id);
             })}
         />;
 

@@ -30,6 +30,7 @@ export default function Settings(): JSX.Element {
     const [isVCLoggingEnabled, setVCLoggingEnabled] = React.useState<boolean>(AVCStalker.settings.vcLogging.enabled);
     const [vcLoggingMaxSize, setVCLoggingMaxSize] = React.useState<number>(AVCStalker.settings.vcLogging.maxSize);
     const [logFriends, setLogFriends] = React.useState<boolean>(AVCStalker.settings.vcLogging.logFriends);
+    const [logCorrelatedPeople, setLogCorrelatedPeople] = React.useState<boolean>(AVCStalker.settings.vcLogging.logCorrelatedPeople);
     const [filePath, setFilePath] = React.useState<string>(AVCStalker.settings.vcLogging.filePath);
 
     const [isInvidual, setInvididual] = React.useState<boolean>(AVCStalker.settings.contextMenu.individual);
@@ -48,7 +49,8 @@ export default function Settings(): JSX.Element {
                 maxSize: vcLoggingMaxSize,
                 whitelisted: AVCStalker.settings.vcLogging.whitelisted,
                 logFriends,
-                filePath
+                filePath,
+                logCorrelatedPeople
             },
             contextMenu: {
                 individual: isInvidual,
@@ -64,7 +66,9 @@ export default function Settings(): JSX.Element {
         vcLoggingMaxSize,
         logFriends,
         isInvidual,
-        contextName
+        contextName,
+        showWhitelistButton,
+        showLogButton
     ]);
 
     return (
@@ -106,6 +110,7 @@ export default function Settings(): JSX.Element {
             <TextInput
                 title={'Maximum File Size (megabytes)'}
                 value={String(vcLoggingMaxSize)}
+                disabled
                 onChange={((e) => {
                     if(!_.isNumber(e)) return;
                     setVCLoggingMaxSize(Number(e));
@@ -118,6 +123,14 @@ export default function Settings(): JSX.Element {
                 onChange={((e) => setLogFriends(e))}
             >
                 Log Friends
+            </FormSwitch>
+
+            <FormSwitch
+                note={'Should we attempt to check if someone we have whitelisted/friended is in their call and log their state if so? WARNING: THIS WILL LAG YOUR DISCORD IF YOU ARE IN BIG SERVERS!'}
+                value={logCorrelatedPeople}
+                onChange={((e) => setLogCorrelatedPeople(e))}
+            >
+                Log Correlated People
             </FormSwitch>
 
             <TextInput
