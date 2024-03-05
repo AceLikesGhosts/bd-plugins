@@ -2,7 +2,7 @@
 * @name AVCStalker
 * @description In God we trust.
 * @author ace.
-* @version 2.1.0
+* @version 2.2.1
 * @source https://raw.githubusercontent.com/AceLikesGhosts/bd-plugins/master/dist/AVCStalker/AVCStalker.plugin.js
 * @authorLink https://github.com/AceLikesGhosts/bd-plugins
 * @website https://github.com/AceLikesGhosts/bd-plugins
@@ -1246,7 +1246,6 @@ exports.joinCall = exports.ConnectionBit = void 0;
 const VoiceStateStore_1 = __importDefault(__nccwpck_require__(979));
 const UserStore_1 = __importDefault(__nccwpck_require__(682));
 const _1 = __nccwpck_require__(65);
-const Following_1 = __nccwpck_require__(343);
 // TODO: de-hardcode this bitfield and pull it from Webpack, but for now
 // this isn't going to change, and if it does they are going to notify on their
 // proper documentation page as this is a supported bitfield from
@@ -1256,8 +1255,6 @@ const voiceChannelUtils = BdApi.Webpack.getByKeys('selectVoiceChannel', 'disconn
 // I don't care!
 // eslint-disable-next-line @typescript-eslint/no-invalid-void-type
 function joinCall(voiceState, channel) {
-    if (!Following_1.followingPeople.has(voiceState.userId))
-        return;
     if (VoiceStateStore_1.default.isInChannel(channel.id))
         return;
     const VSs = VoiceStateStore_1.default.getVoiceStatesForChannel(voiceState.channelId);
@@ -1274,7 +1271,9 @@ function joinCall(voiceState, channel) {
         _1.logger.info(`attempted to join ${channel.name} but it was full (${people} >= ${channel.userLimit_}). setting 250ms timeout before attempting to rejoin`);
         return setTimeout(() => joinCall(voiceState, channel), 250);
     }
-    _1.logger.info('joining voice channel');
+    const msg = `Joining ${UserStore_1.default.getUser(voiceState.userId).globalName} in #${channel.name}`;
+    _1.logger.info(msg);
+    BdApi.UI.showToast(msg);
     voiceChannelUtils.selectVoiceChannel(voiceState.channelId);
 }
 exports.joinCall = joinCall;
@@ -1293,7 +1292,6 @@ Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.followFromVoiceState = exports.followingPeople = void 0;
 const ChannelStore_1 = __importDefault(__nccwpck_require__(432));
 const UserStore_1 = __importDefault(__nccwpck_require__(682));
-const __1 = __nccwpck_require__(65);
 const util_1 = __nccwpck_require__(268);
 /**
  * Set of userIDs to follow, aka who we care about
@@ -1306,9 +1304,6 @@ function followFromVoiceState(vs) {
         return;
     }
     const channel = ChannelStore_1.default.getChannel(vs.channelId);
-    const msg = `Joining ${UserStore_1.default.getUser(vs.userId).globalName} in #${channel.name}`;
-    __1.logger.info(msg);
-    BdApi.UI.showToast(msg);
     (0, util_1.joinCall)(vs, channel);
 }
 exports.followFromVoiceState = followFromVoiceState;
@@ -1467,7 +1462,7 @@ module.exports = require("fs");
 /***/ 136:
 /***/ ((module) => {
 
-module.exports = JSON.parse('{"$schema":"../../config_schema.jsonc","name":"AVCStalker","description":"In God we trust.","author":"ace.","version":"2.2.0","source":"https://raw.githubusercontent.com/AceLikesGhosts/bd-plugins/master/dist/AVCStalker/AVCStalker.plugin.js","authorLink":"https://github.com/AceLikesGhosts/bd-plugins","website":"https://github.com/AceLikesGhosts/bd-plugins","updateLink":"https://github.com/AceLikesGhosts/bd-plugins","authorId":"327639826075484162"}');
+module.exports = JSON.parse('{"$schema":"../../config_schema.jsonc","name":"AVCStalker","description":"In God we trust.","author":"ace.","version":"2.2.1","source":"https://raw.githubusercontent.com/AceLikesGhosts/bd-plugins/master/dist/AVCStalker/AVCStalker.plugin.js","authorLink":"https://github.com/AceLikesGhosts/bd-plugins","website":"https://github.com/AceLikesGhosts/bd-plugins","updateLink":"https://github.com/AceLikesGhosts/bd-plugins","authorId":"327639826075484162"}');
 
 /***/ })
 
