@@ -7,10 +7,13 @@ import ChannelStore from '@lib/stores/ChannelStore';
 import { joinCall } from '../util';
 import { followingPeople } from '../voiceState/Following';
 import openModalFor from '../components/modal';
+import UserStore from '@lib/stores/UserStore';
 const { Item } = BdApi.ContextMenu;
 
 export default function PatchUserContext(): Cancel {
     logger.info('Patched UserContext');
+
+    const us = UserStore.getCurrentUser().id;
 
     function findVCAndJoin(id: string): void {
         const vs = VoiceStateStore.getVoiceStateForUser(id);
@@ -23,6 +26,9 @@ export default function PatchUserContext(): Cancel {
 
     return BdApi.ContextMenu.patch('user-context', (res: { props: { children: React.ReactElement[]; }; }, props: { user: User; }) => {
         const id = props.user.id;
+
+        if(id === us) return;
+
         const isFollowing = followingPeople.has(id);
 
         const followButton = <Item

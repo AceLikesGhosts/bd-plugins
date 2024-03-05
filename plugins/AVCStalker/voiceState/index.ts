@@ -14,6 +14,8 @@ export function getVoiceStateDifferenceMessage(newest: UserVoiceState, old: User
         }
         const channel = ChannelStore.getChannel(newest.channelId ?? newest.oldChannelId!);
         const guild = GuildStore.getGuild(channel.guild_id);
+
+        if(newest.channelId !== null && old.channelId === null) return `joined ${channel.name} in ${guild?.name ?? 'unknown'}`;
         if(newest.channelId === null) return `left ${ channel.name } in ${ guild?.name ?? 'unknown' }`;
         return `moved to ${ channel.name } in ${ guild?.name ?? 'unknown' }`;
     }

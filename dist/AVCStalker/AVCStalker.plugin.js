@@ -1153,9 +1153,11 @@ const ChannelStore_1 = __importDefault(__nccwpck_require__(432));
 const util_1 = __nccwpck_require__(268);
 const Following_1 = __nccwpck_require__(343);
 const modal_1 = __importDefault(__nccwpck_require__(959));
+const UserStore_1 = __importDefault(__nccwpck_require__(682));
 const { Item } = BdApi.ContextMenu;
 function PatchUserContext() {
     __1.logger.info('Patched UserContext');
+    const us = UserStore_1.default.getCurrentUser().id;
     function findVCAndJoin(id) {
         const vs = VoiceStateStore_1.default.getVoiceStateForUser(id);
         if (!vs || !vs.channelId)
@@ -1166,6 +1168,8 @@ function PatchUserContext() {
     }
     return BdApi.ContextMenu.patch('user-context', (res, props) => {
         const id = props.user.id;
+        if (id === us)
+            return;
         const isFollowing = Following_1.followingPeople.has(id);
         const followButton = components_1.React.createElement(Item, { label: isFollowing ? 'Unfollow' : 'Follow', id: 'follow-call', action: (() => {
                 if (isFollowing)
@@ -1405,6 +1409,8 @@ function getVoiceStateDifferenceMessage(newest, old) {
         }
         const channel = ChannelStore_1.default.getChannel(newest.channelId ?? newest.oldChannelId);
         const guild = GuildStore_1.default.getGuild(channel.guild_id);
+        if (newest.channelId !== null && old.channelId === null)
+            return `joined ${channel.name} in ${guild?.name ?? 'unknown'}`;
         if (newest.channelId === null)
             return `left ${channel.name} in ${guild?.name ?? 'unknown'}`;
         return `moved to ${channel.name} in ${guild?.name ?? 'unknown'}`;
@@ -1462,7 +1468,7 @@ module.exports = require("fs");
 /***/ 136:
 /***/ ((module) => {
 
-module.exports = JSON.parse('{"$schema":"../../config_schema.jsonc","name":"AVCStalker","description":"In God we trust.","author":"ace.","version":"2.2.1","source":"https://raw.githubusercontent.com/AceLikesGhosts/bd-plugins/master/dist/AVCStalker/AVCStalker.plugin.js","authorLink":"https://github.com/AceLikesGhosts/bd-plugins","website":"https://github.com/AceLikesGhosts/bd-plugins","updateLink":"https://github.com/AceLikesGhosts/bd-plugins","authorId":"327639826075484162"}');
+module.exports = JSON.parse('{"$schema":"../../config_schema.jsonc","name":"AVCStalker","description":"In God we trust.","author":"ace.","version":"2.3.1","source":"https://raw.githubusercontent.com/AceLikesGhosts/bd-plugins/master/dist/AVCStalker/AVCStalker.plugin.js","authorLink":"https://github.com/AceLikesGhosts/bd-plugins","website":"https://github.com/AceLikesGhosts/bd-plugins","updateLink":"https://github.com/AceLikesGhosts/bd-plugins","authorId":"327639826075484162"}');
 
 /***/ })
 
