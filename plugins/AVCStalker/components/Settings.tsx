@@ -156,6 +156,7 @@ export default function Settings(): JSX.Element {
             <TextInput
                 title={'Save Interval (minutes)'}
                 value={String(saveInterval)}
+                disabled={!isPeriodicSaving}
                 onChange={((e) => {
                     if(!_.isNumber(e)) return;
                     setSaveInterval(e);

@@ -523,7 +523,7 @@ function Settings() {
         index_1.React.createElement(Form_1.FormSwitch, { note: 'Should we attempt to check if someone we have whitelisted/friended is in their call and log their state if so? WARNING: THIS WILL LAG YOUR DISCORD IF YOU ARE IN BIG SERVERS!', value: logCorrelatedPeople, onChange: ((e) => setLogCorrelatedPeople(e)) }, "Log Correlated People"),
         index_1.React.createElement(TextInput, { title: 'The location where we should save our VoiceState logs. Use "%plugins%" for plugin folder.', value: filePath, onChange: ((e) => setFilePath(e)) }),
         index_1.React.createElement(Form_1.FormSwitch, { note: 'Should we save our voice logs every (x) amount of time?', value: isPeriodicSaving, onChange: ((e) => setPeriodicSaving(e)) }, "Periodic Saving"),
-        index_1.React.createElement(TextInput, { title: 'Save Interval (minutes)', value: String(saveInterval), onChange: ((e) => {
+        index_1.React.createElement(TextInput, { title: 'Save Interval (minutes)', value: String(saveInterval), disabled: !isPeriodicSaving, onChange: ((e) => {
                 if (!Lodash_1.default.isNumber(e))
                     return;
                 setSaveInterval(e);
