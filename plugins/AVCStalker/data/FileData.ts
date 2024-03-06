@@ -54,6 +54,8 @@ export function save(): void {
             ];
         });
 
+        memoryCache.clear();
+
         fs.writeFileSync(filePath, JSON.stringify(data), { encoding: 'utf-8' });
         logger.info(`wrote out VCStalker log data`, data, filePath);
     }

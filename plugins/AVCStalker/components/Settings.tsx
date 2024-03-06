@@ -1,11 +1,12 @@
 import { React } from '@lib/components/index';
-import AVCStalker, { DefaultSettings } from '..';
+import AVCStalker, { DefaultSettings, logger } from '..';
 import { Margins } from '@lib/components';
 import { FormSwitch, FormItem, FormDivider, FormTitle } from '@lib/components/Form';
 import RawTextInput from '@lib/components/TextInput';
 import _ from '@lib/common/Lodash';
 import type { TextInputProps } from '@lib/components/TextInput';
 import type { FormItemProps } from '@lib/components/Form';
+import { save } from '../data/FileData';
 
 function TextInput(props: TextInputProps & FormItemProps) {
     return (
@@ -33,6 +34,9 @@ export default function Settings(): JSX.Element {
     const [logCorrelatedPeople, setLogCorrelatedPeople] = React.useState<boolean>(AVCStalker.settings.vcLogging.logCorrelatedPeople);
     const [filePath, setFilePath] = React.useState<string>(AVCStalker.settings.vcLogging.filePath);
 
+    const [isPeriodicSaving, setPeriodicSaving] = React.useState<boolean>(AVCStalker.settings.vcLogging.periodicSaving);
+    const [saveInterval, setSaveInterval] = React.useState<number>(AVCStalker.settings.vcLogging.saveInterval);
+
     const [isInvidual, setInvididual] = React.useState<boolean>(AVCStalker.settings.contextMenu.individual);
     const [showLogButton, setShowLogButton] = React.useState<boolean>(AVCStalker.settings.contextMenu.showLogButton);
     const [showWhitelistButton, setShowWhitelistButton] = React.useState<boolean>(AVCStalker.settings.contextMenu.showWhitelistButton);
@@ -50,7 +54,9 @@ export default function Settings(): JSX.Element {
                 whitelisted: AVCStalker.settings.vcLogging.whitelisted,
                 logFriends,
                 filePath,
-                logCorrelatedPeople
+                logCorrelatedPeople,
+                saveInterval,
+                periodicSaving: isPeriodicSaving
             },
             contextMenu: {
                 individual: isInvidual,
@@ -94,7 +100,7 @@ export default function Settings(): JSX.Element {
             </FormSwitch>
 
             <FormDivider />
-            
+
             <FormTitle tag='h2'>
                 Voice Chat Logging
             </FormTitle>
@@ -137,6 +143,29 @@ export default function Settings(): JSX.Element {
                 title={'The location where we should save our VoiceState logs. Use "%plugins%" for plugin folder.'}
                 value={filePath}
                 onChange={((e) => setFilePath(e))}
+            />
+
+            <FormSwitch
+                note={'Should we save our voice logs every (x) amount of time?'}
+                value={isPeriodicSaving}
+                onChange={((e) => setPeriodicSaving(e))}
+            >
+                Periodic Saving
+            </FormSwitch>
+
+            <TextInput
+                title={'Save Interval (minutes)'}
+                value={String(saveInterval)}
+                onChange={((e) => {
+                    if(!_.isNumber(e)) return;
+                    setSaveInterval(e);
+
+                    if(AVCStalker.saveInterval) clearInterval(AVCStalker.saveInterval);
+                    AVCStalker.saveInterval = setInterval(() => {
+                        logger.info(`periodic save of voice state logs`);
+                        save();
+                    }, saveInterval);
+                })}
             />
 
             <FormDivider />

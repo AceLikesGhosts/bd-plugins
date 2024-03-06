@@ -33,7 +33,9 @@ export const DefaultSettings = {
         maxSize: 1000,
         logFriends: true,
         logCorrelatedPeople: false,
-        filePath: '%plugins%/AVCStalker_VSLogs.json'
+        filePath: '%plugins%/AVCStalker_VSLogs.json',
+        saveInterval: 60,
+        periodicSaving: true
     },
     contextMenu: {
         individual: true,
@@ -47,6 +49,7 @@ export const logger = new Logger(config);
 
 export default class AVCStalker implements Plugin {
     static settings: typeof DefaultSettings = DefaultSettings;
+    static saveInterval: NodeJS.Timeout | null = null;
     public cancelUserContextPatch: Cancel | null = null;
 
     start(): void {

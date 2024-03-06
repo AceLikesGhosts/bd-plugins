@@ -2,7 +2,7 @@
 * @name AVCStalker
 * @description In God we trust.
 * @author ace.
-* @version 2.2.1
+* @version 2.3.2
 * @source https://raw.githubusercontent.com/AceLikesGhosts/bd-plugins/master/dist/AVCStalker/AVCStalker.plugin.js
 * @authorLink https://github.com/AceLikesGhosts/bd-plugins
 * @website https://github.com/AceLikesGhosts/bd-plugins
@@ -452,6 +452,7 @@ const components_1 = __nccwpck_require__(799);
 const Form_1 = __nccwpck_require__(281);
 const TextInput_1 = __importDefault(__nccwpck_require__(571));
 const Lodash_1 = __importDefault(__nccwpck_require__(317));
+const FileData_1 = __nccwpck_require__(100);
 function TextInput(props) {
     return (index_1.React.createElement(Form_1.FormItem, { style: {
             width: '50%'
@@ -466,6 +467,8 @@ function Settings() {
     const [logFriends, setLogFriends] = index_1.React.useState(__1.default.settings.vcLogging.logFriends);
     const [logCorrelatedPeople, setLogCorrelatedPeople] = index_1.React.useState(__1.default.settings.vcLogging.logCorrelatedPeople);
     const [filePath, setFilePath] = index_1.React.useState(__1.default.settings.vcLogging.filePath);
+    const [isPeriodicSaving, setPeriodicSaving] = index_1.React.useState(__1.default.settings.vcLogging.periodicSaving);
+    const [saveInterval, setSaveInterval] = index_1.React.useState(__1.default.settings.vcLogging.saveInterval);
     const [isInvidual, setInvididual] = index_1.React.useState(__1.default.settings.contextMenu.individual);
     const [showLogButton, setShowLogButton] = index_1.React.useState(__1.default.settings.contextMenu.showLogButton);
     const [showWhitelistButton, setShowWhitelistButton] = index_1.React.useState(__1.default.settings.contextMenu.showWhitelistButton);
@@ -482,7 +485,9 @@ function Settings() {
                 whitelisted: __1.default.settings.vcLogging.whitelisted,
                 logFriends,
                 filePath,
-                logCorrelatedPeople
+                logCorrelatedPeople,
+                saveInterval,
+                periodicSaving: isPeriodicSaving
             },
             contextMenu: {
                 individual: isInvidual,
@@ -517,6 +522,18 @@ function Settings() {
         index_1.React.createElement(Form_1.FormSwitch, { note: 'Should we always log friend\'s voice states?', value: logFriends, onChange: ((e) => setLogFriends(e)) }, "Log Friends"),
         index_1.React.createElement(Form_1.FormSwitch, { note: 'Should we attempt to check if someone we have whitelisted/friended is in their call and log their state if so? WARNING: THIS WILL LAG YOUR DISCORD IF YOU ARE IN BIG SERVERS!', value: logCorrelatedPeople, onChange: ((e) => setLogCorrelatedPeople(e)) }, "Log Correlated People"),
         index_1.React.createElement(TextInput, { title: 'The location where we should save our VoiceState logs. Use "%plugins%" for plugin folder.', value: filePath, onChange: ((e) => setFilePath(e)) }),
+        index_1.React.createElement(Form_1.FormSwitch, { note: 'Should we save our voice logs every (x) amount of time?', value: isPeriodicSaving, onChange: ((e) => setPeriodicSaving(e)) }, "Periodic Saving"),
+        index_1.React.createElement(TextInput, { title: 'Save Interval (minutes)', value: String(saveInterval), onChange: ((e) => {
+                if (!Lodash_1.default.isNumber(e))
+                    return;
+                setSaveInterval(e);
+                if (__1.default.saveInterval)
+                    clearInterval(__1.default.saveInterval);
+                __1.default.saveInterval = setInterval(() => {
+                    __1.logger.info(`periodic save of voice state logs`);
+                    (0, FileData_1.save)();
+                }, saveInterval);
+            }) }),
         index_1.React.createElement(Form_1.FormDivider, null),
         index_1.React.createElement(Form_1.FormTitle, { tag: 'h2' }, "Context Menu"),
         index_1.React.createElement(Form_1.FormSwitch, { note: 'Makes each button show as an individual button on the context menu rather than under a group.', value: isInvidual, onChange: ((e) => setInvididual(e)) }, "Individual Context Menu Buttons"),
@@ -865,6 +882,7 @@ function save() {
                 ...value
             ];
         });
+        _1.memoryCache.clear();
         fs_1.default.writeFileSync(filePath, JSON.stringify(data), { encoding: 'utf-8' });
         __1.logger.info(`wrote out VCStalker log data`, data, filePath);
     }
@@ -963,7 +981,9 @@ exports.DefaultSettings = {
         maxSize: 1000,
         logFriends: true,
         logCorrelatedPeople: false,
-        filePath: '%plugins%/AVCStalker_VSLogs.json'
+        filePath: '%plugins%/AVCStalker_VSLogs.json',
+        saveInterval: 60,
+        periodicSaving: true
     },
     contextMenu: {
         individual: true,
@@ -1016,6 +1036,7 @@ class AVCStalker {
     }
 }
 AVCStalker.settings = exports.DefaultSettings;
+AVCStalker.saveInterval = null;
 exports["default"] = AVCStalker;
 
 
@@ -1468,7 +1489,7 @@ module.exports = require("fs");
 /***/ 136:
 /***/ ((module) => {
 
-module.exports = JSON.parse('{"$schema":"../../config_schema.jsonc","name":"AVCStalker","description":"In God we trust.","author":"ace.","version":"2.3.1","source":"https://raw.githubusercontent.com/AceLikesGhosts/bd-plugins/master/dist/AVCStalker/AVCStalker.plugin.js","authorLink":"https://github.com/AceLikesGhosts/bd-plugins","website":"https://github.com/AceLikesGhosts/bd-plugins","updateLink":"https://github.com/AceLikesGhosts/bd-plugins","authorId":"327639826075484162"}');
+module.exports = JSON.parse('{"$schema":"../../config_schema.jsonc","name":"AVCStalker","description":"In God we trust.","author":"ace.","version":"2.3.2","source":"https://raw.githubusercontent.com/AceLikesGhosts/bd-plugins/master/dist/AVCStalker/AVCStalker.plugin.js","authorLink":"https://github.com/AceLikesGhosts/bd-plugins","website":"https://github.com/AceLikesGhosts/bd-plugins","updateLink":"https://github.com/AceLikesGhosts/bd-plugins","authorId":"327639826075484162"}');
 
 /***/ })
 
