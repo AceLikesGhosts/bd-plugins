@@ -467,8 +467,8 @@ function Settings() {
     const [logFriends, setLogFriends] = index_1.React.useState(__1.default.settings.vcLogging.logFriends);
     const [logCorrelatedPeople, setLogCorrelatedPeople] = index_1.React.useState(__1.default.settings.vcLogging.logCorrelatedPeople);
     const [filePath, setFilePath] = index_1.React.useState(__1.default.settings.vcLogging.filePath);
-    const [isPeriodicSaving, setPeriodicSaving] = index_1.React.useState(__1.default.settings.vcLogging.periodicSaving);
-    const [saveInterval, setSaveInterval] = index_1.React.useState(__1.default.settings.vcLogging.saveInterval);
+    const [isPeriodicSaving, setPeriodicSaving] = index_1.React.useState(__1.default.settings.vcLogging.periodicSaving ?? true);
+    const [saveInterval, setSaveInterval] = index_1.React.useState(__1.default.settings.vcLogging.saveInterval ?? 60);
     const [isInvidual, setInvididual] = index_1.React.useState(__1.default.settings.contextMenu.individual);
     const [showLogButton, setShowLogButton] = index_1.React.useState(__1.default.settings.contextMenu.showLogButton);
     const [showWhitelistButton, setShowWhitelistButton] = index_1.React.useState(__1.default.settings.contextMenu.showWhitelistButton);

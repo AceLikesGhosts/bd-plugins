@@ -34,8 +34,8 @@ export default function Settings(): JSX.Element {
     const [logCorrelatedPeople, setLogCorrelatedPeople] = React.useState<boolean>(AVCStalker.settings.vcLogging.logCorrelatedPeople);
     const [filePath, setFilePath] = React.useState<string>(AVCStalker.settings.vcLogging.filePath);
 
-    const [isPeriodicSaving, setPeriodicSaving] = React.useState<boolean>(AVCStalker.settings.vcLogging.periodicSaving);
-    const [saveInterval, setSaveInterval] = React.useState<number>(AVCStalker.settings.vcLogging.saveInterval);
+    const [isPeriodicSaving, setPeriodicSaving] = React.useState<boolean>(AVCStalker.settings.vcLogging.periodicSaving ?? true);
+    const [saveInterval, setSaveInterval] = React.useState<number>(AVCStalker.settings.vcLogging.saveInterval ?? 60);
 
     const [isInvidual, setInvididual] = React.useState<boolean>(AVCStalker.settings.contextMenu.individual);
     const [showLogButton, setShowLogButton] = React.useState<boolean>(AVCStalker.settings.contextMenu.showLogButton);
