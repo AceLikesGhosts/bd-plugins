@@ -2,6 +2,23 @@ import fs from 'fs';
 import { memoryCache, type TimestampedUserVoiceState } from '.';
 import AVCStalker, { logger } from '..';
 
+function readLogFile(): Record<string, TimestampedUserVoiceState[] | undefined> {
+    const filePath = AVCStalker.settings.vcLogging.filePath.replace('%plugins%', BdApi.Plugins.folder);
+
+    try {
+        const fileExists = fs.existsSync(filePath);
+        if(!fileExists) return {};
+
+        return JSON.parse(
+            fs.readFileSync(filePath, { encoding: 'utf-8' })
+        );
+    }
+    catch(err) {
+        logger.critical(`Failed to read the file cache for VoiceStateLogs: `, err);
+        return {};
+    }
+}
+
 /**
  * Reads data from the disc, and returns it, then discards anything nonrelevant for the GC to manage. 
  * This will be expensive if there is a lot of data.
@@ -9,9 +26,7 @@ import AVCStalker, { logger } from '..';
  */
 export function get(relevantId: string): TimestampedUserVoiceState[] | undefined {
     try {
-        return JSON.parse(
-            fs.readFileSync(AVCStalker.settings.vcLogging.filePath.replace('%plugins%', BdApi.Plugins.folder), { encoding: 'utf-8' })
-        )[relevantId] ?? undefined;
+        return readLogFile()[relevantId];
     }
     catch(err) {
         logger.critical(`Failed to read file cache for VoiceStateLogs: `, err);
@@ -23,10 +38,7 @@ export function del(relevantId: string): void {
     const filePath = AVCStalker.settings.vcLogging.filePath.replace('%plugins%', BdApi.Plugins.folder);
 
     try {
-        const data = JSON.parse(
-            fs.readFileSync(AVCStalker.settings.vcLogging.filePath.replace('%plugins%', BdApi.Plugins.folder), { encoding: 'utf-8' })
-        );
-
+        const data = readLogFile();
         data[relevantId] = [];
         fs.writeFileSync(filePath, JSON.stringify(data), { encoding: 'utf-8' });
     }
@@ -39,10 +51,7 @@ export function del(relevantId: string): void {
 export function save(): void {
     try {
         const filePath = AVCStalker.settings.vcLogging.filePath.replace('%plugins%', BdApi.Plugins.folder);
-
-        const data: Record<string, TimestampedUserVoiceState[]> = JSON.parse(
-            fs.readFileSync(filePath, { encoding: 'utf-8' })
-        );
+        const data = readLogFile();
 
         memoryCache.forEach((value) => {
             const userId = value[0].userId;
