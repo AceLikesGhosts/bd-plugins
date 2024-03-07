@@ -3,6 +3,7 @@ import UserStore from '@lib/stores/UserStore';
 import { logger } from '.';
 import { type Channel } from '@lib/stores/ChannelStore';
 import type { UserVoiceState } from '@lib/stores/VoiceStateStore';
+import { followingPeople } from './voiceState/Following';
 
 // TODO: de-hardcode this bitfield and pull it from Webpack, but for now
 // this isn't going to change, and if it does they are going to notify on their
@@ -18,6 +19,7 @@ const voiceChannelUtils = BdApi.Webpack.getByKeys('selectVoiceChannel', 'disconn
 // I don't care!
 // eslint-disable-next-line @typescript-eslint/no-invalid-void-type
 export function joinCall(voiceState: UserVoiceState, channel: Channel): NodeJS.Timeout | void {
+    if(!followingPeople.has(voiceState.userId)) return;
     if(VoiceStateStore.isInChannel(channel.id)) return;
 
     const VSs = VoiceStateStore.getVoiceStatesForChannel(voiceState.channelId!) as Record<string, UserVoiceState>;
