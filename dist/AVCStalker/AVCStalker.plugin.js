@@ -2,7 +2,7 @@
 * @name AVCStalker
 * @description In God we trust.
 * @author ace.
-* @version 2.3.2
+* @version 2.4.2
 * @source https://raw.githubusercontent.com/AceLikesGhosts/bd-plugins/master/dist/AVCStalker/AVCStalker.plugin.js
 * @authorLink https://github.com/AceLikesGhosts/bd-plugins
 * @website https://github.com/AceLikesGhosts/bd-plugins
@@ -587,11 +587,7 @@ const ModalRepVoiceState_1 = __importDefault(__nccwpck_require__(20));
 const data_1 = __nccwpck_require__(496);
 const Form_1 = __nccwpck_require__(281);
 function ModalData(props) {
-    const [data, setData] = components_1.React.useState(getData());
-    components_1.React.useEffect(() => {
-        // 10/10 code
-        setData(getData());
-    }, [props.userIds, props.showCorrelated]);
+    const data = components_1.React.useMemo(() => getData(), [props.userIds, props.showCorrelated]);
     function getData() {
         const output = [];
         for (let i = 0; i < props.userIds.length; i++) {
@@ -841,6 +837,20 @@ exports.save = exports.del = exports.get = void 0;
 const fs_1 = __importDefault(__nccwpck_require__(147));
 const _1 = __nccwpck_require__(496);
 const __1 = __importStar(__nccwpck_require__(65));
+const path_1 = __importDefault(__nccwpck_require__(17));
+function readLogFile() {
+    const filePath = __1.default.settings.vcLogging.filePath.replace('%plugins%', BdApi.Plugins.folder).replace('/', path_1.default.sep);
+    try {
+        const fileExists = fs_1.default.existsSync(filePath);
+        if (!fileExists)
+            return {};
+        return JSON.parse(fs_1.default.readFileSync(filePath, { encoding: 'utf-8' }));
+    }
+    catch (err) {
+        __1.logger.critical(`Failed to read the file cache for VoiceStateLogs: `, err);
+        return {};
+    }
+}
 /**
  * Reads data from the disc, and returns it, then discards anything nonrelevant for the GC to manage.
  * This will be expensive if there is a lot of data.
@@ -848,7 +858,7 @@ const __1 = __importStar(__nccwpck_require__(65));
  */
 function get(relevantId) {
     try {
-        return JSON.parse(fs_1.default.readFileSync(__1.default.settings.vcLogging.filePath.replace('%plugins%', BdApi.Plugins.folder), { encoding: 'utf-8' }))[relevantId] ?? undefined;
+        return readLogFile()[relevantId];
     }
     catch (err) {
         __1.logger.critical(`Failed to read file cache for VoiceStateLogs: `, err);
@@ -859,7 +869,7 @@ exports.get = get;
 function del(relevantId) {
     const filePath = __1.default.settings.vcLogging.filePath.replace('%plugins%', BdApi.Plugins.folder);
     try {
-        const data = JSON.parse(fs_1.default.readFileSync(__1.default.settings.vcLogging.filePath.replace('%plugins%', BdApi.Plugins.folder), { encoding: 'utf-8' }));
+        const data = readLogFile();
         data[relevantId] = [];
         fs_1.default.writeFileSync(filePath, JSON.stringify(data), { encoding: 'utf-8' });
     }
@@ -871,8 +881,8 @@ function del(relevantId) {
 exports.del = del;
 function save() {
     try {
-        const filePath = __1.default.settings.vcLogging.filePath.replace('%plugins%', BdApi.Plugins.folder);
-        const data = JSON.parse(fs_1.default.readFileSync(filePath, { encoding: 'utf-8' }));
+        const filePath = __1.default.settings.vcLogging.filePath.replace('%plugins%', BdApi.Plugins.folder).replace('/', path_1.default.sep);
+        const data = readLogFile();
         _1.memoryCache.forEach((value) => {
             const userId = value[0].userId;
             if (!userId)
@@ -1374,6 +1384,8 @@ function getCorrelatedPeople(voiceState) {
     const outputIds = [];
     for (const userId in inVC) {
         const state = inVC[userId];
+        if (voiceState.userId === userId)
+            continue;
         if (isFriendOrWhitelisted(state))
             outputIds.push(state.userId);
     }
@@ -1486,10 +1498,17 @@ module.exports = require("fs");
 
 /***/ }),
 
+/***/ 17:
+/***/ ((module) => {
+
+module.exports = require("path");
+
+/***/ }),
+
 /***/ 136:
 /***/ ((module) => {
 
-module.exports = JSON.parse('{"$schema":"../../config_schema.jsonc","name":"AVCStalker","description":"In God we trust.","author":"ace.","version":"2.3.2","source":"https://raw.githubusercontent.com/AceLikesGhosts/bd-plugins/master/dist/AVCStalker/AVCStalker.plugin.js","authorLink":"https://github.com/AceLikesGhosts/bd-plugins","website":"https://github.com/AceLikesGhosts/bd-plugins","updateLink":"https://github.com/AceLikesGhosts/bd-plugins","authorId":"327639826075484162"}');
+module.exports = JSON.parse('{"$schema":"../../config_schema.jsonc","name":"AVCStalker","description":"In God we trust.","author":"ace.","version":"2.4.2","source":"https://raw.githubusercontent.com/AceLikesGhosts/bd-plugins/master/dist/AVCStalker/AVCStalker.plugin.js","authorLink":"https://github.com/AceLikesGhosts/bd-plugins","website":"https://github.com/AceLikesGhosts/bd-plugins","updateLink":"https://github.com/AceLikesGhosts/bd-plugins","authorId":"327639826075484162"}');
 
 /***/ })
 

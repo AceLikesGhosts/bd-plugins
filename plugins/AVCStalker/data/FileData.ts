@@ -1,9 +1,10 @@
 import fs from 'fs';
 import { memoryCache, type TimestampedUserVoiceState } from '.';
 import AVCStalker, { logger } from '..';
+import path from 'path';
 
 function readLogFile(): Record<string, TimestampedUserVoiceState[] | undefined> {
-    const filePath = AVCStalker.settings.vcLogging.filePath.replace('%plugins%', BdApi.Plugins.folder);
+    const filePath = AVCStalker.settings.vcLogging.filePath.replace('%plugins%', BdApi.Plugins.folder).replace('/', path.sep);
 
     try {
         const fileExists = fs.existsSync(filePath);
@@ -50,7 +51,7 @@ export function del(relevantId: string): void {
 
 export function save(): void {
     try {
-        const filePath = AVCStalker.settings.vcLogging.filePath.replace('%plugins%', BdApi.Plugins.folder);
+        const filePath = AVCStalker.settings.vcLogging.filePath.replace('%plugins%', BdApi.Plugins.folder).replace('/', path.sep);
         const data = readLogFile();
 
         memoryCache.forEach((value) => {

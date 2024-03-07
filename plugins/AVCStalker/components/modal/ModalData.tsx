@@ -8,12 +8,7 @@ import type { UserIdProps } from '.';
 export type StateData = { newestState: TimestampedUserVoiceState, lastState: TimestampedUserVoiceState; };
 
 export default function ModalData(props: UserIdProps & { showCorrelated: boolean; }): JSX.Element {
-    const [data, setData] = React.useState<StateData[]>(getData());
-
-    React.useEffect(() => {
-        // 10/10 code
-        setData(getData());
-    }, [props.userIds, props.showCorrelated]);
+    const data = React.useMemo(() => getData(), [props.userIds, props.showCorrelated]);
 
     function getData(): StateData[] {
         const output: StateData[] = [];

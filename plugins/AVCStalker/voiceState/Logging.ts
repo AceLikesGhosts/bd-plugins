@@ -30,7 +30,8 @@ export function getCorrelatedPeople(voiceState: UserVoiceState): string[] | unde
 
     for(const userId in inVC) {
         const state = inVC[userId];
-        
+
+        if(voiceState.userId === userId) continue;
         if(isFriendOrWhitelisted(state)) outputIds.push(state.userId);
     }
 
