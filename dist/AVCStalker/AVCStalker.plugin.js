@@ -2,7 +2,7 @@
 * @name AVCStalker
 * @description In God we trust.
 * @author ace.
-* @version 2.4.2
+* @version 2.4.3
 * @source https://raw.githubusercontent.com/AceLikesGhosts/bd-plugins/master/dist/AVCStalker/AVCStalker.plugin.js
 * @authorLink https://github.com/AceLikesGhosts/bd-plugins
 * @website https://github.com/AceLikesGhosts/bd-plugins
@@ -1281,6 +1281,7 @@ exports.joinCall = exports.ConnectionBit = void 0;
 const VoiceStateStore_1 = __importDefault(__nccwpck_require__(979));
 const UserStore_1 = __importDefault(__nccwpck_require__(682));
 const _1 = __nccwpck_require__(65);
+const Following_1 = __nccwpck_require__(343);
 // TODO: de-hardcode this bitfield and pull it from Webpack, but for now
 // this isn't going to change, and if it does they are going to notify on their
 // proper documentation page as this is a supported bitfield from
@@ -1290,6 +1291,8 @@ const voiceChannelUtils = BdApi.Webpack.getByKeys('selectVoiceChannel', 'disconn
 // I don't care!
 // eslint-disable-next-line @typescript-eslint/no-invalid-void-type
 function joinCall(voiceState, channel) {
+    if (!Following_1.followingPeople.has(voiceState.userId))
+        return;
     if (VoiceStateStore_1.default.isInChannel(channel.id))
         return;
     const VSs = VoiceStateStore_1.default.getVoiceStatesForChannel(voiceState.channelId);
@@ -1508,7 +1511,7 @@ module.exports = require("path");
 /***/ 136:
 /***/ ((module) => {
 
-module.exports = JSON.parse('{"$schema":"../../config_schema.jsonc","name":"AVCStalker","description":"In God we trust.","author":"ace.","version":"2.4.2","source":"https://raw.githubusercontent.com/AceLikesGhosts/bd-plugins/master/dist/AVCStalker/AVCStalker.plugin.js","authorLink":"https://github.com/AceLikesGhosts/bd-plugins","website":"https://github.com/AceLikesGhosts/bd-plugins","updateLink":"https://github.com/AceLikesGhosts/bd-plugins","authorId":"327639826075484162"}');
+module.exports = JSON.parse('{"$schema":"../../config_schema.jsonc","name":"AVCStalker","description":"In God we trust.","author":"ace.","version":"2.4.3","source":"https://raw.githubusercontent.com/AceLikesGhosts/bd-plugins/master/dist/AVCStalker/AVCStalker.plugin.js","authorLink":"https://github.com/AceLikesGhosts/bd-plugins","website":"https://github.com/AceLikesGhosts/bd-plugins","updateLink":"https://github.com/AceLikesGhosts/bd-plugins","authorId":"327639826075484162"}');
 
 /***/ })
 
