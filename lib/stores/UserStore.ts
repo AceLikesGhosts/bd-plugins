@@ -34,7 +34,7 @@ export interface User {
 
 export interface UserStore extends Store {
     getCurrentUser(): User;
-    getUser(id: string): User;
+    getUser(id: string): User | undefined;
     getUsers(): User[];
     getUserStoreVersion(): number;
 }

@@ -11,10 +11,10 @@ export const followingPeople = new Set<string>();
 
 export function followFromVoiceState(vs: UserVoiceState): void {
     if(vs.channelId === null || !vs.channelId) {
-        BdApi.UI.showToast(`${ UserStore.getUser(vs.userId).globalName } left voice chat!`, { type: 'warn' });
+        BdApi.UI.showToast(`${ UserStore.getUser(vs.userId)!.globalName } left voice chat!`, { type: 'warn' });
         return;
     }
 
     const channel = ChannelStore.getChannel(vs.channelId);
-    joinCall(vs, channel);
+    joinCall(vs, channel!);
 }

@@ -35,9 +35,9 @@ export default function ClearFollowing(): JSX.Element {
                 const user = UserStore.getUser(userId);
                 menuItems.push({
                     type: 'text',
-                    label: `${ user.globalName } (${ user.username })`,
+                    label: `${ user!.globalName } (${ user!.username })`,
                     action: () => {
-                        removeFromFollowing(user.id, user.username);
+                        removeFromFollowing(user!.id, user!.username);
                     }
                 });
             });

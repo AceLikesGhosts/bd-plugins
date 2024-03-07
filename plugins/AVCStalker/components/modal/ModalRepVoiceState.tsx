@@ -8,16 +8,19 @@ import { getVoiceStateDifferenceMessage } from 'plugins/AVCStalker/voiceState';
 import type { StateData } from './ModalData';
 
 export default function ModalRepVoiceState({ newestState, lastState }: StateData): JSX.Element {
-    const user = UserStore.getUser(newestState.userId);
+    const user = UserStore.getUser(newestState.userId) || {
+        username: 'unknown',
+        id: '0'
+    };
 
     return (
         <Flex direction={Flex.Direction.HORIZONTAL} align={Flex.Align.START} style={{ marginLeft: '16px' }}>
             <Flex direction={Flex.Direction.HORIZONTAL} align={Flex.Align.CENTER}>
-                <Avatars.Avatar
+                {'avatar' in user && <Avatars.Avatar
                     src={`https://cdn.discordapp.com/avatars/${ user.id }/${ user.avatar }`}
                     size={Avatars.AvatarSizes.SIZE_32}
                     status={null}
-                />
+                />}
 
                 <Flex direction={Flex.Direction.HORIZONTAL} style={{ width: '75%', maxWidth: '800px' }}>
                     <div onClick={(() => {

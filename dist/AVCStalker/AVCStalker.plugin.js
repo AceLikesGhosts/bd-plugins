@@ -2,7 +2,7 @@
 * @name AVCStalker
 * @description In God we trust.
 * @author ace.
-* @version 2.4.3
+* @version 2.5.4
 * @source https://raw.githubusercontent.com/AceLikesGhosts/bd-plugins/master/dist/AVCStalker/AVCStalker.plugin.js
 * @authorLink https://github.com/AceLikesGhosts/bd-plugins
 * @website https://github.com/AceLikesGhosts/bd-plugins
@@ -631,10 +631,13 @@ const Timestamp_1 = __importDefault(__nccwpck_require__(671));
 const UserStore_1 = __importDefault(__nccwpck_require__(682));
 const voiceState_1 = __nccwpck_require__(414);
 function ModalRepVoiceState({ newestState, lastState }) {
-    const user = UserStore_1.default.getUser(newestState.userId);
+    const user = UserStore_1.default.getUser(newestState.userId) || {
+        username: 'unknown',
+        id: '0'
+    };
     return (components_1.React.createElement(Flex_1.default, { direction: Flex_1.default.Direction.HORIZONTAL, align: Flex_1.default.Align.START, style: { marginLeft: '16px' } },
         components_1.React.createElement(Flex_1.default, { direction: Flex_1.default.Direction.HORIZONTAL, align: Flex_1.default.Align.CENTER },
-            components_1.React.createElement(Avatar_1.default.Avatar, { src: `https://cdn.discordapp.com/avatars/${user.id}/${user.avatar}`, size: Avatar_1.default.AvatarSizes.SIZE_32, status: null }),
+            'avatar' in user && components_1.React.createElement(Avatar_1.default.Avatar, { src: `https://cdn.discordapp.com/avatars/${user.id}/${user.avatar}`, size: Avatar_1.default.AvatarSizes.SIZE_32, status: null }),
             components_1.React.createElement(Flex_1.default, { direction: Flex_1.default.Direction.HORIZONTAL, style: { width: '75%', maxWidth: '800px' } },
                 components_1.React.createElement("div", { onClick: (() => {
                         window.DiscordNative.clipboard.copy(user.id);
@@ -688,7 +691,7 @@ function ModalSettings(props) {
             components_1.React.createElement(Text_1.default, { variant: 'eyebrow', style: { marginRight: '5px' } }, "Show Correlated Logs"),
             components_1.React.createElement(Switch_1.default, { checked: props.showCorrelated, onChange: ((e) => props.setShowCorrelated(e)) })),
         components_1.React.createElement(Button_1.default, { color: Button_1.default.Colors.RED, size: Button_1.default.Sizes.MEDIUM, style: { marginRight: '16px' }, onClick: (() => {
-                BdApi.UI.showConfirmationModal('Clear Logs', `Are you sure that you want to remove all logs for user(s) ${props.userIds.map((id) => UserStore_1.default.getUser(id).username).join(', ')}`, {
+                BdApi.UI.showConfirmationModal('Clear Logs', `Are you sure that you want to remove all logs for user(s) ${props.userIds.map((id) => UserStore_1.default.getUser(id)?.username || 'unknown').join(', ')}`, {
                     danger: true,
                     onConfirm() {
                         props.userIds.forEach((userId) => {
@@ -1442,18 +1445,26 @@ const __1 = __importStar(__nccwpck_require__(65));
 const ChannelStore_1 = __importDefault(__nccwpck_require__(432));
 const GuildStore_1 = __importDefault(__nccwpck_require__(866));
 function getVoiceStateDifferenceMessage(newest, old) {
-    if (newest.channelId !== old.channelId || newest.channelId === null) {
-        if (!newest.channelId && !newest.oldChannelId) {
-            __1.logger.critical('Newest had no past nor current, wtf?', newest);
-            return 'left channel (unknown)';
+    try {
+        if (newest.channelId !== old.channelId || newest.channelId === null) {
+            if (!newest.channelId && !newest.oldChannelId) {
+                __1.logger.critical('Newest had no past nor current, wtf?', newest);
+                return 'left channel (unknown)';
+            }
+            const channel = ChannelStore_1.default.getChannel(newest.channelId ?? newest.oldChannelId);
+            if (channel) {
+                const guild = GuildStore_1.default.getGuild(channel.guild_id);
+                if (newest.channelId !== null && old.channelId === null)
+                    return `joined ${channel.name} in ${guild?.name ?? 'unknown'}`;
+                if (newest.channelId === null)
+                    return `left ${channel.name} in ${guild?.name ?? 'unknown'}`;
+                return `moved to ${channel.name} in ${guild?.name ?? 'unknown'}`;
+            }
         }
-        const channel = ChannelStore_1.default.getChannel(newest.channelId ?? newest.oldChannelId);
-        const guild = GuildStore_1.default.getGuild(channel.guild_id);
-        if (newest.channelId !== null && old.channelId === null)
-            return `joined ${channel.name} in ${guild?.name ?? 'unknown'}`;
-        if (newest.channelId === null)
-            return `left ${channel.name} in ${guild?.name ?? 'unknown'}`;
-        return `moved to ${channel.name} in ${guild?.name ?? 'unknown'}`;
+    }
+    catch (err) {
+        console.debug('FAILED TO COMPARE ', newest, old);
+        console.debug(err);
     }
     if (newest.selfMute !== old.selfMute)
         return newest.selfMute ? 'muted' : 'unmuted';
@@ -1515,7 +1526,7 @@ module.exports = require("path");
 /***/ 136:
 /***/ ((module) => {
 
-module.exports = JSON.parse('{"$schema":"../../config_schema.jsonc","name":"AVCStalker","description":"In God we trust.","author":"ace.","version":"2.4.4","source":"https://raw.githubusercontent.com/AceLikesGhosts/bd-plugins/master/dist/AVCStalker/AVCStalker.plugin.js","authorLink":"https://github.com/AceLikesGhosts/bd-plugins","website":"https://github.com/AceLikesGhosts/bd-plugins","updateLink":"https://github.com/AceLikesGhosts/bd-plugins","authorId":"327639826075484162"}');
+module.exports = JSON.parse('{"$schema":"../../config_schema.jsonc","name":"AVCStalker","description":"In God we trust.","author":"ace.","version":"2.5.4","source":"https://raw.githubusercontent.com/AceLikesGhosts/bd-plugins/master/dist/AVCStalker/AVCStalker.plugin.js","authorLink":"https://github.com/AceLikesGhosts/bd-plugins","website":"https://github.com/AceLikesGhosts/bd-plugins","updateLink":"https://github.com/AceLikesGhosts/bd-plugins","authorId":"327639826075484162"}');
 
 /***/ })
 

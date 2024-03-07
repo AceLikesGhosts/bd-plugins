@@ -7,17 +7,26 @@ import ChannelStore from '@lib/stores/ChannelStore';
 import GuildStore from '@lib/stores/GuildStore';
 
 export function getVoiceStateDifferenceMessage(newest: UserVoiceState, old: UserVoiceState): React.ReactNode {
-    if(newest.channelId !== old.channelId || newest.channelId === null) {
-        if(!newest.channelId && !newest.oldChannelId) {
-            logger.critical('Newest had no past nor current, wtf?', newest);
-            return 'left channel (unknown)';
-        }
-        const channel = ChannelStore.getChannel(newest.channelId ?? newest.oldChannelId!);
-        const guild = GuildStore.getGuild(channel.guild_id);
+    try {
+        if(newest.channelId !== old.channelId || newest.channelId === null) {
+            if(!newest.channelId && !newest.oldChannelId) {
+                logger.critical('Newest had no past nor current, wtf?', newest);
+                return 'left channel (unknown)';
+            }
+            const channel = ChannelStore.getChannel(newest.channelId ?? newest.oldChannelId!);
+            
+            if(channel) {
+                const guild = GuildStore.getGuild(channel.guild_id);
 
-        if(newest.channelId !== null && old.channelId === null) return `joined ${channel.name} in ${guild?.name ?? 'unknown'}`;
-        if(newest.channelId === null) return `left ${ channel.name } in ${ guild?.name ?? 'unknown' }`;
-        return `moved to ${ channel.name } in ${ guild?.name ?? 'unknown' }`;
+                if(newest.channelId !== null && old.channelId === null) return `joined ${ channel.name } in ${ guild?.name ?? 'unknown' }`;
+                if(newest.channelId === null) return `left ${ channel.name } in ${ guild?.name ?? 'unknown' }`;
+                return `moved to ${ channel.name } in ${ guild?.name ?? 'unknown' }`;
+            }
+        }
+    }
+    catch(err) {
+        console.debug('FAILED TO COMPARE ', newest, old);
+        console.debug(err);
     }
 
     if(newest.selfMute !== old.selfMute) return newest.selfMute ? 'muted' : 'unmuted';

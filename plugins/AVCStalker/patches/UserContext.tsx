@@ -21,7 +21,7 @@ export default function PatchUserContext(): Cancel {
         const channel = ChannelStore.getChannel(vs.channelId);
 
         logger.info(`${ id } was already in a vc when we said to start following so joining their call (${ vs.channelId })`);
-        joinCall(vs, channel);
+        joinCall(vs, channel!);
     }
 
     return BdApi.ContextMenu.patch('user-context', (res: { props: { children: React.ReactElement[]; }; }, props: { user: User; }) => {

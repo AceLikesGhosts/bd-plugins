@@ -41,7 +41,7 @@ export default function ModalSettings(props: UserIdProps & { setUserIds: (ids: s
                 size={Button.Sizes.MEDIUM}
                 style={{ marginRight: '16px' }}
                 onClick={(() => {
-                    BdApi.UI.showConfirmationModal('Clear Logs', `Are you sure that you want to remove all logs for user(s) ${props.userIds.map((id) => UserStore.getUser(id).username).join(', ')}`, {
+                    BdApi.UI.showConfirmationModal('Clear Logs', `Are you sure that you want to remove all logs for user(s) ${props.userIds.map((id) => UserStore.getUser(id)?.username || 'unknown').join(', ')}`, {
                         danger: true,
                         onConfirm() {
                             props.userIds.forEach((userId) => {
