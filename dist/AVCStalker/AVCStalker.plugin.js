@@ -1290,7 +1290,7 @@ exports.ConnectionBit = 0x100000n;
 const voiceChannelUtils = BdApi.Webpack.getByKeys('selectVoiceChannel', 'disconnect');
 // I don't care!
 // eslint-disable-next-line @typescript-eslint/no-invalid-void-type
-function joinCall(voiceState, channel) {
+function joinCall(voiceState, channel, hasSaidWaiting = false) {
     if (!Following_1.followingPeople.has(voiceState.userId))
         return;
     if (VoiceStateStore_1.default.isInChannel(channel.id))
@@ -1302,12 +1302,16 @@ function joinCall(voiceState, channel) {
         && channel.permissionOverwrites_[UserStore_1.default.getCurrentUser().id]
         && channel.permissionOverwrites_[UserStore_1.default.getCurrentUser().id]?.deny & exports.ConnectionBit) {
         _1.logger.info(`attempted to join vc but we are denied from joining, setting 250ms timeout before attempting to rejoin`);
-        return setTimeout(() => joinCall(voiceState, channel), 250);
+        if (!hasSaidWaiting)
+            BdApi.UI.showToast(`Waiting to join ${UserStore_1.default.getUser(voiceState.userId).globalName} in ${channel.name}`, { type: 'info' });
+        return setTimeout(() => joinCall(voiceState, channel, true), 250);
     }
     const people = Object.keys(VSs).length;
     if (channel.userLimit_ !== 0 && people >= channel.userLimit_) {
         _1.logger.info(`attempted to join ${channel.name} but it was full (${people} >= ${channel.userLimit_}). setting 250ms timeout before attempting to rejoin`);
-        return setTimeout(() => joinCall(voiceState, channel), 250);
+        if (!hasSaidWaiting)
+            BdApi.UI.showToast(`Waiting to join ${UserStore_1.default.getUser(voiceState.userId).globalName} in ${channel.name}`, { type: 'info' });
+        return setTimeout(() => joinCall(voiceState, channel, true), 250);
     }
     const msg = `Joining ${UserStore_1.default.getUser(voiceState.userId).globalName} in #${channel.name}`;
     _1.logger.info(msg);
@@ -1511,7 +1515,7 @@ module.exports = require("path");
 /***/ 136:
 /***/ ((module) => {
 
-module.exports = JSON.parse('{"$schema":"../../config_schema.jsonc","name":"AVCStalker","description":"In God we trust.","author":"ace.","version":"2.4.3","source":"https://raw.githubusercontent.com/AceLikesGhosts/bd-plugins/master/dist/AVCStalker/AVCStalker.plugin.js","authorLink":"https://github.com/AceLikesGhosts/bd-plugins","website":"https://github.com/AceLikesGhosts/bd-plugins","updateLink":"https://github.com/AceLikesGhosts/bd-plugins","authorId":"327639826075484162"}');
+module.exports = JSON.parse('{"$schema":"../../config_schema.jsonc","name":"AVCStalker","description":"In God we trust.","author":"ace.","version":"2.4.4","source":"https://raw.githubusercontent.com/AceLikesGhosts/bd-plugins/master/dist/AVCStalker/AVCStalker.plugin.js","authorLink":"https://github.com/AceLikesGhosts/bd-plugins","website":"https://github.com/AceLikesGhosts/bd-plugins","updateLink":"https://github.com/AceLikesGhosts/bd-plugins","authorId":"327639826075484162"}');
 
 /***/ })
 
