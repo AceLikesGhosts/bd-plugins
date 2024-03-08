@@ -11,7 +11,7 @@ export type Channel = {
 
 
 interface ChannelStore {
-    getChannel(id: string): Channel | undefined;
+    getChannel(id: string): Channel;
 }
 
 export default BdApi.Webpack.getStore('ChannelStore') as ChannelStore;

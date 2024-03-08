@@ -31,7 +31,7 @@ export function joinCall(voiceState: UserVoiceState, channel: Channel, hasSaidWa
         && channel.permissionOverwrites_[UserStore.getCurrentUser().id]?.deny & ConnectionBit
     ) {
         logger.info(`attempted to join vc but we are denied from joining, setting 250ms timeout before attempting to rejoin`);
-        if(!hasSaidWaiting) BdApi.UI.showToast(`Waiting to join ${ UserStore.getUser(voiceState.userId)!.globalName } in ${ channel.name }`, { type: 'info' });
+        if(!hasSaidWaiting) BdApi.UI.showToast(`Waiting to join ${ UserStore.getUser(voiceState.userId).globalName } in ${ channel.name }`, { type: 'info' });
         return setTimeout(() => joinCall(voiceState, channel, true), 250);
     }
 
@@ -39,11 +39,11 @@ export function joinCall(voiceState: UserVoiceState, channel: Channel, hasSaidWa
 
     if(channel.userLimit_ !== 0 && people >= channel.userLimit_) {
         logger.info(`attempted to join ${ channel.name } but it was full (${ people } >= ${ channel.userLimit_ }). setting 250ms timeout before attempting to rejoin`);
-        if(!hasSaidWaiting) BdApi.UI.showToast(`Waiting to join ${ UserStore.getUser(voiceState.userId)!.globalName } in ${ channel.name }`, { type: 'info' });
+        if(!hasSaidWaiting) BdApi.UI.showToast(`Waiting to join ${ UserStore.getUser(voiceState.userId).globalName } in ${ channel.name }`, { type: 'info' });
         return setTimeout(() => joinCall(voiceState, channel, true), 250);
     }
 
-    const msg = `Joining ${ UserStore.getUser(voiceState.userId)!.globalName } in #${ channel.name }`;
+    const msg = `Joining ${ UserStore.getUser(voiceState.userId).globalName } in #${ channel.name }`;
 
     logger.info(msg);
     BdApi.UI.showToast(msg);

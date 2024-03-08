@@ -22,7 +22,7 @@ export default function PopoutChnanelButton({ channelId, guildId }: VoiceChatBut
     return <button style={{ ...FLEX_CENTER, width: '100%', height: '28px', background: 'transparent', marginTop: '4px', border: '2px solid white', borderRadius: '25px' }} onClick={(() => Transitions.transitionToGuild(guildId, channelId))}>
         <div style={{ ...FLEX_CENTER, width: '200px', height: '100%' }}>
             <img style={{ height: '24px', width: '24px', marginRight: '5px', borderRadius: '10px' }} src={GuildStore.getGuild(guildId)?.getIconURL()} alt={'Bad Image'} />
-            <span style={{ color: 'white' }}>{ChannelStore.getChannel(channelId)!.name}</span>
+            <span style={{ color: 'white' }}>{ChannelStore.getChannel(channelId).name}</span>
         </div>
     </button>;
 }
