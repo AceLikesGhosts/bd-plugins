@@ -1,4 +1,3 @@
-import ChannelStore from '@lib/stores/ChannelStore';
 import UserStore from '@lib/stores/UserStore';
 import { joinCall } from '../util';
 import type { UserVoiceState } from '@lib/stores/VoiceStateStore';
@@ -14,7 +13,6 @@ export function followFromVoiceState(vs: UserVoiceState): void {
         BdApi.UI.showToast(`${ UserStore.getUser(vs.userId).globalName } left voice chat!`, { type: 'warn' });
         return;
     }
-
-    const channel = ChannelStore.getChannel(vs.channelId);
-    joinCall(vs, channel);
+    
+    joinCall(vs);
 }

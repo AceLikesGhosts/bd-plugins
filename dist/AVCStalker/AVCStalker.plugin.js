@@ -2,7 +2,7 @@
 * @name AVCStalker
 * @description In God we trust.
 * @author ace.
-* @version 2.4.3
+* @version 2.4.4
 * @source https://raw.githubusercontent.com/AceLikesGhosts/bd-plugins/master/dist/AVCStalker/AVCStalker.plugin.js
 * @authorLink https://github.com/AceLikesGhosts/bd-plugins
 * @website https://github.com/AceLikesGhosts/bd-plugins
@@ -1180,7 +1180,6 @@ Object.defineProperty(exports, "__esModule", ({ value: true }));
 const components_1 = __nccwpck_require__(799);
 const __1 = __importStar(__nccwpck_require__(65));
 const VoiceStateStore_1 = __importDefault(__nccwpck_require__(979));
-const ChannelStore_1 = __importDefault(__nccwpck_require__(432));
 const util_1 = __nccwpck_require__(268);
 const Following_1 = __nccwpck_require__(343);
 const modal_1 = __importDefault(__nccwpck_require__(959));
@@ -1193,9 +1192,8 @@ function PatchUserContext() {
         const vs = VoiceStateStore_1.default.getVoiceStateForUser(id);
         if (!vs || !vs.channelId)
             return;
-        const channel = ChannelStore_1.default.getChannel(vs.channelId);
         __1.logger.info(`${id} was already in a vc when we said to start following so joining their call (${vs.channelId})`);
-        (0, util_1.joinCall)(vs, channel);
+        (0, util_1.joinCall)(vs);
     }
     return BdApi.ContextMenu.patch('user-context', (res, props) => {
         const id = props.user.id;
@@ -1281,6 +1279,7 @@ exports.joinCall = exports.ConnectionBit = void 0;
 const VoiceStateStore_1 = __importDefault(__nccwpck_require__(979));
 const UserStore_1 = __importDefault(__nccwpck_require__(682));
 const _1 = __nccwpck_require__(65);
+const ChannelStore_1 = __importDefault(__nccwpck_require__(432));
 const Following_1 = __nccwpck_require__(343);
 // TODO: de-hardcode this bitfield and pull it from Webpack, but for now
 // this isn't going to change, and if it does they are going to notify on their
@@ -1290,28 +1289,33 @@ exports.ConnectionBit = 0x100000n;
 const voiceChannelUtils = BdApi.Webpack.getByKeys('selectVoiceChannel', 'disconnect');
 // I don't care!
 // eslint-disable-next-line @typescript-eslint/no-invalid-void-type
-function joinCall(voiceState, channel, hasSaidWaiting = false) {
+function joinCall(voiceState, hasSaidWaiting = false) {
+    // if no voice state, then userId is forced
+    if (!voiceState) {
+        return;
+    }
     if (!Following_1.followingPeople.has(voiceState.userId))
         return;
-    if (VoiceStateStore_1.default.isInChannel(channel.id))
+    if (VoiceStateStore_1.default.isInChannel(voiceState.channelId))
         return;
     const VSs = VoiceStateStore_1.default.getVoiceStatesForChannel(voiceState.channelId);
     if (!VSs)
         return;
+    const channel = ChannelStore_1.default.getChannel(voiceState.channelId);
     if (channel.permissionOverwrites_
         && channel.permissionOverwrites_[UserStore_1.default.getCurrentUser().id]
         && channel.permissionOverwrites_[UserStore_1.default.getCurrentUser().id]?.deny & exports.ConnectionBit) {
         _1.logger.info(`attempted to join vc but we are denied from joining, setting 250ms timeout before attempting to rejoin`);
         if (!hasSaidWaiting)
             BdApi.UI.showToast(`Waiting to join ${UserStore_1.default.getUser(voiceState.userId).globalName} in ${channel.name}`, { type: 'info' });
-        return setTimeout(() => joinCall(voiceState, channel, true), 250);
+        return setTimeout(() => joinCall(VoiceStateStore_1.default.getVoiceStateForUser(voiceState.userId), true), 250);
     }
     const people = Object.keys(VSs).length;
     if (channel.userLimit_ !== 0 && people >= channel.userLimit_) {
         _1.logger.info(`attempted to join ${channel.name} but it was full (${people} >= ${channel.userLimit_}). setting 250ms timeout before attempting to rejoin`);
         if (!hasSaidWaiting)
             BdApi.UI.showToast(`Waiting to join ${UserStore_1.default.getUser(voiceState.userId).globalName} in ${channel.name}`, { type: 'info' });
-        return setTimeout(() => joinCall(voiceState, channel, true), 250);
+        return setTimeout(() => joinCall(VoiceStateStore_1.default.getVoiceStateForUser(voiceState.userId), true), 250);
     }
     const msg = `Joining ${UserStore_1.default.getUser(voiceState.userId).globalName} in #${channel.name}`;
     _1.logger.info(msg);
@@ -1332,7 +1336,6 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.followFromVoiceState = exports.followingPeople = void 0;
-const ChannelStore_1 = __importDefault(__nccwpck_require__(432));
 const UserStore_1 = __importDefault(__nccwpck_require__(682));
 const util_1 = __nccwpck_require__(268);
 /**
@@ -1345,8 +1348,7 @@ function followFromVoiceState(vs) {
         BdApi.UI.showToast(`${UserStore_1.default.getUser(vs.userId).globalName} left voice chat!`, { type: 'warn' });
         return;
     }
-    const channel = ChannelStore_1.default.getChannel(vs.channelId);
-    (0, util_1.joinCall)(vs, channel);
+    (0, util_1.joinCall)(vs);
 }
 exports.followFromVoiceState = followFromVoiceState;
 
@@ -1515,7 +1517,7 @@ module.exports = require("path");
 /***/ 136:
 /***/ ((module) => {
 
-module.exports = JSON.parse('{"$schema":"../../config_schema.jsonc","name":"AVCStalker","description":"In God we trust.","author":"ace.","version":"2.4.4","source":"https://raw.githubusercontent.com/AceLikesGhosts/bd-plugins/master/dist/AVCStalker/AVCStalker.plugin.js","authorLink":"https://github.com/AceLikesGhosts/bd-plugins","website":"https://github.com/AceLikesGhosts/bd-plugins","updateLink":"https://github.com/AceLikesGhosts/bd-plugins","authorId":"327639826075484162"}');
+module.exports = JSON.parse('{"$schema":"../../config_schema.jsonc","name":"AVCStalker","description":"In God we trust.","author":"ace.","version":"2.4.3","source":"https://raw.githubusercontent.com/AceLikesGhosts/bd-plugins/master/dist/AVCStalker/AVCStalker.plugin.js","authorLink":"https://github.com/AceLikesGhosts/bd-plugins","website":"https://github.com/AceLikesGhosts/bd-plugins","updateLink":"https://github.com/AceLikesGhosts/bd-plugins","authorId":"327639826075484162"}');
 
 /***/ })
 
