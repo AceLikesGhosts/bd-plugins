@@ -3,6 +3,7 @@ export type Channel = {
     guild_id: string;
     userLimit_: number;
     id: string;
+    accessPermissions: bigint;
     permissionOverwrites_: Record<string, {
         allow: bigint;
         deny: bigint;

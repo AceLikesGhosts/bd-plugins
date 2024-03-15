@@ -2,7 +2,7 @@
 * @name AVCStalker
 * @description In God we trust.
 * @author ace.
-* @version 2.6.5
+* @version 2.6.6
 * @source https://raw.githubusercontent.com/AceLikesGhosts/bd-plugins/master/dist/AVCStalker/AVCStalker.plugin.js
 * @authorLink https://github.com/AceLikesGhosts/bd-plugins
 * @website https://github.com/AceLikesGhosts/bd-plugins
@@ -1285,8 +1285,9 @@ const Following_1 = __nccwpck_require__(343);
 // this isn't going to change, and if it does they are going to notify on their
 // proper documentation page as this is a supported bitfield from
 // https://discord.dev/
-exports.ConnectionMask = 0x100000n;
+exports.ConnectionMask = BigInt(1 << 20);
 const voiceChannelUtils = BdApi.Webpack.getByKeys('selectVoiceChannel', 'disconnect');
+const PermissionStore = BdApi.Webpack.getStore('PermissionStore');
 // I don't care!
 // eslint-disable-next-line @typescript-eslint/no-invalid-void-type
 function joinCall(voiceState, hasSaidWaiting = false) {
@@ -1302,10 +1303,17 @@ function joinCall(voiceState, hasSaidWaiting = false) {
     if (!VSs)
         return;
     const channel = ChannelStore_1.default.getChannel(voiceState.channelId);
+    if ((PermissionStore.getChannelPermissions(channel) & exports.ConnectionMask) !== exports.ConnectionMask) {
+        _1.logger.info(`attempted to join vc but we are denied from joining (general channel perms), setting 250ms timeout before attempting to rejoin`);
+        if (!hasSaidWaiting)
+            BdApi.UI.showToast(`Waiting to join ${UserStore_1.default.getUser(voiceState.userId).globalName} in ${channel.name}`, { type: 'info' });
+        return setTimeout(() => joinCall(VoiceStateStore_1.default.getVoiceStateForUser(voiceState.userId), true), 250);
+    }
     if (channel.permissionOverwrites_
         && channel.permissionOverwrites_[UserStore_1.default.getCurrentUser().id]
-        && (channel.permissionOverwrites_[UserStore_1.default.getCurrentUser().id]?.deny & exports.ConnectionMask) !== 0n) {
-        _1.logger.info(`attempted to join vc but we are denied from joining, setting 250ms timeout before attempting to rejoin`);
+        // && (channel.permissionOverwrites_[UserStore.getCurrentUser().id]?.deny & ConnectionMask) !== 0n
+        && (channel.permissionOverwrites_[UserStore_1.default.getCurrentUser().id]?.deny & exports.ConnectionMask) !== exports.ConnectionMask) {
+        _1.logger.info(`attempted to join vc but we are denied from joining (channel overwrite), setting 250ms timeout before attempting to rejoin`);
         if (!hasSaidWaiting)
             BdApi.UI.showToast(`Waiting to join ${UserStore_1.default.getUser(voiceState.userId).globalName} in ${channel.name}`, { type: 'info' });
         return setTimeout(() => joinCall(VoiceStateStore_1.default.getVoiceStateForUser(voiceState.userId), true), 250);
@@ -1517,7 +1525,7 @@ module.exports = require("path");
 /***/ 136:
 /***/ ((module) => {
 
-module.exports = JSON.parse('{"$schema":"../../config_schema.jsonc","name":"AVCStalker","description":"In God we trust.","author":"ace.","version":"2.6.5","source":"https://raw.githubusercontent.com/AceLikesGhosts/bd-plugins/master/dist/AVCStalker/AVCStalker.plugin.js","authorLink":"https://github.com/AceLikesGhosts/bd-plugins","website":"https://github.com/AceLikesGhosts/bd-plugins","updateLink":"https://github.com/AceLikesGhosts/bd-plugins","authorId":"327639826075484162"}');
+module.exports = JSON.parse('{"$schema":"../../config_schema.jsonc","name":"AVCStalker","description":"In God we trust.","author":"ace.","version":"2.6.6","source":"https://raw.githubusercontent.com/AceLikesGhosts/bd-plugins/master/dist/AVCStalker/AVCStalker.plugin.js","authorLink":"https://github.com/AceLikesGhosts/bd-plugins","website":"https://github.com/AceLikesGhosts/bd-plugins","updateLink":"https://github.com/AceLikesGhosts/bd-plugins","authorId":"327639826075484162"}');
 
 /***/ })
 
