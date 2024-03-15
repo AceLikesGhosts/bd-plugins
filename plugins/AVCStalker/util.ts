@@ -9,7 +9,7 @@ import { followingPeople } from './voiceState/Following';
 // this isn't going to change, and if it does they are going to notify on their
 // proper documentation page as this is a supported bitfield from
 // https://discord.dev/
-export const ConnectionBit = 0x100000n;
+export const ConnectionMask = 0x100000n;
 
 const voiceChannelUtils = BdApi.Webpack.getByKeys('selectVoiceChannel', 'disconnect') as {
     selectVoiceChannel: (channelId: string) => void;
@@ -36,7 +36,7 @@ export function joinCall(voiceState: UserVoiceState | undefined, hasSaidWaiting:
     if(
         channel.permissionOverwrites_
         && channel.permissionOverwrites_[UserStore.getCurrentUser().id]
-        && channel.permissionOverwrites_[UserStore.getCurrentUser().id]?.deny & ConnectionBit
+        && (channel.permissionOverwrites_[UserStore.getCurrentUser().id]?.deny & ConnectionMask) !== 0n
     ) {
         logger.info(`attempted to join vc but we are denied from joining, setting 250ms timeout before attempting to rejoin`);
         if(!hasSaidWaiting) BdApi.UI.showToast(`Waiting to join ${ UserStore.getUser(voiceState.userId).globalName } in ${ channel.name }`, { type: 'info' });

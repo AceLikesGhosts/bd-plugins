@@ -2,7 +2,7 @@
 * @name AVCStalker
 * @description In God we trust.
 * @author ace.
-* @version 2.5.5
+* @version 2.6.5
 * @source https://raw.githubusercontent.com/AceLikesGhosts/bd-plugins/master/dist/AVCStalker/AVCStalker.plugin.js
 * @authorLink https://github.com/AceLikesGhosts/bd-plugins
 * @website https://github.com/AceLikesGhosts/bd-plugins
@@ -1275,7 +1275,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.joinCall = exports.ConnectionBit = void 0;
+exports.joinCall = exports.ConnectionMask = void 0;
 const VoiceStateStore_1 = __importDefault(__nccwpck_require__(979));
 const UserStore_1 = __importDefault(__nccwpck_require__(682));
 const _1 = __nccwpck_require__(65);
@@ -1285,7 +1285,7 @@ const Following_1 = __nccwpck_require__(343);
 // this isn't going to change, and if it does they are going to notify on their
 // proper documentation page as this is a supported bitfield from
 // https://discord.dev/
-exports.ConnectionBit = 0x100000n;
+exports.ConnectionMask = 0x100000n;
 const voiceChannelUtils = BdApi.Webpack.getByKeys('selectVoiceChannel', 'disconnect');
 // I don't care!
 // eslint-disable-next-line @typescript-eslint/no-invalid-void-type
@@ -1304,7 +1304,7 @@ function joinCall(voiceState, hasSaidWaiting = false) {
     const channel = ChannelStore_1.default.getChannel(voiceState.channelId);
     if (channel.permissionOverwrites_
         && channel.permissionOverwrites_[UserStore_1.default.getCurrentUser().id]
-        && channel.permissionOverwrites_[UserStore_1.default.getCurrentUser().id]?.deny & exports.ConnectionBit) {
+        && (channel.permissionOverwrites_[UserStore_1.default.getCurrentUser().id]?.deny & exports.ConnectionMask) !== 0n) {
         _1.logger.info(`attempted to join vc but we are denied from joining, setting 250ms timeout before attempting to rejoin`);
         if (!hasSaidWaiting)
             BdApi.UI.showToast(`Waiting to join ${UserStore_1.default.getUser(voiceState.userId).globalName} in ${channel.name}`, { type: 'info' });
@@ -1517,7 +1517,7 @@ module.exports = require("path");
 /***/ 136:
 /***/ ((module) => {
 
-module.exports = JSON.parse('{"$schema":"../../config_schema.jsonc","name":"AVCStalker","description":"In God we trust.","author":"ace.","version":"2.5.5","source":"https://raw.githubusercontent.com/AceLikesGhosts/bd-plugins/master/dist/AVCStalker/AVCStalker.plugin.js","authorLink":"https://github.com/AceLikesGhosts/bd-plugins","website":"https://github.com/AceLikesGhosts/bd-plugins","updateLink":"https://github.com/AceLikesGhosts/bd-plugins","authorId":"327639826075484162"}');
+module.exports = JSON.parse('{"$schema":"../../config_schema.jsonc","name":"AVCStalker","description":"In God we trust.","author":"ace.","version":"2.6.5","source":"https://raw.githubusercontent.com/AceLikesGhosts/bd-plugins/master/dist/AVCStalker/AVCStalker.plugin.js","authorLink":"https://github.com/AceLikesGhosts/bd-plugins","website":"https://github.com/AceLikesGhosts/bd-plugins","updateLink":"https://github.com/AceLikesGhosts/bd-plugins","authorId":"327639826075484162"}');
 
 /***/ })
 
