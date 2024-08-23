@@ -1,0 +1,12 @@
+{
+    "$schema": "../../config_schema.jsonc",
+    "name": "RandomiseFileNames",
+    "description": "Change up your file names.",
+    "author": "ace.",
+    "version": "1.0.0",
+    "source": "https://raw.githubusercontent.com/AceLikesGhosts/bd-plugins/master/dist/RandomiseFileNames/RandomiseFileNames.plugin.js",
+    "authorLink": "https://github.com/AceLikesGhosts/bd-plugins",
+    "website": "https://github.com/AceLikesGhosts/bd-plugins",
+    "updateLink": "https://github.com/AceLikesGhosts/bd-plugins",
+    "authorId": "327639826075484162"
+}

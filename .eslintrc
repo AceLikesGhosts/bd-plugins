@@ -1,0 +1,24 @@
+{
+    "extends": [
+        "@biased-ts/eslint-config/ProperTS",
+        "@biased-ts/eslint-config/ProperDoc"
+    ],
+    "root": true,
+    "ignorePatterns": [
+        "dist/*",
+        "output/*",
+        "node_modules/*"
+    ],
+    "parserOptions": {
+        "project": [
+            "./tsconfig.json",
+            "./scripts/tsconfig.json",
+            "./lib/tsconfig.json"
+        ]
+    },
+    "rules": {
+        "@typescript-eslint/consistent-type-imports": [
+            "error"
+        ]
+    }
+}

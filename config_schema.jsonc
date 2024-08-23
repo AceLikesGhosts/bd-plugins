@@ -1,0 +1,75 @@
+{
+    "title": "BetterDiscord Plugin Configuration",
+    "properties": {
+        "name": {
+            "type": "string",
+            "description": "The name of the plugin.",
+            "minLength": 1
+        },
+        "description": {
+            "type": "string",
+            "description": "The description of the plugin.",
+            "minLength": 1
+        },
+        "author": {
+            "type": "string",
+            "description": "The author of the plugin.",
+            "minLength": 1
+        },
+        "version": {
+            "type": "string",
+            "description": "The version of the plugin.",
+            "minLength": 1
+        },
+        "invite": {
+            "type": "string",
+            "description": "A Discord invite for a support server.",
+            "minLength": 1
+        },
+        "authorId": {
+            "type": "string",
+            "description": "The user ID of the author of the plugin.",
+            "minLength": 1
+        },
+        "authorLink": {
+            "type": "string",
+            "description": "A link to where to find the author..? No clue, the example is a Twitter link.",
+            "minLength": 1
+        },
+        "donate": {
+            "type": "string",
+            "description": "A link to where you can tip the plugin's author.",
+            "minLength": 1
+        },
+        "patreon": {
+            "type": "string",
+            "description": "A link to the plugin author's patreon.",
+            "minLength": 1
+        },
+        "website": {
+            "type": "string",
+            "description": "A link to the plugin author's website.",
+            "minLength": 1
+        },
+        "source": {
+            "type": "string",
+            "description": "A link to the plugin's source code.",
+            "minLength": 1
+        },
+
+        // custom (non-betterdiscord) config options
+        // BD will still put these in our metadata
+        // so thats nice (thank you Zere <3)
+        "updateLink": {
+            "type": "string",
+            "description": "The link to update the plugin (either raw.github.com/... or a normal Github link, using a normal Github link implies you have releases in the format of \"v0.0.0_Name\".",
+            "minLength": 1
+        }
+    },
+    "required": [
+        "name",
+        "description",
+        "author",
+        "version"
+    ]
+}

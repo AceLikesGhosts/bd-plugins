@@ -1,0 +1,26 @@
+{
+  "name": "bd-plugins",
+  "version": "1.0.0",
+  "description": "a collection of poorly written BetterDiscord plugins, or something; who knows.\r might be a one-and-done type beat",
+  "scripts": {
+    "build": "tsx ./scripts/build.ts"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "@types/betterdiscord": "github:zerthox/betterdiscord-types",
+    "@vercel/ncc": "^0.36.1"
+  },
+  "devDependencies": {
+    "@biased-ts/eslint-config": "^2.1.0",
+    "@types/lodash": "^4.14.202",
+    "@types/node": "^20.5.9",
+    "@types/semver": "^7.5.4",
+    "@typescript-eslint/eslint-plugin": "^6.6.0",
+    "@typescript-eslint/parser": "^6.6.0",
+    "eslint": "8.2.0",
+    "tsx": "^3.14.0",
+    "typescript": "^5.2.2"
+  }
+}

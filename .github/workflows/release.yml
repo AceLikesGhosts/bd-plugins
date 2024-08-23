@@ -1,0 +1,77 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - "*"
+
+jobs:
+  release:
+    name: Release
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 16
+
+      - name: Install dependenceis
+        run: npm ci
+
+      - name: Build
+        run: npm run build -- --all
+
+      - name: Release .plugin.js file
+        run: |
+          release_name="${{github.ref_name}}"
+          exit_code=0
+          IFS='_' read -r -a array <<< "$release_name"
+          release_version="${array[0]}"
+          release_name="${array[1]}"
+
+          echo "$release_version"
+          echo "$release_name"
+
+          npx semver $release_version || exit_code=$?
+
+          function release_plugin() {
+              if [ -z "$release_name" ]; then
+                  echo "Error: 'release_name' variable is not set."
+                  return 1
+              fi
+
+              local name="$release_name"
+              local dist_dir="dist/$name"
+              local output_dir="output"
+
+              if [ ! -d "$dist_dir" ]; then
+                  echo "Error: '$dist/$name' directory does not exist."
+                  return 1
+              fi
+
+              if [ ! -d "$output_dir" ]; then
+                  mkdir "$output_dir"
+              fi
+
+              local plugin_file="${name}.plugin.js"
+              if [ -e "$dist_dir/$plugin_file" ]; then
+                  mv "$dist_dir/$plugin_file" "$output_dir/$plugin_file"
+                  echo "Moved '$plugin_file' to '$output_dir'."
+              else
+                  echo "Error: '$plugin_file' not found in '$dist/$name'."
+                  return 1
+              fi
+          }
+
+          if [ $exit_code -eq 0 ]; then
+              release_plugin
+          else
+              echo "SemVer failed, $release_version does not follow SemVer rules."
+          fi
+      - uses: ncipollo/release-action@v1
+        with:
+          artifacts: output/*
+          makeLatest: true

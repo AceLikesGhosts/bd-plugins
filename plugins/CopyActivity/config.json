@@ -1,0 +1,10 @@
+{
+    "$schema": "../../config_schema.jsonc",
+    "name": "CopyActivity",
+    "description": ".",
+    "author": "ace.",
+    "version": "1.0.0",
+    "source": "https://raw.githubusercontent.com/AceLikesGhosts/bd-plugins/master/dist/CopyActivity/CopyActivity.plugin.js",
+    "authorLink": "https://github.com/AceLikesGhosts/bd-plugins",
+    "authorId": "327639826075484162"
+}
