@@ -103,7 +103,7 @@ function buildSource({ header, inputPath, outFilePath, sourceMaps, watch }: Buil
         quiet: true,
         externals: [],
         cache: false,
-        minify: true
+        minify: false
     });
 
     if(watch) {
