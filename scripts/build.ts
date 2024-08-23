@@ -42,7 +42,7 @@ function getPluginMetadata(pluginPath: string, pluginName: string): PluginMetada
     const config: Record<string, string> = JSON.parse(fs.readFileSync(configFilePath, { encoding: 'utf-8' }));
     if(!config) throw new Error('Failed to parse `config.json` into a valid JSON object for project' + pluginName);
 
-    const READMEFilePath = path.join(pluginName, 'README.md');
+    const READMEFilePath = path.join(pluginPath, 'README.md');
     if(!fs.existsSync(READMEFilePath)) return { config, README: null };
 
     const readmeText = fs.readFileSync(READMEFilePath, { encoding: 'utf-8' });
