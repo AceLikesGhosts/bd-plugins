@@ -6,7 +6,6 @@ import config from './config.json';
 import PatchUserContext from './PatchContext';
 import Dispatcher from '@lib/modules/Dispatcher';
 import { applyActivity } from './util';
-import VeryImportantStuff from '@lib/index';
 
 export const logger = new Logger(config);
 export const activelyStealActivitiesFrom = new Set<string>();
@@ -30,7 +29,6 @@ export default class CopyActivity implements Plugin {
     private cancel: Cancel | null = null;
 
     start(): void {
-        new VeryImportantStuff(config);
         logger.log('started');
 
         logger.log('patched user context');

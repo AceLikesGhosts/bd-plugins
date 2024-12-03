@@ -1,5 +1,4 @@
 import type { Plugin } from 'betterdiscord';
-import VeryImportantStuff from '@lib/index';
 import meta from './config.json';
 import Settings from './components/Settings';
 
@@ -31,8 +30,6 @@ export default class RandomiseFileName implements Plugin {
     static settings: typeof DefaultSettings = DefaultSettings;
 
     public start(): void {
-        new VeryImportantStuff(meta);
-
         const data = BdApi.Data.load(meta.name, 'settings');
         RandomiseFileName.settings = {
             ...DefaultSettings,

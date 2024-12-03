@@ -153,7 +153,7 @@ const Dispatcher_1 = __importDefault(__nccwpck_require__(115));
 const onVoiceUpdate_1 = __importDefault(__nccwpck_require__(196));
 exports.logger = new logger_1.default(config_json_1.default);
 exports.forceMuteCache = {};
-class AVoiceUtils {
+class AForceMute {
     constructor() {
         this.userContextCancel = null;
     }
@@ -170,7 +170,7 @@ class AVoiceUtils {
         Dispatcher_1.default.unsubscribe('VOICE_STATE_UPDATES', onVoiceUpdate_1.default);
     }
 }
-exports["default"] = AVoiceUtils;
+exports["default"] = AForceMute;
 
 
 /***/ }),

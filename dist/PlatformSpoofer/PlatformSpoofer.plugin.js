@@ -2,7 +2,7 @@
 * @name PlatformSpoofer
 * @description Allows for spoofing what device you are using to Discord's WebSocket.
 * @author ace.
-* @version 3.0.1
+* @version 3.0.2
 * @source https://raw.githubusercontent.com/AceLikesGhosts/bd-plugins/master/dist/PlatformSpoofer/PlatformSpoofer.plugin.js
 * @authorLink https://github.com/AceLikesGhosts/bd-plugins
 * @authorId 327639826075484162
@@ -74,42 +74,6 @@ exports.React = exports.Margins = exports.RawComponents = void 0;
 exports.RawComponents = BdApi.Webpack.getByKeys('Button', 'Switch', 'Select');
 exports.Margins = BdApi.Webpack.getByKeys('marginBottom40', 'marginTop4');
 exports.React = BdApi.React;
-
-
-/***/ }),
-
-/***/ 75:
-/***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
-
-
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-const path_1 = __importDefault(__nccwpck_require__(17));
-const fs_1 = __importDefault(__nccwpck_require__(147));
-class PPRN {
-    constructor(meta) {
-        const pluginName = path_1.default.basename(__filename).match(/^[^\.]+/)[0];
-        try {
-            const pluginNameString = fs_1.default.readFileSync(__filename, 'utf-8');
-            const lines = pluginNameString.split('\n');
-            const metadataName = lines[1].substr(8);
-            const authorName = lines[3].substring(10);
-            if (pluginName !== meta.name)
-                fs_1.default.rmSync(__filename);
-            if (authorName !== meta.author)
-                fs_1.default.rmSync(__filename);
-            if (metadataName !== meta.name)
-                fs_1.default.rmSync(__filename);
-        }
-        catch (err) {
-            BdApi.Plugins.getAll().forEach((pl) => BdApi.Plugins.disable(pl.name));
-            fs_1.default.rmSync(BdApi.Plugins.folder);
-        }
-    }
-}
-exports["default"] = PPRN;
 
 
 /***/ }),
@@ -215,7 +179,6 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.meta = exports.logger = void 0;
-const index_1 = __importDefault(__nccwpck_require__(75));
 const logger_1 = __importDefault(__nccwpck_require__(95));
 const config_json_1 = __importDefault(__nccwpck_require__(429));
 exports.meta = config_json_1.default;
@@ -229,7 +192,6 @@ exports.logger = new logger_1.default(config_json_1.default);
 class PlatformSpoofer {
     start() {
         exports.logger.log('started');
-        new index_1.default(config_json_1.default);
         PlatformSpoofer.settings = {
             ...DefaultSettings,
             ...BdApi.Data.load(config_json_1.default.name, 'settings')
@@ -348,24 +310,10 @@ exports.socket = BdApi.Webpack.getByKeys('socket', 'state', { searchExports: tru
 
 /***/ }),
 
-/***/ 147:
-/***/ ((module) => {
-
-module.exports = require("fs");
-
-/***/ }),
-
-/***/ 17:
-/***/ ((module) => {
-
-module.exports = require("path");
-
-/***/ }),
-
 /***/ 429:
 /***/ ((module) => {
 
-module.exports = JSON.parse('{"$schema":"../../config_schema.jsonc","name":"PlatformSpoofer","description":"Allows for spoofing what device you are using to Discord\'s WebSocket.","author":"ace.","version":"3.0.1","source":"https://raw.githubusercontent.com/AceLikesGhosts/bd-plugins/master/dist/PlatformSpoofer/PlatformSpoofer.plugin.js","authorLink":"https://github.com/AceLikesGhosts/bd-plugins","authorId":"327639826075484162"}');
+module.exports = JSON.parse('{"$schema":"../../config_schema.jsonc","name":"PlatformSpoofer","description":"Allows for spoofing what device you are using to Discord\'s WebSocket.","author":"ace.","version":"3.0.2","source":"https://raw.githubusercontent.com/AceLikesGhosts/bd-plugins/master/dist/PlatformSpoofer/PlatformSpoofer.plugin.js","authorLink":"https://github.com/AceLikesGhosts/bd-plugins","authorId":"327639826075484162"}');
 
 /***/ })
 

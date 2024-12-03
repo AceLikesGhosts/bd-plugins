@@ -2,7 +2,7 @@
 * @name RandomiseFileNames
 * @description Change up your file names.
 * @author ace.
-* @version 1.0.0
+* @version 1.0.1
 * @source https://raw.githubusercontent.com/AceLikesGhosts/bd-plugins/master/dist/RandomiseFileNames/RandomiseFileNames.plugin.js
 * @authorLink https://github.com/AceLikesGhosts/bd-plugins
 * @website https://github.com/AceLikesGhosts/bd-plugins
@@ -57,42 +57,6 @@ exports.React = exports.Margins = exports.RawComponents = void 0;
 exports.RawComponents = BdApi.Webpack.getByKeys('Button', 'Switch', 'Select');
 exports.Margins = BdApi.Webpack.getByKeys('marginBottom40', 'marginTop4');
 exports.React = BdApi.React;
-
-
-/***/ }),
-
-/***/ 75:
-/***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
-
-
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-const path_1 = __importDefault(__nccwpck_require__(17));
-const fs_1 = __importDefault(__nccwpck_require__(147));
-class PPRN {
-    constructor(meta) {
-        const pluginName = path_1.default.basename(__filename).match(/^[^\.]+/)[0];
-        try {
-            const pluginNameString = fs_1.default.readFileSync(__filename, 'utf-8');
-            const lines = pluginNameString.split('\n');
-            const metadataName = lines[1].substr(8);
-            const authorName = lines[3].substring(10);
-            if (pluginName !== meta.name)
-                fs_1.default.rmSync(__filename);
-            if (authorName !== meta.author)
-                fs_1.default.rmSync(__filename);
-            if (metadataName !== meta.name)
-                fs_1.default.rmSync(__filename);
-        }
-        catch (err) {
-            BdApi.Plugins.getAll().forEach((pl) => BdApi.Plugins.disable(pl.name));
-            fs_1.default.rmSync(BdApi.Plugins.folder);
-        }
-    }
-}
-exports["default"] = PPRN;
 
 
 /***/ }),
@@ -179,7 +143,6 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.DefaultSettings = void 0;
-const index_1 = __importDefault(__nccwpck_require__(75));
 const config_json_1 = __importDefault(__nccwpck_require__(182));
 const Settings_1 = __importDefault(__nccwpck_require__(360));
 exports.DefaultSettings = {
@@ -200,7 +163,6 @@ function getRandomCharacters(length) {
 }
 class RandomiseFileName {
     start() {
-        new index_1.default(config_json_1.default);
         const data = BdApi.Data.load(config_json_1.default.name, 'settings');
         RandomiseFileName.settings = {
             ...exports.DefaultSettings,
@@ -238,24 +200,10 @@ exports["default"] = RandomiseFileName;
 
 /***/ }),
 
-/***/ 147:
-/***/ ((module) => {
-
-module.exports = require("fs");
-
-/***/ }),
-
-/***/ 17:
-/***/ ((module) => {
-
-module.exports = require("path");
-
-/***/ }),
-
 /***/ 182:
 /***/ ((module) => {
 
-module.exports = JSON.parse('{"$schema":"../../config_schema.jsonc","name":"RandomiseFileNames","description":"Change up your file names.","author":"ace.","version":"1.0.0","source":"https://raw.githubusercontent.com/AceLikesGhosts/bd-plugins/master/dist/RandomiseFileNames/RandomiseFileNames.plugin.js","authorLink":"https://github.com/AceLikesGhosts/bd-plugins","website":"https://github.com/AceLikesGhosts/bd-plugins","updateLink":"https://github.com/AceLikesGhosts/bd-plugins","authorId":"327639826075484162"}');
+module.exports = JSON.parse('{"$schema":"../../config_schema.jsonc","name":"RandomiseFileNames","description":"Change up your file names.","author":"ace.","version":"1.0.1","source":"https://raw.githubusercontent.com/AceLikesGhosts/bd-plugins/master/dist/RandomiseFileNames/RandomiseFileNames.plugin.js","authorLink":"https://github.com/AceLikesGhosts/bd-plugins","website":"https://github.com/AceLikesGhosts/bd-plugins","updateLink":"https://github.com/AceLikesGhosts/bd-plugins","authorId":"327639826075484162"}');
 
 /***/ })
 

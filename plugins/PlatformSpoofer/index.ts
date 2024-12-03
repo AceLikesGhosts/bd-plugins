@@ -1,6 +1,5 @@
 import type { Plugin } from 'betterdiscord';
 import type { TPropertiesToSpoofAs } from './utils';
-import VeryImportantStuff from '@lib/index';
 import Logger from '@lib/logger';
 import meta from './config.json';
 import PatchPropertyManager from './patches/PropertyManager';
@@ -18,7 +17,6 @@ export default class PlatformSpoofer implements Plugin {
 
     public start(): void {
         logger.log('started');
-        new VeryImportantStuff(meta);
 
         PlatformSpoofer.settings = {
             ...DefaultSettings,
