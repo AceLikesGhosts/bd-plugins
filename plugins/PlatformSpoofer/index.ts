@@ -33,10 +33,7 @@ export default class PlatformSpoofer implements Plugin {
         BdApi.UI.showConfirmationModal('Refresh Client', 'In order to fully disable PlatformSpoofer you are required to reload your Discord client.', {
             onConfirm() {
                 window.location.reload();
-            },
-            onCancel() {
-                return;
-            },
+            }
         });
     }
 

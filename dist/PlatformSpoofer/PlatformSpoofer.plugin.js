@@ -2,7 +2,7 @@
 * @name PlatformSpoofer
 * @description Allows for spoofing what device you are using to Discord's WebSocket.
 * @author ace.
-* @version 3.0.2
+* @version 3.0.3
 * @source https://raw.githubusercontent.com/AceLikesGhosts/bd-plugins/master/dist/PlatformSpoofer/PlatformSpoofer.plugin.js
 * @authorLink https://github.com/AceLikesGhosts/bd-plugins
 * @authorId 327639826075484162
@@ -50,7 +50,7 @@ _a = _1.RawComponents, exports.FormSection = _a.FormSection, exports.FormItem = 
 
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.RadioItem = void 0;
+exports.RadioItem = RadioItem;
 const _1 = __nccwpck_require__(799);
 const Form_1 = __nccwpck_require__(281);
 const { RadioGroup: RawRadioGroup } = _1.RawComponents;
@@ -59,7 +59,6 @@ function RadioItem(props) {
     return (_2.React.createElement(Form_1.FormItem, { ...props },
         _2.React.createElement(RawRadioGroup, { ...props })));
 }
-exports.RadioItem = RadioItem;
 exports["default"] = RawRadioGroup;
 
 
@@ -135,6 +134,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports["default"] = Settings;
 const components_1 = __nccwpck_require__(799);
 const __1 = __importDefault(__nccwpck_require__(1));
 const Radio_1 = __nccwpck_require__(556);
@@ -165,7 +165,6 @@ function Settings() {
                     BdApi.UI.showToast('Opened WebSocket', { type: 'success' });
                 }) }, isSocketOpen ? 'Disconnect From WebSocket' : 'Connect To WebSocket'))));
 }
-exports["default"] = Settings;
 
 
 /***/ }),
@@ -205,10 +204,7 @@ class PlatformSpoofer {
         BdApi.UI.showConfirmationModal('Refresh Client', 'In order to fully disable PlatformSpoofer you are required to reload your Discord client.', {
             onConfirm() {
                 window.location.reload();
-            },
-            onCancel() {
-                return;
-            },
+            }
         });
     }
     getSettingsPanel() {
@@ -262,13 +258,23 @@ var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (
 }) : function(o, v) {
     o["default"] = v;
 });
-var __importStar = (this && this.__importStar) || function (mod) {
-    if (mod && mod.__esModule) return mod;
-    var result = {};
-    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
-    __setModuleDefault(result, mod);
-    return result;
-};
+var __importStar = (this && this.__importStar) || (function () {
+    var ownKeys = function(o) {
+        ownKeys = Object.getOwnPropertyNames || function (o) {
+            var ar = [];
+            for (var k in o) if (Object.prototype.hasOwnProperty.call(o, k)) ar[ar.length] = k;
+            return ar;
+        };
+        return ownKeys(o);
+    };
+    return function (mod) {
+        if (mod && mod.__esModule) return mod;
+        var result = {};
+        if (mod != null) for (var k = ownKeys(mod), i = 0; i < k.length; i++) if (k[i] !== "default") __createBinding(result, mod, k[i]);
+        __setModuleDefault(result, mod);
+        return result;
+    };
+})();
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 const __1 = __importStar(__nccwpck_require__(1));
 const utils_1 = __nccwpck_require__(938);
@@ -313,7 +319,7 @@ exports.socket = BdApi.Webpack.getByKeys('socket', 'state', { searchExports: tru
 /***/ 429:
 /***/ ((module) => {
 
-module.exports = JSON.parse('{"$schema":"../../config_schema.jsonc","name":"PlatformSpoofer","description":"Allows for spoofing what device you are using to Discord\'s WebSocket.","author":"ace.","version":"3.0.2","source":"https://raw.githubusercontent.com/AceLikesGhosts/bd-plugins/master/dist/PlatformSpoofer/PlatformSpoofer.plugin.js","authorLink":"https://github.com/AceLikesGhosts/bd-plugins","authorId":"327639826075484162"}');
+module.exports = JSON.parse('{"$schema":"../../config_schema.jsonc","name":"PlatformSpoofer","description":"Allows for spoofing what device you are using to Discord\'s WebSocket.","author":"ace.","version":"3.0.3","source":"https://raw.githubusercontent.com/AceLikesGhosts/bd-plugins/master/dist/PlatformSpoofer/PlatformSpoofer.plugin.js","authorLink":"https://github.com/AceLikesGhosts/bd-plugins","authorId":"327639826075484162"}');
 
 /***/ })
 
