@@ -3,10 +3,8 @@ node_modules
 hidden
 
 # plugins i dont want public :3
-plugins/ADiscordBypasses
 plugins/AStupidStereo
 plugins/AVCStalker
 
-dist/ADiscordBypasses
 dist/AStupidStereo
 dist/AVCStalker
