@@ -8,13 +8,13 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v1
-      - name: install node v18
-        uses: actions/setup-node@v1
+      - name: install bun v1.1.42
+        uses: oven-sh/setup-bun@v2
         with:
-          node-version: 20
-      - name: npm ci
-        run: npm ci
+          bun-version: 1.1.42
+      - name: bun ci
+        run: bun ci
       - name: Typescript Compiler
         uses: icrawl/action-tsc@v1
-      - name: Build (NCC)
-        run: npx tsx ./scripts/build.ts --all
+      - name: Build
+        run: bun ./scripts2/build.ts --all

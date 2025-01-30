@@ -14,15 +14,17 @@ jobs:
 
     steps:
       - uses: actions/checkout@v3
-      - uses: actions/setup-node@v3
+      
+      - name: install bun v1.1.42
+        uses: oven-sh/setup-bun@v2
         with:
-          node-version: 16
+          bun-version: 1.1.42
 
       - name: Install dependenceis
-        run: npm ci
+        run: bun ci
 
       - name: Build
-        run: npm run build -- --all
+        run: bun run build -- --all
 
       - name: Release .plugin.js file
         run: |
@@ -35,7 +37,7 @@ jobs:
           echo "$release_version"
           echo "$release_name"
 
-          npx semver $release_version || exit_code=$?
+          bunx semver $release_version || exit_code=$?
 
           function release_plugin() {
               if [ -z "$release_name" ]; then
