@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "a collection of poorly written BetterDiscord plugins, or something; who knows.\r might be a one-and-done type beat",
   "scripts": {
-    "build": "tsx ./scripts/build.ts"
+    "build": "tsx ./scripts2/build.ts"
   },
   "keywords": [],
   "author": "",
