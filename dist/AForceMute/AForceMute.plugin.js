@@ -1,8 +1,8 @@
 /**
 * @name AForceMute
 * @description In God we trust.
-* @author manicinduced
-* @version 0.0.1-RC
+* @author ace.
+* @version 0.0.2
 */
     
 "use strict";
@@ -84,8 +84,8 @@ var config_default = {
   $schema: "../../config_schema.jsonc",
   name: "AForceMute",
   description: "In God we trust.",
-  author: "manicinduced",
-  version: "0.0.1-RC"
+  author: "ace.",
+  version: "0.0.2"
 };
 
 // lib/stores/UserStore.ts

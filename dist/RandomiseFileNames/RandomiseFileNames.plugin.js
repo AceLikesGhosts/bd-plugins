@@ -2,7 +2,7 @@
 * @name RandomiseFileNames
 * @description Change up your file names.
 * @author ace.
-* @version 1.0.1
+* @version 1.0.3
 * @source https://raw.githubusercontent.com/AceLikesGhosts/bd-plugins/master/dist/RandomiseFileNames/RandomiseFileNames.plugin.js
 * @authorLink https://github.com/AceLikesGhosts/bd-plugins
 * @website https://github.com/AceLikesGhosts/bd-plugins
@@ -43,7 +43,7 @@ var config_default = {
   name: "RandomiseFileNames",
   description: "Change up your file names.",
   author: "ace.",
-  version: "1.0.1",
+  version: "1.0.3",
   source: "https://raw.githubusercontent.com/AceLikesGhosts/bd-plugins/master/dist/RandomiseFileNames/RandomiseFileNames.plugin.js",
   authorLink: "https://github.com/AceLikesGhosts/bd-plugins",
   website: "https://github.com/AceLikesGhosts/bd-plugins",
