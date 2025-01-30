@@ -1,7 +1,5 @@
-import { RawComponents } from '.';
 import type { FormItemProps } from './Form';
 import { FormItem } from './Form';
-const { RadioGroup: RawRadioGroup } = RawComponents;
 
 import { React } from '.';
 
@@ -36,6 +34,7 @@ interface RadioGroup {
     };
 }
 
+const RawRadioGroup = BdApi.Webpack.getByStrings('itemInfoClassName:', 'radioItemClassName', 'titleId', { searchExports: true }) as RadioGroup;
 export function RadioItem<T>(props: RadioGroupProps<T> & FormItemProps): JSX.Element {
     return (
         <FormItem
@@ -46,4 +45,4 @@ export function RadioItem<T>(props: RadioGroupProps<T> & FormItemProps): JSX.Ele
     );
 }
 
-export default /** @__PURE__ */ RawRadioGroup as RadioGroup;
+export default RawRadioGroup;

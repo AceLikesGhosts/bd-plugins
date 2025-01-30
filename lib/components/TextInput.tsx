@@ -1,6 +1,3 @@
-import { RawComponents } from '.';
-const { TextInput } = RawComponents;
-
 export interface TextInputProps {
     type?: string;
     value?: string;
@@ -24,4 +21,4 @@ export interface TextInputProps {
     'aria-labelledby'?: unknown;
 }
 
-export default /** @__PURE__ */ TextInput as React.ComponentClass<TextInputProps, unknown>;
+export default BdApi.Webpack.getByStrings('.error]:this.hasError()', { searchExports: true }) as React.ComponentClass<TextInputProps, unknown>;

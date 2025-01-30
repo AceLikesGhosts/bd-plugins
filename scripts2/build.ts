@@ -62,8 +62,7 @@ function compileProject(pluginPath: string) {
     makePathIfNotExists(distPluginPath);
 
     const { README, config } = getPluginMetadata(pluginPath, pluginName);
-    const header = `
-/**
+    const header = `/**
 ${ Object.entries(config).map(([k, v], i) => {
         if(k === '$schema') {
             return;
@@ -110,7 +109,8 @@ async function buildSource({ header, inputPath, outFilePath, sourceMaps, watch }
             },
             sourcemap: sourceMaps,
             format: 'cjs',
-            bundle: true
+            bundle: true,
+            external: ['fs', 'path']
         });
 
         build.watch();
@@ -118,6 +118,7 @@ async function buildSource({ header, inputPath, outFilePath, sourceMaps, watch }
         esbuild.build({
             entryPoints: [inputPath],
             outfile: `${ outFilePath}.plugin.js`,
+            external: ['fs', 'path'],
             banner: {
                 js: header
             },

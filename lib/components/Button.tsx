@@ -1,5 +1,3 @@
-import { RawComponents } from '.';
-
 type Handlers = Pick<React.ComponentProps<'button'>, 'onClick' | 'onDoubleClick' | 'onMouseDown' | 'onMouseUp' | 'onMouseEnter' | 'onMouseLeave' | 'onKeyDown'>;
 
 export interface ButtonProps extends Handlers {
@@ -85,4 +83,6 @@ export interface Button extends React.FunctionComponent<ButtonProps> {
     Link: React.FunctionComponent<any>;
 }
 
-export default /** @__PURE__ */ RawComponents.Button as Button;
+// export default /** @__PURE__ */ RawComponents.Button as Button;
+
+export default BdApi.Webpack.getByStrings('.FILLED', 'MEDIUM', 'disabledButtonOverlay', { searchExports: true }) as Button;

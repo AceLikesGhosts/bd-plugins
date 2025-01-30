@@ -1,6 +1,7 @@
-import { RawComponents } from '.';
+// import { RawComponents } from '.';
 
 /**
+ * Types from:
  * <https://github.com/Zerthox/BetterDiscord-Plugins/>
  * MIT License
  *
@@ -157,13 +158,21 @@ interface FormComponents {
     FormNotice: FormNotice;
 }
 
-export const /** @__PURE__ */ {
-    FormSection,
-    FormItem,
-    FormTitle,
-    FormText,
-    FormLabel,
-    FormDivider,
-    FormSwitch,
-    FormNotice
-} = RawComponents as FormComponents;
+// export const /** @__PURE__ */ {
+//     FormSection,
+//     FormItem,
+//     FormTitle,
+//     FormText,
+//     FormLabel,
+//     FormDivider,
+//     FormSwitch,
+//     FormNotice
+// } = RawComponents as FormComponents;
+
+export const FormTitle = BdApi.Webpack.getByStrings('["defaultMargin".concat', '="h5"', { searchExports: true }) as FormTitle;
+export const FormText = BdApi.Webpack.getByStrings('.SELECTABLE),', '.DISABLED:', { searchExports: true }) as FormText;
+export const FormSection = BdApi.Webpack.getBySource('.titleId)&&', { searchExports: true }) as FormSection;
+export const FormSwitch = BdApi.Webpack.getByStrings('.labelRow', 'useId', 'DESCRIPTION', { searchExports: true }) as React.FunctionComponent<FormSwitchProps>;
+export const FormItem = BdApi.Webpack.getBySource('.fieldWrapper', { searchExports: true }) as FormItem;
+export const FormNotice = BdApi.Webpack.getByStrings('.Types.DANGER', '.formNotice', { searchExports: true }) as FormNotice;
+export const FormDivider = BdApi.Webpack.getBySource('.divider', ',style:', '"div"', 'dividerDefault', { searchExports: true }) as React.FunctionComponent<any>;
