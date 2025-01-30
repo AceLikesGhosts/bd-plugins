@@ -13,7 +13,7 @@ jobs:
         with:
           bun-version: 1.1.42
       - name: bun ci
-        run: bun ci
+        run: bun install --frozen-lockfile
       - name: Typescript Compiler
         uses: icrawl/action-tsc@v1
       - name: Build
