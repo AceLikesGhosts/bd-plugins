@@ -113,7 +113,7 @@ var FormTitle = BdApi.Webpack.getByStrings('["defaultMargin".concat', '="h5"', {
 var FormText = BdApi.Webpack.getByStrings(".SELECTABLE),", ".DISABLED:", { searchExports: true });
 var FormSection = BdApi.Webpack.getBySource(".titleId)&&", { searchExports: true });
 var FormSwitch = BdApi.Webpack.getByStrings(".labelRow", "useId", "DESCRIPTION", { searchExports: true });
-var FormItem = BdApi.Webpack.getBySource(".fieldWrapper", { searchExports: true });
+var FormItem = BdApi.Webpack.getModule((x) => x.render.toString?.().includes(".fieldWrapper"), { searchExports: true });
 var FormNotice = BdApi.Webpack.getByStrings(".Types.DANGER", ".formNotice", { searchExports: true });
 var FormDivider = BdApi.Webpack.getBySource(".divider", ",style:", '"div"', "dividerDefault", { searchExports: true });
 
