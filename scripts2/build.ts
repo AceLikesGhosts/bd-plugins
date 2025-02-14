@@ -113,7 +113,7 @@ async function buildSource({ header, inputPath, outFilePath, sourceMaps, watch }
             external: ['fs', 'path']
         });
 
-        build.watch();
+        await build.watch();
     } else {
         esbuild.build({
             entryPoints: [inputPath],
