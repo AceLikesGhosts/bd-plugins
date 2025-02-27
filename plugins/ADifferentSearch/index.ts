@@ -30,11 +30,20 @@ export default class ADifferentSearch implements Plugin {
             BdApi.Webpack.Filters.byStrings('search-google'),
         );
 
-        BdApi.Patcher.after(meta.name, mod, key, (_, [searchString], [ret]) => {
-            ret.props.label = `Search with ${ capitalise(ADifferentSearch.settings.searchEngineName) }`;
-            BdApi.Patcher.instead(meta.name, ret.props, 'action', () => {
+        BdApi.Patcher.after(meta.name, mod, key, (_, args, ret) => {
+            if(
+                !args[0] || 
+                typeof args[0] !== 'string' || 
+                !Array.isArray(ret) ||
+                !ret[0]
+            ) {
+                return;
+            }
+
+            ret[0].props.label = `Search with ${ capitalise(ADifferentSearch.settings.searchEngineName) }`;
+            BdApi.Patcher.instead(meta.name, ret[0].props, 'action', () => {
                 window.open(
-                    ADifferentSearch.settings.searchEngineURL + searchString
+                    ADifferentSearch.settings.searchEngineURL + args[0]
                 );
             });
         });
