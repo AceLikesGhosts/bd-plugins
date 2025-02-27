@@ -2,7 +2,7 @@
 * @name ADifferentSearch
 * @description Change the search engine used in the `Search With` feature.
 * @author ace.
-* @version 0.01
+* @version 1.0.0
 * @source https://raw.githubusercontent.com/AceLikesGhosts/bd-plugins/master/dist/ADifferentSearch/ADifferentSearch.plugin.js
 * @authorLink https://github.com/AceLikesGhosts/bd-plugins
 * @authorId 327639826075484162
@@ -87,7 +87,7 @@ var config_default = {
   name: "ADifferentSearch",
   description: "Change the search engine used in the `Search With` feature.",
   author: "ace.",
-  version: "0.01",
+  version: "1.0.0",
   source: "https://raw.githubusercontent.com/AceLikesGhosts/bd-plugins/master/dist/ADifferentSearch/ADifferentSearch.plugin.js",
   authorLink: "https://github.com/AceLikesGhosts/bd-plugins",
   authorId: "327639826075484162"
@@ -183,11 +183,14 @@ var ADifferentSearch = class _ADifferentSearch {
     const [mod, key] = BdApi.Webpack.getWithKey(
       BdApi.Webpack.Filters.byStrings("search-google")
     );
-    BdApi.Patcher.after(config_default.name, mod, key, (_, [searchString], [ret]) => {
-      ret.props.label = `Search with ${capitalise(_ADifferentSearch.settings.searchEngineName)}`;
-      BdApi.Patcher.instead(config_default.name, ret.props, "action", () => {
+    BdApi.Patcher.after(config_default.name, mod, key, (_, args, ret) => {
+      if (!args[0] || typeof args[0] !== "string" || !Array.isArray(ret) || !ret[0]) {
+        return;
+      }
+      ret[0].props.label = `Search with ${capitalise(_ADifferentSearch.settings.searchEngineName)}`;
+      BdApi.Patcher.instead(config_default.name, ret[0].props, "action", () => {
         window.open(
-          _ADifferentSearch.settings.searchEngineURL + searchString
+          _ADifferentSearch.settings.searchEngineURL + args[0]
         );
       });
     });
