@@ -41,11 +41,8 @@ export default (main: ADiscordBypasses): void => {
 
     BdApi.Patcher.after('ADiscordBypasses', SpotifyStore, 'getActiveSocketAndDevice', (_, __, ret) => {
         if(!main.settings?.SpotifyPremium) return ret;
+        if(ret && ret?.socket) ret.socket.isPremium = true;
 
-        if(ret === null) return ret;
-        if(!ret.socket) return ret;
-
-        ret.socket.isPremium = true;
         return ret;
     });
 };
