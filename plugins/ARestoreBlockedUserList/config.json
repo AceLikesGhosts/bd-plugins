@@ -1,0 +1,10 @@
+{
+    "$schema": "../../config_schema.jsonc",
+    "name": "ARestoreBlockedUserList",
+    "description": "Adds back the section to view blocked users into your friends list area.",
+    "author": "ace.",
+    "version": "1.0.0",
+    "source": "https://raw.githubusercontent.com/AceLikesGhosts/bd-plugins/master/dist/ABlockedUserList/ABlockedUserList.plugin.js",
+    "authorLink": "https://github.com/AceLikesGhosts/bd-plugins",
+    "authorId": "327639826075484162"
+}
