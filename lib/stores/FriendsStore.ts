@@ -24,13 +24,6 @@ export type Relationship = {
     isGameRelationship: boolean;
 };
 
-// const RelationshipTypes = {
-//     ONLINE: 'ONLINE',
-//     OFFLINE: 'OFFLINE',
-//     IDLE: 'IDLE',
-//     ONLINE: 'ONLINE',
-// } as const;
-
 interface FriendsStoreRows {
     _rows: Relationship[];
 
