@@ -23,6 +23,12 @@ function TextInput(props: TextInputProps & FormItemProps) {
 export function Settings() {
     const [noteString, setNoteString] = React.useState(AQuickNote.settings.noteString);
 
+    React.useEffect(() => {
+        AQuickNote.settings = {
+            noteString: noteString
+        };
+    }, [noteString]);
+
     return (
         <div>
             <FormTitle tag='h2'>

@@ -2,7 +2,7 @@
 * @name AQuickNote
 * @description Quickly add notes onto users by just accessing their profile.
 * @author ace
-* @version 1.0.0
+* @version 1.1.0
 * @source https://raw.githubusercontent.com/AceLikesGhosts/bd-plugins/master/dist/AQuckNote/AQuckNote.plugin.js
 * @authorLink https://github.com/AceLikesGhosts/bd-plugins
 * @authorId 1297706747150209075
@@ -119,6 +119,11 @@ function TextInput(props) {
 }
 function Settings() {
   const [noteString, setNoteString] = React.useState(AQuickNote.settings.noteString);
+  React.useEffect(() => {
+    AQuickNote.settings = {
+      noteString
+    };
+  }, [noteString]);
   return /* @__PURE__ */ React.createElement("div", null, /* @__PURE__ */ React.createElement(FormTitle, { tag: "h2" }, "Settings"), /* @__PURE__ */ React.createElement(
     TextInput,
     {
@@ -135,7 +140,7 @@ var config_default = {
   name: "AQuickNote",
   description: "Quickly add notes onto users by just accessing their profile.",
   author: "ace",
-  version: "1.0.0",
+  version: "1.1.0",
   source: "https://raw.githubusercontent.com/AceLikesGhosts/bd-plugins/master/dist/AQuckNote/AQuckNote.plugin.js",
   authorLink: "https://github.com/AceLikesGhosts/bd-plugins",
   authorId: "1297706747150209075"
