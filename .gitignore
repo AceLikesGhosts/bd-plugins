@@ -5,6 +5,8 @@ hidden
 # plugins i dont want public :3
 plugins/AStupidStereo
 plugins/AVCStalker
+plugins/NewVCStalker
 
 dist/AStupidStereo
 dist/AVCStalker
+dist/NewVCStalker
