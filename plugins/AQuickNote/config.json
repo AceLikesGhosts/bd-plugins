@@ -1,0 +1,10 @@
+{
+    "$schema": "../../config_schema.jsonc",
+    "name": "AQuickNote",
+    "description": "Quickly add notes onto users by just accessing their profile.",
+    "author": "ace",
+    "version": "1.0.0",
+    "source": "https://raw.githubusercontent.com/AceLikesGhosts/bd-plugins/master/dist/AQuckNote/AQuckNote.plugin.js",
+    "authorLink": "https://github.com/AceLikesGhosts/bd-plugins",
+    "authorId": "1297706747150209075"
+}
