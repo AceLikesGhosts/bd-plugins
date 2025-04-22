@@ -2,7 +2,7 @@
 * @name ADifferentSearch
 * @description Change the search engine used in the `Search With` feature.
 * @author ace.
-* @version 1.0.0
+* @version 1.1.0
 * @source https://raw.githubusercontent.com/AceLikesGhosts/bd-plugins/master/dist/ADifferentSearch/ADifferentSearch.plugin.js
 * @authorLink https://github.com/AceLikesGhosts/bd-plugins
 * @authorId 327639826075484162
@@ -87,7 +87,7 @@ var config_default = {
   name: "ADifferentSearch",
   description: "Change the search engine used in the `Search With` feature.",
   author: "ace.",
-  version: "1.0.0",
+  version: "1.1.0",
   source: "https://raw.githubusercontent.com/AceLikesGhosts/bd-plugins/master/dist/ADifferentSearch/ADifferentSearch.plugin.js",
   authorLink: "https://github.com/AceLikesGhosts/bd-plugins",
   authorId: "327639826075484162"
@@ -109,6 +109,18 @@ var FormDivider = BdApi.Webpack.getBySource(".divider", ",style:", '"div"', "div
 // lib/components/TextInput.tsx
 var TextInput_default = BdApi.Webpack.getByStrings(".error]:this.hasError()", { searchExports: true });
 
+// lib/components/Radio.tsx
+var RawRadioGroup = BdApi.Webpack.getByStrings("itemInfoClassName:", "radioItemClassName", "titleId", { searchExports: true });
+function RadioItem(props) {
+  return /* @__PURE__ */ React.createElement(
+    FormItem,
+    {
+      ...props
+    },
+    /* @__PURE__ */ React.createElement(RawRadioGroup, { ...props })
+  );
+}
+
 // plugins/ADifferentSearch/Settings.tsx
 function TextInput(props) {
   return /* @__PURE__ */ React.createElement(
@@ -128,6 +140,11 @@ function TextInput(props) {
     )
   );
 }
+var DefaultProvidedSearchEngines = {
+  startpage: "https://startpage.com/sp/search?query=",
+  duckduckgo: "https://duckduckgo.com/?t=h_&q=",
+  searX: "https://searx.be/search?q="
+};
 function Settings() {
   const [searchEngineName, setSearchEngineName] = React.useState(ADifferentSearch.settings.searchEngineName);
   const [searchEngineURL, setSearchEngineURL] = React.useState(ADifferentSearch.settings.searchEngineURL);
@@ -142,6 +159,21 @@ function Settings() {
     searchEngineURL
   ]);
   return /* @__PURE__ */ React.createElement("div", null, /* @__PURE__ */ React.createElement(
+    RadioItem,
+    {
+      title: "Search Engine",
+      options: Object.keys(DefaultProvidedSearchEngines).map((k) => ({
+        name: k,
+        value: DefaultProvidedSearchEngines[k]
+      })),
+      onChange: (e) => {
+        setSearchEngineName(e.name.toString());
+        setSearchEngineURL(e.value.toString());
+      },
+      className: Margins.marginBottom20,
+      value: searchEngineURL
+    }
+  ), /* @__PURE__ */ React.createElement(FormText, { className: Margins.marginBottom20 }, "or manually provide a search engine"), /* @__PURE__ */ React.createElement(
     TextInput,
     {
       title: "Search Engine Name",
