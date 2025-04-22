@@ -2,7 +2,7 @@
 * @name ADifferentSearch
 * @description Change the search engine used in the `Search With` feature.
 * @author ace.
-* @version 1.1.0
+* @version 1.2.0
 * @source https://raw.githubusercontent.com/AceLikesGhosts/bd-plugins/master/dist/ADifferentSearch/ADifferentSearch.plugin.js
 * @authorLink https://github.com/AceLikesGhosts/bd-plugins
 * @authorId 327639826075484162
@@ -87,7 +87,7 @@ var config_default = {
   name: "ADifferentSearch",
   description: "Change the search engine used in the `Search With` feature.",
   author: "ace.",
-  version: "1.1.0",
+  version: "1.2.0",
   source: "https://raw.githubusercontent.com/AceLikesGhosts/bd-plugins/master/dist/ADifferentSearch/ADifferentSearch.plugin.js",
   authorLink: "https://github.com/AceLikesGhosts/bd-plugins",
   authorId: "327639826075484162"
@@ -143,7 +143,14 @@ function TextInput(props) {
 var DefaultProvidedSearchEngines = {
   startpage: "https://startpage.com/sp/search?query=",
   duckduckgo: "https://duckduckgo.com/?t=h_&q=",
-  searX: "https://searx.be/search?q="
+  searX: "https://searx.be/search?q=",
+  google: "https://google.com/search?q=",
+  bing: "https://bing.com/search?q=",
+  yandex: "https://yandex.com/search?text=",
+  perplexity: "https://perplexity.ai/search?q=",
+  yahoo: "https://yahoo.com/search?q=",
+  aol: "https://search.aol.com/aol/search?q=",
+  brave: "https://search.brave.com/search?q="
 };
 function Settings() {
   const [searchEngineName, setSearchEngineName] = React.useState(ADifferentSearch.settings.searchEngineName);
