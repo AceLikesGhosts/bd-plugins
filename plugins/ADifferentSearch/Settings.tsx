@@ -24,7 +24,14 @@ function TextInput(props: TextInputProps & FormItemProps) {
 const DefaultProvidedSearchEngines = {
     startpage: 'https://startpage.com/sp/search?query=',
     duckduckgo: 'https://duckduckgo.com/?t=h_&q=',
-    searX: 'https://searx.be/search?q='
+    searX: 'https://searx.be/search?q=',
+    google: 'https://google.com/search?q=',
+    bing: 'https://bing.com/search?q=',
+    yandex: 'https://yandex.com/search?text=',
+    perplexity: 'https://perplexity.ai/search?q=',
+    yahoo: 'https://yahoo.com/search?q=',
+    aol: 'https://search.aol.com/aol/search?q=',
+    brave: 'https://search.brave.com/search?q=',
 } as Record<PropertyKey, PropertyKey>;
 
 export default function Settings(): React.ReactNode {

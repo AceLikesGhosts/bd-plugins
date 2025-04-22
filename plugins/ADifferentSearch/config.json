@@ -3,7 +3,7 @@
     "name": "ADifferentSearch",
     "description": "Change the search engine used in the `Search With` feature.",
     "author": "ace.",
-    "version": "1.1.0",
+    "version": "1.2.0",
     "source": "https://raw.githubusercontent.com/AceLikesGhosts/bd-plugins/master/dist/ADifferentSearch/ADifferentSearch.plugin.js",
     "authorLink": "https://github.com/AceLikesGhosts/bd-plugins",
     "authorId": "327639826075484162"
