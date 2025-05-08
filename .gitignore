@@ -6,7 +6,9 @@ hidden
 plugins/AStupidStereo
 plugins/AVCStalker
 plugins/NewVCStalker
+plugins/ABotDefeater
 
 dist/AStupidStereo
 dist/AVCStalker
 dist/NewVCStalker
+dist/ABotDefeater

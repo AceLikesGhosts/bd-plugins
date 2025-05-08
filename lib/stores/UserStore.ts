@@ -7,7 +7,7 @@ export interface User {
     desktop: boolean;
     email: string;
     flags: number;
-    globalName: string;
+    globalName: string | null;
     guildMeeberAvatars: Record<string, unknown>;
     hasAnyStaffLevel: () => boolean;
     hasBouncedEmail: boolean;
