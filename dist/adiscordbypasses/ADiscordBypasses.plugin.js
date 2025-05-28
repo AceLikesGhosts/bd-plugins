@@ -2,7 +2,7 @@
 * @name ADiscordBypasses
 * @description A simple rewrite of Tharki's DiscordBypasses.
 * @author ace.
-* @version 2.0.6
+* @version 2.0.7
 * @source https://raw.githubusercontent.com/AceLikesGhosts/a-bd-plugins/master/dist/ADiscordBypasses/ADiscordBypasses.plugin.js
 * @authorLink https://github.com/AceLikesGhosts/a-bd-plugins
 * @website https://github.com/AceLikesGhosts/a-bd-plugins
@@ -100,7 +100,7 @@ var AccountSwitcher_default2 = (main) => {
   }
   Object.defineProperty(AccountSwitcher_default, maxAccountsKey, {
     get: () => {
-      return main.settings?.MaxAccounts ? Infinity : 5;
+      return ADiscordBypasses.settings?.MaxAccounts ? Infinity : 5;
     },
     configurable: true,
     enumerable: true
@@ -113,7 +113,7 @@ var GuildVerification_default = (main) => {
   const [test, key] = BdApi.Webpack.getWithKey(BdApi.Webpack.Filters.byKeys("ACCOUNT_AGE", "MEMBER_AGE"));
   Object.defineProperty(test, key, {
     get: () => {
-      return main.settings?.Verification ? { ACCOUNT_AGE: 0, MEMBER_AGE: 0 } : { ACCOUNT_AGE: 5, MEMBER_AGE: 10 };
+      return ADiscordBypasses.settings?.Verification ? { ACCOUNT_AGE: 0, MEMBER_AGE: 0 } : { ACCOUNT_AGE: 5, MEMBER_AGE: 10 };
     },
     configurable: true,
     enumerable: true
@@ -126,7 +126,7 @@ var config_default = {
   name: "ADiscordBypasses",
   description: "A simple rewrite of Tharki's DiscordBypasses.",
   author: "ace.",
-  version: "2.0.6",
+  version: "2.0.7",
   source: "https://raw.githubusercontent.com/AceLikesGhosts/a-bd-plugins/master/dist/ADiscordBypasses/ADiscordBypasses.plugin.js",
   authorLink: "https://github.com/AceLikesGhosts/a-bd-plugins",
   website: "https://github.com/AceLikesGhosts/a-bd-plugins",
@@ -138,24 +138,24 @@ var config_default = {
 var IdleStore_default = BdApi.Webpack.getStore("IdleStore");
 
 // plugins/ADiscordBypasses/patches/Idle.ts
-function Idle(main) {
+function Idle() {
   BdApi.Patcher.instead(
     config_default.name,
     IdleStore_default,
     "getIdleSince",
-    (_, args, res) => main.settings?.Idle ? null : res(...args)
+    (_, args, res) => ADiscordBypasses.settings?.Idle ? null : res(...args)
   );
   BdApi.Patcher.instead(
     config_default.name,
     IdleStore_default,
     "isAFK",
-    (_, args, res) => main.settings?.Idle ? false : res(...args)
+    (_, args, res) => ADiscordBypasses.settings?.Idle ? false : res(...args)
   );
   BdApi.Patcher.instead(
     config_default.name,
     IdleStore_default,
     "isIdle",
-    (_, args, res) => main.settings?.Idle ? false : res(...args)
+    (_, args, res) => ADiscordBypasses.settings?.Idle ? false : res(...args)
   );
 }
 
@@ -167,7 +167,7 @@ var NSFWPatch_default = (main) => {
   main.logger.info("Patching NSFW state.");
   BdApi.Patcher.after("ADiscordBypasses", UserStore_default, "getCurrentUser", (_, __, res) => {
     if (res?.nsfwAllowed === false)
-      res.nsfwAllowed = main.settings.NSFW ?? res?.nsfwAllowed;
+      res.nsfwAllowed = ADiscordBypasses.settings.NSFW ?? res?.nsfwAllowed;
     return res;
   });
 };
@@ -181,7 +181,7 @@ var PTT_default = (main) => {
   main.logger.info("Patching PerimssionStore (PTT)");
   const [PermissionsModule, PermissionKey] = BdApi.Webpack.getWithKey(BdApi.Webpack.Filters.byKeys("USE_VAD", "ADMINISTRATOR"));
   BdApi.Patcher.after("ADiscordBypasses", PermissionStore_default, "can", (_, args, res) => {
-    if (args[0] === PermissionsModule[PermissionKey].USE_VAD && main.settings?.PTT)
+    if (args[0] === PermissionsModule[PermissionKey].USE_VAD && ADiscordBypasses.settings?.PTT)
       return true;
     return res;
   });
@@ -191,16 +191,16 @@ var PTT_default = (main) => {
 var ElectronModule_default = /* @__PURE__ */ BdApi.Webpack.getByKeys("setBadge");
 
 // plugins/ADiscordBypasses/patches/setBadge.ts
-function setBadge(main) {
-  if (!main.settings?.electronBadge) return;
+function setBadge() {
+  if (!ADiscordBypasses.settings?.electronBadge) return;
   ElectronModule_default.setBadge(0);
   ElectronModule_default.setSystemTrayIcon("DEFAULT");
   BdApi.Patcher.before(config_default.name, ElectronModule_default, "setBadge", (_, args) => {
-    if (main.settings?.electronBadge) args[0] = 0;
+    if (ADiscordBypasses.settings?.electronBadge) args[0] = 0;
     return args;
   });
   BdApi.Patcher.before(config_default.name, ElectronModule_default, "setSystemTrayIcon", (_, args) => {
-    if (main.settings?.electronBadge && args[0] === "UNREAD") args[0] = "DEFAULT";
+    if (ADiscordBypasses.settings?.electronBadge && args[0] === "UNREAD") args[0] = "DEFAULT";
     return args;
   });
 }
@@ -212,7 +212,7 @@ var SpotifyStore_default = /* @__PURE__ */ BdApi.Webpack.getStore("SpotifyStore"
 var SpotifyPremium_default = (main) => {
   main.logger.info("Patching Spotify Premium");
   BdApi.Patcher.after("ADiscordBypasses", SpotifyStore_default, "getActiveSocketAndDevice", (_, __, ret) => {
-    if (!main.settings?.SpotifyPremium) return ret;
+    if (!ADiscordBypasses.settings?.SpotifyPremium) return ret;
     if (ret && ret?.socket) ret.socket.isPremium = true;
     return ret;
   });
@@ -225,18 +225,18 @@ var ApplicationStreamPreviewStore_default = /* @__PURE__ */ BdApi.Webpack.getSto
 var StreamPreview_default = (main) => {
   main.logger.info("Patching StreamPreview");
   BdApi.Patcher.instead("ADiscordBypasses", ElectronModule_default, "makeChunkedRequest", (_, args, res) => {
-    if (!main.settings?.StreamPreview) return;
-    const replaceWith = main.settings.CustomPreviewImage !== "" ? main.settings.CustomPreviewImage : null;
-    if (args[2].method !== "POST" && !args[0].includes("preview") || !main.settings?.StreamPreview) {
+    if (!ADiscordBypasses.settings?.StreamPreview) return;
+    const replaceWith = ADiscordBypasses.settings.CustomPreviewImage !== "" ? ADiscordBypasses.settings.CustomPreviewImage : null;
+    if (args[2].method !== "POST" && !args[0].includes("preview") || !ADiscordBypasses.settings?.StreamPreview) {
       return res(...args);
     }
     if (!replaceWith) return;
     return res(args[0], { thumbnail: replaceWith }, args[2]);
   });
   BdApi.Patcher.after("ADiscordBypasses", ApplicationStreamPreviewStore_default, "getPreviewURL", (_, args, res) => {
-    if (!main.settings?.StreamPreview) return;
-    const replaceWith = main.settings.CustomPreviewImage !== "" ? main.settings.CustomPreviewImage : null;
-    if (args[2] === UserStore_default.getCurrentUser()?.id && main.settings?.StreamPreview && !res?.startsWith("https://")) {
+    if (!ADiscordBypasses.settings?.StreamPreview) return;
+    const replaceWith = ADiscordBypasses.settings.CustomPreviewImage !== "" ? ADiscordBypasses.settings.CustomPreviewImage : null;
+    if (args[2] === UserStore_default.getCurrentUser()?.id && ADiscordBypasses.settings?.StreamPreview && !res?.startsWith("https://")) {
       return replaceWith;
     }
     return res;
@@ -255,7 +255,7 @@ var Timeout_default = (main) => {
     "start",
     (instance, args, res) => {
       const name = args[1]?.toString();
-      if (name?.includes("BOT_CALL_IDLE_DISCONNECT") && main.settings?.CallTimeout || name?.includes("SPOTIFY_AUTO_PAUSED") && main.settings?.SpotifyPause) {
+      if (name?.includes("BOT_CALL_IDLE_DISCONNECT") && ADiscordBypasses.settings?.CallTimeout || name?.includes("SPOTIFY_AUTO_PAUSED") && ADiscordBypasses.settings?.SpotifyPause) {
         instance.start = () => null;
         instance.stop();
         return null;
@@ -675,8 +675,8 @@ var ADiscordBypasses = class _ADiscordBypasses {
     StreamPreview_default(this);
     PTT_default(this);
     AccountSwitcher_default2(this);
-    Idle(this);
-    setBadge(this);
+    Idle();
+    setBadge();
   }
   stop() {
     this.logger.log("stopped");

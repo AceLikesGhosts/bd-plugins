@@ -45,8 +45,8 @@ export default class ADiscordBypasses implements Plugin {
         StreamPreview(this);
         PTT(this);
         AccountSwitcher(this);
-        Idle(this);
-        setBadge(this);
+        Idle();
+        setBadge();
     }
 
     stop(): void {

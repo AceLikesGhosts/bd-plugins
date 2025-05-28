@@ -3,7 +3,7 @@
 // import SpotifyChecks from '@lib/modules/SpotifyChecks';
 // import Dispatcher from '@lib/modules/Dispatcher';
 
-import type ADiscordBypasses from '..';
+import ADiscordBypasses from '..';
 import SpotifyStore from '@lib/stores/SpotifyStore';
 
 // export default (main: ADiscordBypasses): void => {
@@ -40,7 +40,7 @@ export default (main: ADiscordBypasses): void => {
     main.logger.info('Patching Spotify Premium');
 
     BdApi.Patcher.after('ADiscordBypasses', SpotifyStore, 'getActiveSocketAndDevice', (_, __, ret) => {
-        if(!main.settings?.SpotifyPremium) return ret;
+        if(!ADiscordBypasses.settings?.SpotifyPremium) return ret;
         if(ret && ret?.socket) ret.socket.isPremium = true;
 
         return ret;

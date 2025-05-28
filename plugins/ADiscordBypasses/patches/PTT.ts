@@ -1,4 +1,4 @@
-import type ADiscordBypasses from '..';
+import ADiscordBypasses from '..';
 import PermissionStore from '@lib/stores/PermissionStore';
 
 export default (main: ADiscordBypasses): void => {
@@ -8,7 +8,7 @@ export default (main: ADiscordBypasses): void => {
     BdApi.Patcher.after('ADiscordBypasses', PermissionStore, 'can', (_, args, res) => {
         if(args[0] === (
             PermissionsModule[PermissionKey] as Record<PropertyKey, unknown>
-        ).USE_VAD && main.settings?.PTT)
+        ).USE_VAD && ADiscordBypasses.settings?.PTT)
             return true;
 
         return res;

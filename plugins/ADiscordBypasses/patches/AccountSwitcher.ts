@@ -1,4 +1,4 @@
-import type ADiscordBypasses from '..';
+import ADiscordBypasses from '..';
 import AccountSwitcherModule from '@lib/modules/AccountSwitcher';
 
 export default (main: ADiscordBypasses): void => {
@@ -17,7 +17,7 @@ export default (main: ADiscordBypasses): void => {
 
     Object.defineProperty(AccountSwitcherModule, maxAccountsKey, {
         get: () => {
-            return main.settings?.MaxAccounts ? Infinity : 5;
+            return ADiscordBypasses.settings?.MaxAccounts ? Infinity : 5;
         },
         configurable: true,
         enumerable: true,

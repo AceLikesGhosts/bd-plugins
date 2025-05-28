@@ -1,4 +1,4 @@
-import type ADiscordBypasses from '..';
+import ADiscordBypasses from '..';
 
 import TimeoutManager from '@lib/modules/TimeoutManager';
 
@@ -13,8 +13,8 @@ export default (main: ADiscordBypasses): void => {
             // @ts-expect-error idc
             const name = args[1]?.toString();
             if(
-                (name?.includes('BOT_CALL_IDLE_DISCONNECT') && main.settings?.CallTimeout) ||
-                (name?.includes('SPOTIFY_AUTO_PAUSED') && main.settings?.SpotifyPause)
+                (name?.includes('BOT_CALL_IDLE_DISCONNECT') && ADiscordBypasses.settings?.CallTimeout) ||
+                (name?.includes('SPOTIFY_AUTO_PAUSED') && ADiscordBypasses.settings?.SpotifyPause)
             ) {
                 // @ts-expect-error idc
                 instance.start = () => null;
