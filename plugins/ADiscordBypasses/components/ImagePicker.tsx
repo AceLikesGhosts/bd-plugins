@@ -35,10 +35,12 @@ export class ImagePickerItem extends React.Component<
     ImagePickerProps,
     ImagePickerState
 > {
+    private fileInputRef: React.RefObject<HTMLInputElement>;
     constructor(props: ImagePickerProps) {
         super(props);
         this.state = { img: this.props.value, showClearButton: false };
         this.clear = this.clear.bind(this);
+        this.fileInputRef = React.createRef<HTMLInputElement>();
     }
 
     clear(): void {
@@ -75,7 +77,7 @@ export class ImagePickerItem extends React.Component<
                         <input
                             {...{
                                 disabled: this.props.disabled,
-                                ref: 'file',
+                                ref: this.fileInputRef,
                                 id: 'actual-btn',
                                 type: 'file',
                                 multiple: false,

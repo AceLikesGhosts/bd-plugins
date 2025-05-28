@@ -2,7 +2,7 @@
 * @name ADiscordBypasses
 * @description A simple rewrite of Tharki's DiscordBypasses.
 * @author ace.
-* @version 2.0.5
+* @version 2.0.6
 * @source https://raw.githubusercontent.com/AceLikesGhosts/a-bd-plugins/master/dist/ADiscordBypasses/ADiscordBypasses.plugin.js
 * @authorLink https://github.com/AceLikesGhosts/a-bd-plugins
 * @website https://github.com/AceLikesGhosts/a-bd-plugins
@@ -32,13 +32,10 @@ var __toCommonJS = (mod) => __copyProps(__defProp({}, "__esModule", { value: tru
 // plugins/ADiscordBypasses/index.tsx
 var index_exports = {};
 __export(index_exports, {
+  DefaultSettings: () => DefaultSettings,
   default: () => ADiscordBypasses
 });
 module.exports = __toCommonJS(index_exports);
-
-// lib/components/index.ts
-var RawComponents = /* @__PURE__ */ BdApi.Webpack.getByKeys("ConfirmModal", "ToastPosition", "Text");
-var React = BdApi.React;
 
 // lib/logger/index.ts
 var DefaultColors = {
@@ -86,6 +83,202 @@ var Logger = class {
   }
 };
 
+// lib/modules/AccountSwitcher.ts
+var AccountSwitcher_default = BdApi.Webpack.getModule((m) => Object.values(m)?.includes("multiaccount_cta_tooltip_seen"));
+
+// plugins/ADiscordBypasses/patches/AccountSwitcher.ts
+var AccountSwitcher_default2 = (main) => {
+  main.logger.warn("Patching AccountSwitcher || UNIMPLEMENTED.");
+  let maxAccountsKey;
+  for (const key in AccountSwitcher_default) {
+    const v = AccountSwitcher_default[key];
+    if (typeof v === "number") maxAccountsKey = key;
+  }
+  if (!maxAccountsKey) {
+    main.logger.critical(`Failed to locate maxAccountsKey`, maxAccountsKey, AccountSwitcher_default);
+    return;
+  }
+  Object.defineProperty(AccountSwitcher_default, maxAccountsKey, {
+    get: () => {
+      return main.settings?.MaxAccounts ? Infinity : 5;
+    },
+    configurable: true,
+    enumerable: true
+  });
+};
+
+// plugins/ADiscordBypasses/patches/GuildVerification.ts
+var GuildVerification_default = (main) => {
+  main.logger.info("Patching DiscordConstants (Verification).");
+  const [test, key] = BdApi.Webpack.getWithKey(BdApi.Webpack.Filters.byKeys("ACCOUNT_AGE", "MEMBER_AGE"));
+  Object.defineProperty(test, key, {
+    get: () => {
+      return main.settings?.Verification ? { ACCOUNT_AGE: 0, MEMBER_AGE: 0 } : { ACCOUNT_AGE: 5, MEMBER_AGE: 10 };
+    },
+    configurable: true,
+    enumerable: true
+  });
+};
+
+// plugins/ADiscordBypasses/config.json
+var config_default = {
+  $schema: "../../config_schema.jsonc",
+  name: "ADiscordBypasses",
+  description: "A simple rewrite of Tharki's DiscordBypasses.",
+  author: "ace.",
+  version: "2.0.6",
+  source: "https://raw.githubusercontent.com/AceLikesGhosts/a-bd-plugins/master/dist/ADiscordBypasses/ADiscordBypasses.plugin.js",
+  authorLink: "https://github.com/AceLikesGhosts/a-bd-plugins",
+  website: "https://github.com/AceLikesGhosts/a-bd-plugins",
+  updateLink: "https://github.com/AceLikesGhosts/a-bd-plugins",
+  authorId: "327639826075484162"
+};
+
+// lib/stores/IdleStore.ts
+var IdleStore_default = BdApi.Webpack.getStore("IdleStore");
+
+// plugins/ADiscordBypasses/patches/Idle.ts
+function Idle(main) {
+  BdApi.Patcher.instead(
+    config_default.name,
+    IdleStore_default,
+    "getIdleSince",
+    (_, args, res) => main.settings?.Idle ? null : res(...args)
+  );
+  BdApi.Patcher.instead(
+    config_default.name,
+    IdleStore_default,
+    "isAFK",
+    (_, args, res) => main.settings?.Idle ? false : res(...args)
+  );
+  BdApi.Patcher.instead(
+    config_default.name,
+    IdleStore_default,
+    "isIdle",
+    (_, args, res) => main.settings?.Idle ? false : res(...args)
+  );
+}
+
+// lib/stores/UserStore.ts
+var UserStore_default = /* @__PURE__ */ BdApi.Webpack.getStore("UserStore");
+
+// plugins/ADiscordBypasses/patches/NSFWPatch.ts
+var NSFWPatch_default = (main) => {
+  main.logger.info("Patching NSFW state.");
+  BdApi.Patcher.after("ADiscordBypasses", UserStore_default, "getCurrentUser", (_, __, res) => {
+    if (res?.nsfwAllowed === false)
+      res.nsfwAllowed = main.settings.NSFW ?? res?.nsfwAllowed;
+    return res;
+  });
+};
+
+// lib/stores/PermissionStore.ts
+var Permissions = BdApi.Webpack.getByKeys("MUTE_MEMBERS", "VIEW_CHANNEL", { searchExports: true });
+var PermissionStore_default = /* @__PURE__ */ BdApi.Webpack.getStore("PermissionStore");
+
+// plugins/ADiscordBypasses/patches/PTT.ts
+var PTT_default = (main) => {
+  main.logger.info("Patching PerimssionStore (PTT)");
+  const [PermissionsModule, PermissionKey] = BdApi.Webpack.getWithKey(BdApi.Webpack.Filters.byKeys("USE_VAD", "ADMINISTRATOR"));
+  BdApi.Patcher.after("ADiscordBypasses", PermissionStore_default, "can", (_, args, res) => {
+    if (args[0] === PermissionsModule[PermissionKey].USE_VAD && main.settings?.PTT)
+      return true;
+    return res;
+  });
+};
+
+// lib/modules/ElectronModule.ts
+var ElectronModule_default = /* @__PURE__ */ BdApi.Webpack.getByKeys("setBadge");
+
+// plugins/ADiscordBypasses/patches/setBadge.ts
+function setBadge(main) {
+  if (!main.settings?.electronBadge) return;
+  ElectronModule_default.setBadge(0);
+  ElectronModule_default.setSystemTrayIcon("DEFAULT");
+  BdApi.Patcher.before(config_default.name, ElectronModule_default, "setBadge", (_, args) => {
+    if (main.settings?.electronBadge) args[0] = 0;
+    return args;
+  });
+  BdApi.Patcher.before(config_default.name, ElectronModule_default, "setSystemTrayIcon", (_, args) => {
+    if (main.settings?.electronBadge && args[0] === "UNREAD") args[0] = "DEFAULT";
+    return args;
+  });
+}
+
+// lib/stores/SpotifyStore.ts
+var SpotifyStore_default = /* @__PURE__ */ BdApi.Webpack.getStore("SpotifyStore");
+
+// plugins/ADiscordBypasses/patches/SpotifyPremium.ts
+var SpotifyPremium_default = (main) => {
+  main.logger.info("Patching Spotify Premium");
+  BdApi.Patcher.after("ADiscordBypasses", SpotifyStore_default, "getActiveSocketAndDevice", (_, __, ret) => {
+    if (!main.settings?.SpotifyPremium) return ret;
+    if (ret && ret?.socket) ret.socket.isPremium = true;
+    return ret;
+  });
+};
+
+// lib/stores/ApplicationStreamPreviewStore.ts
+var ApplicationStreamPreviewStore_default = /* @__PURE__ */ BdApi.Webpack.getStore("ApplicationStreamPreviewStore");
+
+// plugins/ADiscordBypasses/patches/StreamPreview.ts
+var StreamPreview_default = (main) => {
+  main.logger.info("Patching StreamPreview");
+  BdApi.Patcher.instead("ADiscordBypasses", ElectronModule_default, "makeChunkedRequest", (_, args, res) => {
+    if (!main.settings?.StreamPreview) return;
+    const replaceWith = main.settings.CustomPreviewImage !== "" ? main.settings.CustomPreviewImage : null;
+    if (args[2].method !== "POST" && !args[0].includes("preview") || !main.settings?.StreamPreview) {
+      return res(...args);
+    }
+    if (!replaceWith) return;
+    return res(args[0], { thumbnail: replaceWith }, args[2]);
+  });
+  BdApi.Patcher.after("ADiscordBypasses", ApplicationStreamPreviewStore_default, "getPreviewURL", (_, args, res) => {
+    if (!main.settings?.StreamPreview) return;
+    const replaceWith = main.settings.CustomPreviewImage !== "" ? main.settings.CustomPreviewImage : null;
+    if (args[2] === UserStore_default.getCurrentUser()?.id && main.settings?.StreamPreview && !res?.startsWith("https://")) {
+      return replaceWith;
+    }
+    return res;
+  });
+};
+
+// lib/modules/TimeoutManager.ts
+var TimeoutManager_default = /* @__PURE__ */ BdApi.Webpack.getByPrototypeKeys("start", "stop", "isStarted", { searchExports: true });
+
+// plugins/ADiscordBypasses/patches/Timeout.ts
+var Timeout_default = (main) => {
+  main.logger.info("Patching Timeout (Idle kick/Spotify pause).");
+  BdApi.Patcher.instead(
+    "ADiscordBypasses",
+    TimeoutManager_default.prototype,
+    "start",
+    (instance, args, res) => {
+      const name = args[1]?.toString();
+      if (name?.includes("BOT_CALL_IDLE_DISCONNECT") && main.settings?.CallTimeout || name?.includes("SPOTIFY_AUTO_PAUSED") && main.settings?.SpotifyPause) {
+        instance.start = () => null;
+        instance.stop();
+        return null;
+      }
+      return res.call(instance, ...args);
+    }
+  );
+};
+
+// lib/components/Form.tsx
+var FormTitle = BdApi.Webpack.getByStrings('["defaultMargin".concat', '="h5"', { searchExports: true });
+var FormText = BdApi.Webpack.getByStrings(".SELECTABLE),", ".DISABLED:", { searchExports: true });
+var FormSection = BdApi.Webpack.getBySource(".titleId)&&", { searchExports: true });
+var FormSwitch = BdApi.Webpack.getByStrings(".labelRow", "useId", "DESCRIPTION", { searchExports: true });
+var FormItem = BdApi.Webpack.getModule((x) => x.render.toString?.().includes(".fieldWrapper"), { searchExports: true });
+var FormNotice = BdApi.Webpack.getByStrings(".Types.DANGER", ".formNotice", { searchExports: true });
+var FormDivider = BdApi.Webpack.getBySource(".divider", ",style:", '"div"', "dividerDefault", { searchExports: true });
+
+// lib/components/index.ts
+var RawComponents = /* @__PURE__ */ BdApi.Webpack.getByKeys("ConfirmModal", "ToastPosition", "Text");
+var React = BdApi.React;
+var ReactDom = BdApi.ReactDOM || BdApi.Webpack.getByKeys("createRoot");
+
 // lib/components/Toasts.ts
 var Kind = {
   MESSAGE: 0,
@@ -107,15 +300,6 @@ var Toasts_default = {
   Kind,
   Position
 };
-
-// lib/components/Form.tsx
-var FormTitle = BdApi.Webpack.getByStrings('["defaultMargin".concat', '="h5"', { searchExports: true });
-var FormText = BdApi.Webpack.getByStrings(".SELECTABLE),", ".DISABLED:", { searchExports: true });
-var FormSection = BdApi.Webpack.getBySource(".titleId)&&", { searchExports: true });
-var FormSwitch = BdApi.Webpack.getByStrings(".labelRow", "useId", "DESCRIPTION", { searchExports: true });
-var FormItem = BdApi.Webpack.getModule((x) => x.render.toString?.().includes(".fieldWrapper"), { searchExports: true });
-var FormNotice = BdApi.Webpack.getByStrings(".Types.DANGER", ".formNotice", { searchExports: true });
-var FormDivider = BdApi.Webpack.getBySource(".divider", ",style:", '"div"', "dividerDefault", { searchExports: true });
 
 // plugins/ADiscordBypasses/components/CloseButton.tsx
 var CloseButton = class extends React.Component {
@@ -155,6 +339,7 @@ var ImagePickerItem = class extends React.Component {
     super(props);
     this.state = { img: this.props.value, showClearButton: false };
     this.clear = this.clear.bind(this);
+    this.fileInputRef = React.createRef();
   }
   clear() {
     this.setState({ img: "" });
@@ -195,7 +380,7 @@ var ImagePickerItem = class extends React.Component {
           {
             ...{
               disabled: this.props.disabled,
-              ref: "file",
+              ref: this.fileInputRef,
               id: "actual-btn",
               type: "file",
               multiple: false,
@@ -326,246 +511,21 @@ var ImagePickerItem = class extends React.Component {
   }
 };
 
-// lib/stores/UserStore.ts
-var UserStore_default = /* @__PURE__ */ BdApi.Webpack.getStore("UserStore");
-
-// plugins/ADiscordBypasses/patches/NSFWPatch.ts
-var NSFWPatch_default = (main) => {
-  main.logger.info("Patching NSFW state.");
-  BdApi.Patcher.after("ADiscordBypasses", UserStore_default, "getCurrentUser", (_, __, res) => {
-    if (res?.nsfwAllowed === false)
-      res.nsfwAllowed = main.settings.NSFW ?? res?.nsfwAllowed;
-    return res;
-  });
-};
-
-// lib/stores/SpotifyStore.ts
-var SpotifyStore_default = /* @__PURE__ */ BdApi.Webpack.getStore("SpotifyStore");
-
-// plugins/ADiscordBypasses/patches/SpotifyPremium.ts
-var SpotifyPremium_default = (main) => {
-  main.logger.info("Patching Spotify Premium");
-  BdApi.Patcher.after("ADiscordBypasses", SpotifyStore_default, "getActiveSocketAndDevice", (_, __, ret) => {
-    if (!main.settings?.SpotifyPremium) return ret;
-    if (ret === null) return ret;
-    if (!ret.socket) return ret;
-    ret.socket.isPremium = true;
-    return ret;
-  });
-};
-
-// lib/modules/TimeoutManager.ts
-var TimeoutManager_default = /* @__PURE__ */ BdApi.Webpack.getByPrototypeKeys("start", "stop", "isStarted", { searchExports: true });
-
-// plugins/ADiscordBypasses/patches/Timeout.ts
-var Timeout_default = (main) => {
-  main.logger.info("Patching Timeout (Idle kick/Spotify pause).");
-  BdApi.Patcher.instead(
-    "ADiscordBypasses",
-    TimeoutManager_default.prototype,
-    "start",
-    (instance, args, res) => {
-      const name = args[1]?.toString();
-      if (name?.includes("BOT_CALL_IDLE_DISCONNECT") && main.settings?.CallTimeout || name?.includes("SPOTIFY_AUTO_PAUSED") && main.settings?.SpotifyPause) {
-        instance.start = () => null;
-        instance.stop();
-        return null;
-      }
-      return res.call(instance, ...args);
-    }
-  );
-};
-
-// plugins/ADiscordBypasses/patches/GuildVerification.ts
-var GuildVerification_default = (main) => {
-  main.logger.info("Patching DiscordConstants (Verification).");
-  const [test, key] = BdApi.Webpack.getWithKey(BdApi.Webpack.Filters.byKeys("ACCOUNT_AGE", "MEMBER_AGE"));
-  Object.defineProperty(test, key, {
-    get: () => {
-      return main.settings?.Verification ? { ACCOUNT_AGE: 0, MEMBER_AGE: 0 } : { ACCOUNT_AGE: 5, MEMBER_AGE: 10 };
-    },
-    configurable: true,
-    enumerable: true
-  });
-};
-
-// lib/modules/ElectronModule.ts
-var ElectronModule_default = /* @__PURE__ */ BdApi.Webpack.getByKeys("setBadge");
-
-// lib/stores/ApplicationStreamPreviewStore.ts
-var ApplicationStreamPreviewStore_default = /* @__PURE__ */ BdApi.Webpack.getStore("ApplicationStreamPreviewStore");
-
-// plugins/ADiscordBypasses/patches/StreamPreview.ts
-var StreamPreview_default = (main) => {
-  main.logger.info("Patching StreamPreview");
-  BdApi.Patcher.instead("ADiscordBypasses", ElectronModule_default, "makeChunkedRequest", (_, args, res) => {
-    if (!main.settings?.StreamPreview) return;
-    const replaceWith = main.settings.CustomPreviewImage !== "" ? main.settings.CustomPreviewImage : null;
-    if (args[2].method !== "POST" && !args[0].includes("preview") || !main.settings?.StreamPreview) {
-      return res(...args);
-    }
-    if (!replaceWith) return;
-    return res(args[0], { thumbnail: replaceWith }, args[2]);
-  });
-  BdApi.Patcher.after("ADiscordBypasses", ApplicationStreamPreviewStore_default, "getPreviewURL", (_, args, res) => {
-    if (!main.settings?.StreamPreview) return;
-    const replaceWith = main.settings.CustomPreviewImage !== "" ? main.settings.CustomPreviewImage : null;
-    if (args[2] === UserStore_default.getCurrentUser()?.id && main.settings?.StreamPreview && !res?.startsWith("https://")) {
-      return replaceWith;
-    }
-    return res;
-  });
-};
-
-// lib/stores/PermissionStore.ts
-var Permissions = BdApi.Webpack.getByKeys("MUTE_MEMBERS", "VIEW_CHANNEL", { searchExports: true });
-var PermissionStore_default = /* @__PURE__ */ BdApi.Webpack.getStore("PermissionStore");
-
-// plugins/ADiscordBypasses/patches/PTT.ts
-var PTT_default = (main) => {
-  main.logger.info("Patching PerimssionStore (PTT)");
-  const [PermissionsModule, PermissionKey] = BdApi.Webpack.getWithKey(BdApi.Webpack.Filters.byKeys("USE_VAD", "ADMINISTRATOR"));
-  BdApi.Patcher.after("ADiscordBypasses", PermissionStore_default, "can", (_, args, res) => {
-    if (args[0] === PermissionsModule[PermissionKey].USE_VAD && main.settings?.PTT)
-      return true;
-    return res;
-  });
-};
-
-// lib/modules/AccountSwitcher.ts
-var AccountSwitcher_default = BdApi.Webpack.getModule((m) => Object.values(m)?.includes("multiaccount_cta_tooltip_seen"));
-
-// plugins/ADiscordBypasses/patches/AccountSwitcher.ts
-var AccountSwitcher_default2 = (main) => {
-  main.logger.warn("Patching AccountSwitcher || UNIMPLEMENTED.");
-  let maxAccountsKey;
-  for (const key in AccountSwitcher_default) {
-    const v = AccountSwitcher_default[key];
-    if (typeof v === "number") maxAccountsKey = key;
-  }
-  if (!maxAccountsKey) {
-    main.logger.critical(`Failed to locate maxAccountsKey`, maxAccountsKey, AccountSwitcher_default);
-    return;
-  }
-  Object.defineProperty(AccountSwitcher_default, maxAccountsKey, {
-    get: () => {
-      return main.settings?.MaxAccounts ? Infinity : 5;
-    },
-    configurable: true,
-    enumerable: true
-  });
-};
-
-// plugins/ADiscordBypasses/config.json
-var config_default = {
-  $schema: "../../config_schema.jsonc",
-  name: "ADiscordBypasses",
-  description: "A simple rewrite of Tharki's DiscordBypasses.",
-  author: "ace.",
-  version: "2.0.5",
-  source: "https://raw.githubusercontent.com/AceLikesGhosts/a-bd-plugins/master/dist/ADiscordBypasses/ADiscordBypasses.plugin.js",
-  authorLink: "https://github.com/AceLikesGhosts/a-bd-plugins",
-  website: "https://github.com/AceLikesGhosts/a-bd-plugins",
-  updateLink: "https://github.com/AceLikesGhosts/a-bd-plugins",
-  authorId: "327639826075484162"
-};
-
-// lib/stores/IdleStore.ts
-var IdleStore_default = BdApi.Webpack.getStore("IdleStore");
-
-// plugins/ADiscordBypasses/patches/Idle.ts
-function Idle(main) {
-  BdApi.Patcher.instead(
-    config_default.name,
-    IdleStore_default,
-    "getIdleSince",
-    (_, args, res) => main.settings?.Idle ? null : res(...args)
-  );
-  BdApi.Patcher.instead(
-    config_default.name,
-    IdleStore_default,
-    "isAFK",
-    (_, args, res) => main.settings?.Idle ? false : res(...args)
-  );
-  BdApi.Patcher.instead(
-    config_default.name,
-    IdleStore_default,
-    "isIdle",
-    (_, args, res) => main.settings?.Idle ? false : res(...args)
-  );
-}
-
-// plugins/ADiscordBypasses/patches/setBadge.ts
-function setBadge(main) {
-  if (!main.settings?.electronBadge) return;
-  ElectronModule_default.setBadge(0);
-  ElectronModule_default.setSystemTrayIcon("DEFAULT");
-  BdApi.Patcher.before(config_default.name, ElectronModule_default, "setBadge", (_, args) => {
-    if (main.settings?.electronBadge) args[0] = 0;
-    return args;
-  });
-  BdApi.Patcher.before(config_default.name, ElectronModule_default, "setSystemTrayIcon", (_, args) => {
-    if (main.settings?.electronBadge && args[0] === "UNREAD") args[0] = "DEFAULT";
-    return args;
-  });
-}
-
-// plugins/ADiscordBypasses/index.tsx
-var ADiscordBypasses = class {
-  constructor(meta) {
-    this.settings = void 0;
-    this.defaultSettings = {
-      PTT: false,
-      CallTimeout: false,
-      NSFW: false,
-      StreamPreview: false,
-      CustomPreviewImage: "",
-      SpotifyPremium: false,
-      SpotifyPause: false,
-      Verification: false,
-      MaxAccounts: false,
-      Idle: false,
-      electronBadge: false
-    };
-    this.logger = new Logger(meta);
-  }
-  start() {
-    this.logger.log("started");
-    this.settings = BdApi.Data.load("ADiscordBypasses", "settings") || this.defaultSettings;
-    NSFWPatch_default(this);
-    SpotifyPremium_default(this);
-    Timeout_default(this);
-    GuildVerification_default(this);
-    StreamPreview_default(this);
-    PTT_default(this);
-    AccountSwitcher_default2(this);
-    Idle(this);
-    setBadge(this);
-  }
-  stop() {
-    this.logger.log("stopped");
-    BdApi.Data.save("ADiscordBypasses", "settings", this.settings);
-    BdApi.Patcher.unpatchAll("ADiscordBypasses");
-    delete this.settings;
-  }
-  getSettingsPanel() {
-    return DiscordBypassSettings.bind(this);
-  }
-};
-function DiscordBypassSettings() {
-  const [nsfw, setNSFW] = React.useState(this.settings.NSFW);
-  const [callTimeout, setCallTimeout] = React.useState(this.settings.CallTimeout);
-  const [PTT, setPTT] = React.useState(this.settings.PTT);
-  const [streamPreview, setStreamPreview] = React.useState(this.settings.StreamPreview);
-  const [customPreviewImage, setCustomImagePreview] = React.useState(this.settings.CustomPreviewImage);
-  const [isPremium, setSpotifyPremium] = React.useState(this.settings.SpotifyPremium);
-  const [spotifyPause, setSpotifyPause] = React.useState(this.settings.SpotifyPause);
-  const [Verification, setVerification] = React.useState(this.settings.Verification);
-  const [maxAccounts, setMaxAccounts] = React.useState(this.settings.MaxAccounts);
-  const [Idle2, setIdle] = React.useState(this.settings.Idle);
-  const [electronBadge, setElectronBadge] = React.useState(this.settings.electronBadge);
+// plugins/ADiscordBypasses/components/Settings.tsx
+function Settings() {
+  const [nsfw, setNSFW] = React.useState(ADiscordBypasses.settings.NSFW);
+  const [callTimeout, setCallTimeout] = React.useState(ADiscordBypasses.settings.CallTimeout);
+  const [PTT, setPTT] = React.useState(ADiscordBypasses.settings.PTT);
+  const [streamPreview, setStreamPreview] = React.useState(ADiscordBypasses.settings.StreamPreview);
+  const [customPreviewImage, setCustomImagePreview] = React.useState(ADiscordBypasses.settings.CustomPreviewImage);
+  const [isPremium, setSpotifyPremium] = React.useState(ADiscordBypasses.settings.SpotifyPremium);
+  const [spotifyPause, setSpotifyPause] = React.useState(ADiscordBypasses.settings.SpotifyPause);
+  const [Verification, setVerification] = React.useState(ADiscordBypasses.settings.Verification);
+  const [maxAccounts, setMaxAccounts] = React.useState(ADiscordBypasses.settings.MaxAccounts);
+  const [Idle2, setIdle] = React.useState(ADiscordBypasses.settings.Idle);
+  const [electronBadge, setElectronBadge] = React.useState(ADiscordBypasses.settings.electronBadge);
   React.useEffect(() => {
-    this.settings = {
+    ADiscordBypasses.settings = {
       NSFW: nsfw,
       CallTimeout: callTimeout,
       PTT,
@@ -594,7 +554,7 @@ function DiscordBypassSettings() {
   return /* @__PURE__ */ React.createElement("div", null, /* @__PURE__ */ React.createElement(
     FormSwitch,
     {
-      disabled: UserStore_default?.getCurrentUser()?.nsfwAllowed && !this.settings?.NSFW,
+      disabled: UserStore_default?.getCurrentUser()?.nsfwAllowed && !ADiscordBypasses.settings?.NSFW,
       note: `Bypasses the channel restriction when you're too young to enter channels marked as NSFW.`,
       value: nsfw,
       onChange: (v) => setNSFW(v)
@@ -683,3 +643,47 @@ function DiscordBypassSettings() {
     "Missed Messages Badge"
   ));
 }
+
+// plugins/ADiscordBypasses/index.tsx
+var DefaultSettings = {
+  PTT: false,
+  CallTimeout: false,
+  NSFW: false,
+  StreamPreview: false,
+  CustomPreviewImage: "",
+  SpotifyPremium: false,
+  SpotifyPause: false,
+  Verification: false,
+  MaxAccounts: false,
+  Idle: false,
+  electronBadge: false
+};
+var ADiscordBypasses = class _ADiscordBypasses {
+  constructor(meta) {
+    this.logger = new Logger(meta);
+  }
+  static {
+    this.settings = void 0;
+  }
+  start() {
+    this.logger.log("started");
+    _ADiscordBypasses.settings = BdApi.Data.load("ADiscordBypasses", "settings") || DefaultSettings;
+    NSFWPatch_default(this);
+    SpotifyPremium_default(this);
+    Timeout_default(this);
+    GuildVerification_default(this);
+    StreamPreview_default(this);
+    PTT_default(this);
+    AccountSwitcher_default2(this);
+    Idle(this);
+    setBadge(this);
+  }
+  stop() {
+    this.logger.log("stopped");
+    BdApi.Data.save("ADiscordBypasses", "settings", _ADiscordBypasses.settings);
+    BdApi.Patcher.unpatchAll("ADiscordBypasses");
+  }
+  getSettingsPanel() {
+    return Settings;
+  }
+};
