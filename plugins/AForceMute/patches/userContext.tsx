@@ -1,7 +1,7 @@
 import UserStore, { User } from '@lib/stores/UserStore';
 import VoiceStateStore from '@lib/stores/VoiceStateStore';
 import UserUpdates from '@lib/stores/UserUpdates';
-import { forceMuteCache, logger } from '..';
+import { forceDeafenCache, forceDisconnectCache, forceMuteCache, forceUndeafenCache, forceUnmuteCache, logger } from '..';
 import { React } from '@lib/components';
 import { Channel, ChannelType } from '@lib/stores/ChannelStore';
 import PermissionStore, { Permissions } from '@lib/stores/PermissionStore';
@@ -68,21 +68,101 @@ export default function PatchUserContext() {
                 return;
             }
 
-            const [active, setActive] = React.useState(forceMuteCache[id] || false);
+            const [forceMuteActive, setForceMuteActive] = React.useState(forceMuteCache[id] || false);
             const forceMuteButton = <CheckboxItem
                 label={'Force Server Mute'}
                 id='user-context-force-server-mute'
+                key='user-context-force-server-mute'
                 color='danger'
-                checked={active}
+                checked={forceMuteActive}
                 action={(() => {
-                    const newState = !active;
-                    setActive(newState);
+                    const newState = !forceMuteActive;
+                    setForceMuteActive(newState);
                     forceMuteCache[id] = newState;
                     logger.log(`Force mute ${ newState ? 'enabled' : 'disabled' } for ${ id }`);
 
                     if(!VoiceStateStore.getVoiceStateForUser(id)?.mute) {
                         logger.log(`Force muting ${ id } (toggle pressed)`);
                         UserUpdates.setServerMute(props.channel.guild_id, id, true);
+                    }
+                })}
+            />;
+
+            const [forceUnmuteActive, setForceUnmuteActive] = React.useState(forceMuteCache[id] || false);
+            const forceUnmuteButton = <CheckboxItem
+                label={'Force Server Unmute'}
+                id='user-context-force-server-unmute'
+                key='user-context-force-server-unmute'
+                color='danger'
+                checked={forceUnmuteActive}
+                action={(() => {
+                    const newState = !forceUnmuteActive;
+                    setForceUnmuteActive(newState);
+                    forceUnmuteCache[id] = newState;
+                    logger.log(`Force unmute ${ newState ? 'enabled' : 'disabled' } for ${ id }`);
+
+                    if(VoiceStateStore.getVoiceStateForUser(id)?.mute) {
+                        logger.log(`Force unmuting ${ id } (toggle pressed)`);
+                        UserUpdates.setServerMute(props.channel.guild_id, id, false);
+                    }
+                })}
+            />;
+
+            const [forceDeafenActive, setForceDeafenActive] = React.useState(forceMuteCache[id] || false);
+            const forceDeafenButton = <CheckboxItem
+                label={'Force Server Deaf'}
+                id='user-context-force-server-deaf'
+                key='user-context-force-server-deaf'
+                color='danger'
+                checked={forceDeafenActive}
+                action={(() => {
+                    const newState = !forceDeafenActive;
+                    setForceDeafenActive(newState);
+                    forceDeafenCache[id] = newState;
+                    logger.log(`Force unmute ${ newState ? 'enabled' : 'disabled' } for ${ id }`);
+
+                    if(!VoiceStateStore.getVoiceStateForUser(id)?.deaf) {
+                        logger.log(`Force deafening ${ id } (toggle pressed)`);
+                        UserUpdates.setServerDeaf(props.channel.guild_id, id, true);
+                    }
+                })}
+            />;
+
+            const [forceUndeafenActive, setForceUndeafenActive] = React.useState(forceMuteCache[id] || false);
+            const forceUndeafenButton = <CheckboxItem
+                label={'Force Undeafen'}
+                id='user-context-force-undeafen'
+                key='user-context-force-undeafen'
+                color='danger'
+                checked={forceUndeafenActive}
+                action={(() => {
+                    const newState = !forceUndeafenActive;
+                    setForceUndeafenActive(newState);
+                    forceUndeafenCache[id] = newState;
+                    logger.log(`Force undeafen ${ newState ? 'enabled' : 'disabled' } for ${ id }`);
+
+                    if(VoiceStateStore.getVoiceStateForUser(id)?.deaf) {
+                        logger.log(`Force undeafening ${ id } (toggle pressed)`);
+                        UserUpdates.setServerDeaf(props.channel.guild_id, id, false);
+                    }
+                })}
+            />;
+
+            const [forceDisconnectActive, setForceDisconnectActive] = React.useState(forceMuteCache[id] || false);
+            const forceDisconnect = <CheckboxItem
+                label={'Force Disconnect'}
+                id='user-context-force-disconnect'
+                key='user-context-force-disconnect'
+                color='danger'
+                checked={forceDisconnectActive}
+                action={(() => {
+                    const newState = !forceDisconnectActive;
+                    setForceDisconnectActive(newState);
+                    forceDisconnectCache[id] = newState;
+                    logger.log(`Force disconnect ${ newState ? 'enabled' : 'disabled' } for ${ id }`);
+
+                    if(VoiceStateStore.isInChannel(id)) {
+                        UserUpdates.setChannel(props.channel.guild_id, id, null);
                     }
                 })}
             />;
@@ -96,7 +176,50 @@ export default function PatchUserContext() {
             if(!insertWasSuccessful) {
                 logger.error('Failed to insert in tree, inserting at last element');
                 res.props.children.push(forceMuteButton);
-                return;
+            }
+
+            const insertForceUnmuteWasSuccessful = insertIntoTree(
+                res.props.children,
+                (node) => node?.key === 'user-context-force-server-mute',
+                forceUnmuteButton
+            );
+
+            if(!insertForceUnmuteWasSuccessful) {
+                logger.error('Failed to insert force deafen in tree, inserting at last element');
+                res.props.children.push(forceUnmuteButton);
+            }
+
+            const insertForceDefeanWasSuccessful = insertIntoTree(
+                res.props.children,
+                (node) => node?.key === 'voice-deafen',
+                forceDeafenButton
+            );
+
+            if(!insertForceDefeanWasSuccessful) {
+                logger.error('Failed to insert force deafen in tree, inserting at last element');
+                res.props.children.push(forceDeafenButton);
+            }
+
+            const insertForceUndefeanWasSuccessful = insertIntoTree(
+                res.props.children,
+                (node) => node?.key === 'user-context-force-server-deaf',
+                forceUndeafenButton
+            );
+
+            if(!insertForceUndefeanWasSuccessful) {
+                logger.error('Failed to insert force undeafen in tree, inserting at last element');
+                res.props.children.push(forceUndeafenButton);
+            }
+
+            const insertForceDisconnectWasSuccessful = insertIntoTree(
+                res.props.children,
+                (node) => node?.key === 'voice-disconnect',
+                forceDisconnect
+            );
+
+            if(!insertForceDisconnectWasSuccessful) {
+                logger.error('Failed to insert force disconnect in tree, inserting at last element');
+                res.props.children.push(forceDisconnect);
             }
         }
     );

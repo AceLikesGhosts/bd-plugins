@@ -6,7 +6,15 @@ import Dispatcher from '@lib/modules/Dispatcher';
 import onVoiceStateUpdate from './listeners/onVoiceUpdate';
 
 export const logger = new Logger(config);
+
 export const forceMuteCache = {} as Record<string, boolean>;
+export const forceUnmuteCache = {} as Record<string, boolean>;
+
+export const forceDeafenCache = {} as Record<string, boolean>;
+export const forceUndeafenCache = {} as Record<string, boolean>;
+
+export const forceDisconnectCache = {} as Record<string, boolean>;
+
 
 export default class AForceMute implements Plugin {
     public userContextCancel: Cancel | null = null;

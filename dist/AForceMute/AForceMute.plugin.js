@@ -2,7 +2,7 @@
 * @name AForceMute
 * @description In God we trust.
 * @author ace.
-* @version 0.0.2
+* @version 0.0.3
 */
     
 "use strict";
@@ -28,7 +28,11 @@ var __toCommonJS = (mod) => __copyProps(__defProp({}, "__esModule", { value: tru
 var index_exports = {};
 __export(index_exports, {
   default: () => AForceMute,
+  forceDeafenCache: () => forceDeafenCache,
+  forceDisconnectCache: () => forceDisconnectCache,
   forceMuteCache: () => forceMuteCache,
+  forceUndeafenCache: () => forceUndeafenCache,
+  forceUnmuteCache: () => forceUnmuteCache,
   logger: () => logger
 });
 module.exports = __toCommonJS(index_exports);
@@ -85,7 +89,7 @@ var config_default = {
   name: "AForceMute",
   description: "In God we trust.",
   author: "ace.",
-  version: "0.0.2"
+  version: "0.0.3"
 };
 
 // lib/stores/UserStore.ts
@@ -99,6 +103,7 @@ var UserUpdates_default = BdApi.Webpack.getByKeys("setServerMute");
 
 // lib/components/index.ts
 var React = BdApi.React;
+var ReactDom = BdApi.ReactDOM || BdApi.Webpack.getByKeys("createRoot");
 
 // lib/stores/ChannelStore.ts
 var ChannelStore_default = BdApi.Webpack.getStore("ChannelStore");
@@ -144,22 +149,106 @@ function PatchUserContext() {
         logger.debug("missing VIEW_CHANNEL or MUTE_MEMBERS permissions not displaying");
         return;
       }
-      const [active, setActive] = React.useState(forceMuteCache[id] || false);
+      const [forceMuteActive, setForceMuteActive] = React.useState(forceMuteCache[id] || false);
       const forceMuteButton = /* @__PURE__ */ React.createElement(
         CheckboxItem,
         {
           label: "Force Server Mute",
           id: "user-context-force-server-mute",
+          key: "user-context-force-server-mute",
           color: "danger",
-          checked: active,
+          checked: forceMuteActive,
           action: () => {
-            const newState = !active;
-            setActive(newState);
+            const newState = !forceMuteActive;
+            setForceMuteActive(newState);
             forceMuteCache[id] = newState;
             logger.log(`Force mute ${newState ? "enabled" : "disabled"} for ${id}`);
             if (!VoiceStateStore_default.getVoiceStateForUser(id)?.mute) {
               logger.log(`Force muting ${id} (toggle pressed)`);
               UserUpdates_default.setServerMute(props.channel.guild_id, id, true);
+            }
+          }
+        }
+      );
+      const [forceUnmuteActive, setForceUnmuteActive] = React.useState(forceMuteCache[id] || false);
+      const forceUnmuteButton = /* @__PURE__ */ React.createElement(
+        CheckboxItem,
+        {
+          label: "Force Server Unmute",
+          id: "user-context-force-server-unmute",
+          key: "user-context-force-server-unmute",
+          color: "danger",
+          checked: forceUnmuteActive,
+          action: () => {
+            const newState = !forceUnmuteActive;
+            setForceUnmuteActive(newState);
+            forceUnmuteCache[id] = newState;
+            logger.log(`Force unmute ${newState ? "enabled" : "disabled"} for ${id}`);
+            if (VoiceStateStore_default.getVoiceStateForUser(id)?.mute) {
+              logger.log(`Force unmuting ${id} (toggle pressed)`);
+              UserUpdates_default.setServerMute(props.channel.guild_id, id, false);
+            }
+          }
+        }
+      );
+      const [forceDeafenActive, setForceDeafenActive] = React.useState(forceMuteCache[id] || false);
+      const forceDeafenButton = /* @__PURE__ */ React.createElement(
+        CheckboxItem,
+        {
+          label: "Force Server Deaf",
+          id: "user-context-force-server-deaf",
+          key: "user-context-force-server-deaf",
+          color: "danger",
+          checked: forceDeafenActive,
+          action: () => {
+            const newState = !forceDeafenActive;
+            setForceDeafenActive(newState);
+            forceDeafenCache[id] = newState;
+            logger.log(`Force unmute ${newState ? "enabled" : "disabled"} for ${id}`);
+            if (!VoiceStateStore_default.getVoiceStateForUser(id)?.deaf) {
+              logger.log(`Force deafening ${id} (toggle pressed)`);
+              UserUpdates_default.setServerDeaf(props.channel.guild_id, id, true);
+            }
+          }
+        }
+      );
+      const [forceUndeafenActive, setForceUndeafenActive] = React.useState(forceMuteCache[id] || false);
+      const forceUndeafenButton = /* @__PURE__ */ React.createElement(
+        CheckboxItem,
+        {
+          label: "Force Undeafen",
+          id: "user-context-force-undeafen",
+          key: "user-context-force-undeafen",
+          color: "danger",
+          checked: forceUndeafenActive,
+          action: () => {
+            const newState = !forceUndeafenActive;
+            setForceUndeafenActive(newState);
+            forceUndeafenCache[id] = newState;
+            logger.log(`Force undeafen ${newState ? "enabled" : "disabled"} for ${id}`);
+            if (VoiceStateStore_default.getVoiceStateForUser(id)?.deaf) {
+              logger.log(`Force undeafening ${id} (toggle pressed)`);
+              UserUpdates_default.setServerDeaf(props.channel.guild_id, id, false);
+            }
+          }
+        }
+      );
+      const [forceDisconnectActive, setForceDisconnectActive] = React.useState(forceMuteCache[id] || false);
+      const forceDisconnect = /* @__PURE__ */ React.createElement(
+        CheckboxItem,
+        {
+          label: "Force Disconnect",
+          id: "user-context-force-disconnect",
+          key: "user-context-force-disconnect",
+          color: "danger",
+          checked: forceDisconnectActive,
+          action: () => {
+            const newState = !forceDisconnectActive;
+            setForceDisconnectActive(newState);
+            forceDisconnectCache[id] = newState;
+            logger.log(`Force disconnect ${newState ? "enabled" : "disabled"} for ${id}`);
+            if (VoiceStateStore_default.isInChannel(id)) {
+              UserUpdates_default.setChannel(props.channel.guild_id, id, null);
             }
           }
         }
@@ -172,7 +261,42 @@ function PatchUserContext() {
       if (!insertWasSuccessful) {
         logger.error("Failed to insert in tree, inserting at last element");
         res.props.children.push(forceMuteButton);
-        return;
+      }
+      const insertForceUnmuteWasSuccessful = insertIntoTree(
+        res.props.children,
+        (node) => node?.key === "user-context-force-server-mute",
+        forceUnmuteButton
+      );
+      if (!insertForceUnmuteWasSuccessful) {
+        logger.error("Failed to insert force deafen in tree, inserting at last element");
+        res.props.children.push(forceUnmuteButton);
+      }
+      const insertForceDefeanWasSuccessful = insertIntoTree(
+        res.props.children,
+        (node) => node?.key === "voice-deafen",
+        forceDeafenButton
+      );
+      if (!insertForceDefeanWasSuccessful) {
+        logger.error("Failed to insert force deafen in tree, inserting at last element");
+        res.props.children.push(forceDeafenButton);
+      }
+      const insertForceUndefeanWasSuccessful = insertIntoTree(
+        res.props.children,
+        (node) => node?.key === "user-context-force-server-deaf",
+        forceUndeafenButton
+      );
+      if (!insertForceUndefeanWasSuccessful) {
+        logger.error("Failed to insert force undeafen in tree, inserting at last element");
+        res.props.children.push(forceUndeafenButton);
+      }
+      const insertForceDisconnectWasSuccessful = insertIntoTree(
+        res.props.children,
+        (node) => node?.key === "voice-disconnect",
+        forceDisconnect
+      );
+      if (!insertForceDisconnectWasSuccessful) {
+        logger.error("Failed to insert force disconnect in tree, inserting at last element");
+        res.props.children.push(forceDisconnect);
       }
     }
   );
@@ -185,11 +309,6 @@ var Dispatcher_default = /* @__PURE__ */ BdApi.Webpack.getByKeys("dispatch", "su
 function onVoiceStateUpdate(event) {
   if (event.type !== "VOICE_STATE_UPDATES") return;
   for (const voiceState of event.voiceStates) {
-    if (!forceMuteCache[voiceState.userId]) return;
-    if (voiceState.mute) {
-      logger.log(`${voiceState.userId} was already muted`);
-      return;
-    }
     if (!PermissionStore_default.canWithPartialContext(Permissions.VIEW_CHANNEL, { channelId: voiceState.channelId }) || !PermissionStore_default.canWithPartialContext(Permissions.MUTE_MEMBERS, { channelId: voiceState.channelId })) {
       logger.log("missing permissions, not automatically remuting - missing VIEW_CHANNEL or MUTE_MEMBERS");
       return;
@@ -198,15 +317,45 @@ function onVoiceStateUpdate(event) {
       logger.log("failed to find channel id in channelId and oldChannelId");
       return;
     }
-    logger.log(`remuting ${voiceState.userId}`);
     const channel = ChannelStore_default.getChannel(voiceState.channelId ?? voiceState.oldChannelId);
-    UserUpdates_default.setServerMute(channel.guild_id, voiceState.userId, true);
+    const isForceUnmuted = forceUnmuteCache[voiceState.userId];
+    const isForceMuted = forceMuteCache[voiceState.userId];
+    if (isForceMuted && isForceMuted) {
+      logger.log(`${voiceState.userId} is force muted and unmuted`);
+      return;
+    }
+    if (isForceMuted && !voiceState.mute) {
+      UserUpdates_default.setServerMute(channel.guild_id, voiceState.userId, true);
+    }
+    if (isForceUnmuted && voiceState.mute) {
+      UserUpdates_default.setServerMute(channel.guild_id, voiceState.userId, false);
+    }
+    const isForceDeafened = forceDeafenCache[voiceState.userId];
+    const isForceUndeafened = forceUndeafenCache[voiceState.userId];
+    if (isForceDeafened && isForceUndeafened) {
+      logger.log(`${voiceState.userId} is force deafened and undeafened`);
+      return;
+    }
+    if (isForceDeafened && !voiceState.deaf) {
+      UserUpdates_default.setServerDeaf(channel.guild_id, voiceState.userId, true);
+    }
+    if (isForceUndeafened && voiceState.deaf) {
+      UserUpdates_default.setServerDeaf(channel.guild_id, voiceState.userId, false);
+    }
+    if (forceDisconnectCache[voiceState.userId] && voiceState.channelId) {
+      logger.log(`disconnecting ${voiceState.userId}`);
+      UserUpdates_default.setChannel(channel.guild_id, voiceState.userId, null);
+    }
   }
 }
 
 // plugins/AForceMute/index.ts
 var logger = new Logger(config_default);
 var forceMuteCache = {};
+var forceUnmuteCache = {};
+var forceDeafenCache = {};
+var forceUndeafenCache = {};
+var forceDisconnectCache = {};
 var AForceMute = class {
   constructor() {
     this.userContextCancel = null;
