@@ -143,7 +143,7 @@ function PatchUserContext() {
     (res, props) => {
       const us = UserStore_default.getCurrentUser().id;
       const id = props.user.id;
-      if (us === id) return;
+      const isUs = id === us;
       if (props.channel.type !== 2 /* VOICE */) return;
       if (!PermissionStore_default.canWithPartialContext(Permissions.VIEW_CHANNEL, { channelId: props.channel.id }) || !PermissionStore_default.canWithPartialContext(Permissions.MUTE_MEMBERS, { channelId: props.channel.id })) {
         logger.debug("missing VIEW_CHANNEL or MUTE_MEMBERS permissions not displaying");
@@ -170,7 +170,7 @@ function PatchUserContext() {
           }
         }
       );
-      const [forceUnmuteActive, setForceUnmuteActive] = React.useState(forceMuteCache[id] || false);
+      const [forceUnmuteActive, setForceUnmuteActive] = React.useState(forceUnmuteCache[id] || false);
       const forceUnmuteButton = /* @__PURE__ */ React.createElement(
         CheckboxItem,
         {
@@ -191,7 +191,7 @@ function PatchUserContext() {
           }
         }
       );
-      const [forceDeafenActive, setForceDeafenActive] = React.useState(forceMuteCache[id] || false);
+      const [forceDeafenActive, setForceDeafenActive] = React.useState(forceDeafenCache[id] || false);
       const forceDeafenButton = /* @__PURE__ */ React.createElement(
         CheckboxItem,
         {
@@ -212,7 +212,7 @@ function PatchUserContext() {
           }
         }
       );
-      const [forceUndeafenActive, setForceUndeafenActive] = React.useState(forceMuteCache[id] || false);
+      const [forceUndeafenActive, setForceUndeafenActive] = React.useState(forceUndeafenCache[id] || false);
       const forceUndeafenButton = /* @__PURE__ */ React.createElement(
         CheckboxItem,
         {
@@ -233,7 +233,7 @@ function PatchUserContext() {
           }
         }
       );
-      const [forceDisconnectActive, setForceDisconnectActive] = React.useState(forceMuteCache[id] || false);
+      const [forceDisconnectActive, setForceDisconnectActive] = React.useState(forceDisconnectCache[id] || false);
       const forceDisconnect = /* @__PURE__ */ React.createElement(
         CheckboxItem,
         {
@@ -253,14 +253,34 @@ function PatchUserContext() {
           }
         }
       );
-      const insertWasSuccessful = insertIntoTree(
-        res.props.children,
-        (node) => node?.key === "voice-mute",
-        forceMuteButton
-      );
-      if (!insertWasSuccessful) {
-        logger.error("Failed to insert in tree, inserting at last element");
-        res.props.children.push(forceMuteButton);
+      if (!isUs) {
+        const insertWasSuccessful = insertIntoTree(
+          res.props.children,
+          (node) => node?.key === "voice-mute",
+          forceMuteButton
+        );
+        if (!insertWasSuccessful) {
+          logger.error("Failed to insert in tree, inserting at last element");
+          res.props.children.push(forceMuteButton);
+        }
+        const insertForceDefeanWasSuccessful = insertIntoTree(
+          res.props.children,
+          (node) => node?.key === "voice-deafen",
+          forceDeafenButton
+        );
+        if (!insertForceDefeanWasSuccessful) {
+          logger.error("Failed to insert force deafen in tree, inserting at last element");
+          res.props.children.push(forceDeafenButton);
+        }
+        const insertForceDisconnectWasSuccessful = insertIntoTree(
+          res.props.children,
+          (node) => node?.key === "voice-disconnect",
+          forceDisconnect
+        );
+        if (!insertForceDisconnectWasSuccessful) {
+          logger.error("Failed to insert force disconnect in tree, inserting at last element");
+          res.props.children.push(forceDisconnect);
+        }
       }
       const insertForceUnmuteWasSuccessful = insertIntoTree(
         res.props.children,
@@ -271,15 +291,6 @@ function PatchUserContext() {
         logger.error("Failed to insert force deafen in tree, inserting at last element");
         res.props.children.push(forceUnmuteButton);
       }
-      const insertForceDefeanWasSuccessful = insertIntoTree(
-        res.props.children,
-        (node) => node?.key === "voice-deafen",
-        forceDeafenButton
-      );
-      if (!insertForceDefeanWasSuccessful) {
-        logger.error("Failed to insert force deafen in tree, inserting at last element");
-        res.props.children.push(forceDeafenButton);
-      }
       const insertForceUndefeanWasSuccessful = insertIntoTree(
         res.props.children,
         (node) => node?.key === "user-context-force-server-deaf",
@@ -288,15 +299,6 @@ function PatchUserContext() {
       if (!insertForceUndefeanWasSuccessful) {
         logger.error("Failed to insert force undeafen in tree, inserting at last element");
         res.props.children.push(forceUndeafenButton);
-      }
-      const insertForceDisconnectWasSuccessful = insertIntoTree(
-        res.props.children,
-        (node) => node?.key === "voice-disconnect",
-        forceDisconnect
-      );
-      if (!insertForceDisconnectWasSuccessful) {
-        logger.error("Failed to insert force disconnect in tree, inserting at last element");
-        res.props.children.push(forceDisconnect);
       }
     }
   );
@@ -320,7 +322,7 @@ function onVoiceStateUpdate(event) {
     const channel = ChannelStore_default.getChannel(voiceState.channelId ?? voiceState.oldChannelId);
     const isForceUnmuted = forceUnmuteCache[voiceState.userId];
     const isForceMuted = forceMuteCache[voiceState.userId];
-    if (isForceMuted && isForceMuted) {
+    if (isForceMuted && isForceUnmuted) {
       logger.log(`${voiceState.userId} is force muted and unmuted`);
       return;
     }

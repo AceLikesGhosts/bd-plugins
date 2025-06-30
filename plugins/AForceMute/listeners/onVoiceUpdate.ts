@@ -25,7 +25,7 @@ export default function onVoiceStateUpdate(event: { type: 'VOICE_STATE_UPDATES';
         const isForceUnmuted = forceUnmuteCache[voiceState.userId];
         const isForceMuted = forceMuteCache[voiceState.userId];
 
-        if(isForceMuted && isForceMuted) {
+        if(isForceMuted && isForceUnmuted) {
             logger.log(`${voiceState.userId} is force muted and unmuted`)
             return;
         }
