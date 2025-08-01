@@ -95,6 +95,7 @@ var config_default = {
 
 // lib/components/index.ts
 var React = BdApi.React;
+var ReactDom = BdApi.ReactDOM || BdApi.Webpack.getByKeys("createRoot");
 
 // lib/modules/Dispatcher.ts
 var Dispatcher_default = /* @__PURE__ */ BdApi.Webpack.getByKeys("dispatch", "subscribe", "register");

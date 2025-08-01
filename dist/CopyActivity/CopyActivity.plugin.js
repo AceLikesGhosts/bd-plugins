@@ -105,6 +105,7 @@ var config_default = {
 
 // lib/components/index.ts
 var React = BdApi.React;
+var ReactDom = BdApi.ReactDOM || BdApi.Webpack.getByKeys("createRoot");
 
 // lib/stores/UserStore.ts
 var UserStore_default = /* @__PURE__ */ BdApi.Webpack.getStore("UserStore");

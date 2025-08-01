@@ -2,7 +2,7 @@
 * @name RandomiseFileNames
 * @description Change up your file names.
 * @author ace.
-* @version 1.0.3
+* @version 1.0.4
 * @source https://raw.githubusercontent.com/AceLikesGhosts/bd-plugins/master/dist/RandomiseFileNames/RandomiseFileNames.plugin.js
 * @authorLink https://github.com/AceLikesGhosts/bd-plugins
 * @website https://github.com/AceLikesGhosts/bd-plugins
@@ -43,7 +43,7 @@ var config_default = {
   name: "RandomiseFileNames",
   description: "Change up your file names.",
   author: "ace.",
-  version: "1.0.3",
+  version: "1.0.4",
   source: "https://raw.githubusercontent.com/AceLikesGhosts/bd-plugins/master/dist/RandomiseFileNames/RandomiseFileNames.plugin.js",
   authorLink: "https://github.com/AceLikesGhosts/bd-plugins",
   website: "https://github.com/AceLikesGhosts/bd-plugins",
@@ -54,6 +54,7 @@ var config_default = {
 // lib/components/index.ts
 var Margins = /* @__PURE__ */ BdApi.Webpack.getByKeys("marginBottom40", "marginTop4");
 var React = BdApi.React;
+var ReactDom = BdApi.ReactDOM || BdApi.Webpack.getByKeys("createRoot");
 
 // lib/components/Form.tsx
 var FormTitle = BdApi.Webpack.getByStrings('["defaultMargin".concat', '="h5"', { searchExports: true });
@@ -65,7 +66,7 @@ var FormNotice = BdApi.Webpack.getByStrings(".Types.DANGER", ".formNotice", { se
 var FormDivider = BdApi.Webpack.getBySource(".divider", ",style:", '"div"', "dividerDefault", { searchExports: true });
 
 // lib/components/TextInput.tsx
-var TextInput_default = BdApi.Webpack.getByStrings(".error]:this.hasError()", { searchExports: true });
+var TextInput_default = BdApi.Webpack.getByStrings('"disabled","editable","inputRef",', "errorMessage", "setShouldValidate", { searchExports: true });
 
 // lib/common/Lodash.ts
 var Lodash_default = /* @__PURE__ */ BdApi.Webpack.getByKeys("debounce");
