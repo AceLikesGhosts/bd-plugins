@@ -170,7 +170,7 @@ interface FormComponents {
 // } = RawComponents as FormComponents;
 
 export const FormTitle = BdApi.Webpack.getByStrings('["defaultMargin".concat', '="h5"', { searchExports: true }) as FormTitle;
-export const FormText = BdApi.Webpack.getByStrings('.SELECTABLE),', '.DISABLED:', { searchExports: true }) as FormText;
+export const FormText = BdApi.Webpack.getByStrings('getPaddingRight(){let', { searchExports: true }) as FormText;
 export const FormSection = BdApi.Webpack.getBySource('.titleId)&&', { searchExports: true }) as FormSection;
 export const FormSwitch = BdApi.Webpack.getByStrings('.labelRow', 'useId', 'DESCRIPTION', { searchExports: true }) as React.FunctionComponent<FormSwitchProps>;
 

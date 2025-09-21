@@ -23,3 +23,4 @@ export interface TextInputProps {
 
 // export default BdApi.Webpack.getByStrings('.error]:this.hasError()', { searchExports: true }) as React.ComponentClass<TextInputProps, unknown>;
 export default BdApi.Webpack.getByStrings('"disabled","editable","inputRef",', 'errorMessage', 'setShouldValidate', { searchExports: true }) as React.ComponentClass<TextInputProps, unknown>;
+// export default BdApi.Webpack.getByStrings('showCharacterCountFullPadding', 'showRemainingCharacterCount', { searchExports: true }) as React.ComponentClass<TextInputProps, unknown>;

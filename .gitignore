@@ -3,12 +3,5 @@ node_modules
 hidden
 
 # plugins i dont want public :3
-plugins/AStupidStereo
-plugins/AVCStalker
-plugins/NewVCStalker
-plugins/ABotDefeater
-
-dist/AStupidStereo
-dist/AVCStalker
-dist/NewVCStalker
-dist/ABotDefeater
+plugins/_*
+dist/_*

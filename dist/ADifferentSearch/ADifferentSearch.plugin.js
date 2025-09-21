@@ -108,7 +108,7 @@ var FormNotice = BdApi.Webpack.getByStrings(".Types.DANGER", ".formNotice", { se
 var FormDivider = BdApi.Webpack.getBySource(".divider", ",style:", '"div"', "dividerDefault", { searchExports: true });
 
 // lib/components/TextInput.tsx
-var TextInput_default = BdApi.Webpack.getByStrings('"disabled","editable","inputRef",', "errorMessage", "setShouldValidate", { searchExports: true });
+var TextInput_default = BdApi.Webpack.getByStrings("showCharacterCountFullPadding", "showRemainingCharacterCount", { searchExports: true });
 
 // lib/components/Radio.tsx
 var RawRadioGroup = BdApi.Webpack.getByStrings("itemInfoClassName:", "radioItemClassName", "titleId", { searchExports: true });
