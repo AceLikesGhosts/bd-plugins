@@ -128,7 +128,7 @@ var ReactDom = BdApi.ReactDOM || BdApi.Webpack.getByKeys("createRoot");
 
 // lib/components/Form.tsx
 var FormTitle = BdApi.Webpack.getByStrings('["defaultMargin".concat', '="h5"', { searchExports: true });
-var FormText = BdApi.Webpack.getByStrings(".SELECTABLE),", ".DISABLED:", { searchExports: true });
+var Text = BdApi.Webpack.getBySource('case"always-white"', { searchExports: true });
 var FormSection = BdApi.Webpack.getBySource(".titleId)&&", { searchExports: true });
 var FormSwitch = BdApi.Webpack.getByStrings(".labelRow", "useId", "DESCRIPTION", { searchExports: true });
 var FormItem = BdApi.Webpack.getModule((x) => x.render.toString?.().includes(".fieldWrapper"), { searchExports: true });

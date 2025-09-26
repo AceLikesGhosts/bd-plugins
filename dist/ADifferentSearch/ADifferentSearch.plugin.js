@@ -100,7 +100,18 @@ var ReactDom = BdApi.ReactDOM || BdApi.Webpack.getByKeys("createRoot");
 
 // lib/components/Form.tsx
 var FormTitle = BdApi.Webpack.getByStrings('["defaultMargin".concat', '="h5"', { searchExports: true });
-var FormText = BdApi.Webpack.getByStrings(".SELECTABLE),", ".DISABLED:", { searchExports: true });
+var Text = BdApi.Webpack.getBySource('case"always-white"', { searchExports: true });
+var FormText = function FormText2(props) {
+  const variant = props.variant || "text-sm/normal";
+  return /* @__PURE__ */ React.createElement(
+    Text,
+    {
+      variant,
+      ...props
+    },
+    props.children
+  );
+};
 var FormSection = BdApi.Webpack.getBySource(".titleId)&&", { searchExports: true });
 var FormSwitch = BdApi.Webpack.getByStrings(".labelRow", "useId", "DESCRIPTION", { searchExports: true });
 var FormItem = BdApi.Webpack.getModule((x) => x.render.toString?.().includes(".fieldWrapper"), { searchExports: true });
@@ -108,7 +119,7 @@ var FormNotice = BdApi.Webpack.getByStrings(".Types.DANGER", ".formNotice", { se
 var FormDivider = BdApi.Webpack.getBySource(".divider", ",style:", '"div"', "dividerDefault", { searchExports: true });
 
 // lib/components/TextInput.tsx
-var TextInput_default = BdApi.Webpack.getByStrings("showCharacterCountFullPadding", "showRemainingCharacterCount", { searchExports: true });
+var TextInput_default = BdApi.Components.TextInput;
 
 // lib/components/Radio.tsx
 var RawRadioGroup = BdApi.Webpack.getByStrings("itemInfoClassName:", "radioItemClassName", "titleId", { searchExports: true });

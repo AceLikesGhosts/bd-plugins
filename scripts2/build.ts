@@ -76,7 +76,7 @@ ${ Object.entries(config).map(([k, v], i) => {
     buildSource({
         header,
         inputPath,
-        outFilePath: path.join(distPluginPath, pluginName),
+        outFilePath: path.join(distPluginPath, pluginName.replace('_', '')),
         sourceMaps: args.values.dev ?? false,
         watch: args.values.watch ?? false
     });
