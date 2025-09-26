@@ -1,4 +1,3 @@
-import { RawComponents } from '@lib/components';
 
 export interface ModalSizes {
     SMALL: 'small';
@@ -25,9 +24,8 @@ export interface Modals {
 }
 
 export default {
-    openModal: RawComponents.openModal,
-    closeModal: RawComponents.closeModal,
-    ModalRoot: RawComponents.ModalRoot,
-    ModalSize: RawComponents.ModalSize
+    openModal: BdApi.Webpack.getByStrings(',instant:', { searchExports: true }),
+    closeModal: BdApi.Webpack.getByStrings('.onCloseCallback()', { searchExports: true }),
+    ModalRoot: BdApi.Webpack.getByStrings('MODAL_ROOT_LEGACY', { searchExports: true }),
+    ModalSize: BdApi.Webpack.getByKeys('DYNAMIC', 'SMALL', { searchExports: true })
 } as Modals;
-
