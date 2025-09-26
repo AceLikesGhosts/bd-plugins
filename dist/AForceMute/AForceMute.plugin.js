@@ -2,7 +2,7 @@
 * @name AForceMute
 * @description In God we trust.
 * @author ace.
-* @version 0.0.3
+* @version 0.0.4
 */
     
 "use strict";
@@ -89,7 +89,7 @@ var config_default = {
   name: "AForceMute",
   description: "In God we trust.",
   author: "ace.",
-  version: "0.0.3"
+  version: "0.0.4"
 };
 
 // lib/stores/UserStore.ts

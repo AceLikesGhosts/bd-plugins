@@ -2,7 +2,7 @@
 * @name ADiscordBypasses
 * @description A simple rewrite of Tharki's DiscordBypasses.
 * @author ace.
-* @version 2.0.7
+* @version 2.0.8
 * @source https://raw.githubusercontent.com/AceLikesGhosts/a-bd-plugins/master/dist/ADiscordBypasses/ADiscordBypasses.plugin.js
 * @authorLink https://github.com/AceLikesGhosts/a-bd-plugins
 * @website https://github.com/AceLikesGhosts/a-bd-plugins
@@ -126,7 +126,7 @@ var config_default = {
   name: "ADiscordBypasses",
   description: "A simple rewrite of Tharki's DiscordBypasses.",
   author: "ace.",
-  version: "2.0.7",
+  version: "2.0.8",
   source: "https://raw.githubusercontent.com/AceLikesGhosts/a-bd-plugins/master/dist/ADiscordBypasses/ADiscordBypasses.plugin.js",
   authorLink: "https://github.com/AceLikesGhosts/a-bd-plugins",
   website: "https://github.com/AceLikesGhosts/a-bd-plugins",

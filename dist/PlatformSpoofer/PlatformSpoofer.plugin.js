@@ -2,7 +2,7 @@
 * @name PlatformSpoofer
 * @description Allows for spoofing what device you are using to Discord's WebSocket.
 * @author ace.
-* @version 3.0.5
+* @version 3.0.6
 * @source https://raw.githubusercontent.com/AceLikesGhosts/bd-plugins/master/dist/PlatformSpoofer/PlatformSpoofer.plugin.js
 * @authorLink https://github.com/AceLikesGhosts/bd-plugins
 * @authorId 327639826075484162
@@ -88,7 +88,7 @@ var config_default = {
   name: "PlatformSpoofer",
   description: "Allows for spoofing what device you are using to Discord's WebSocket.",
   author: "ace.",
-  version: "3.0.5",
+  version: "3.0.6",
   source: "https://raw.githubusercontent.com/AceLikesGhosts/bd-plugins/master/dist/PlatformSpoofer/PlatformSpoofer.plugin.js",
   authorLink: "https://github.com/AceLikesGhosts/bd-plugins",
   authorId: "327639826075484162"

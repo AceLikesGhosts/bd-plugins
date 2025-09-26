@@ -2,7 +2,7 @@
 * @name AQuickNote
 * @description Quickly add notes onto users by just accessing their profile.
 * @author ace
-* @version 1.1.1
+* @version 1.1.2
 * @source https://raw.githubusercontent.com/AceLikesGhosts/bd-plugins/master/dist/AQuckNote/AQuckNote.plugin.js
 * @authorLink https://github.com/AceLikesGhosts/bd-plugins
 * @authorId 1297706747150209075
@@ -141,7 +141,7 @@ var config_default = {
   name: "AQuickNote",
   description: "Quickly add notes onto users by just accessing their profile.",
   author: "ace",
-  version: "1.1.1",
+  version: "1.1.2",
   source: "https://raw.githubusercontent.com/AceLikesGhosts/bd-plugins/master/dist/AQuckNote/AQuckNote.plugin.js",
   authorLink: "https://github.com/AceLikesGhosts/bd-plugins",
   authorId: "1297706747150209075"
