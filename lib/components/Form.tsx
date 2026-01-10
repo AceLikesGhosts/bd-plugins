@@ -180,7 +180,7 @@ export const /** @__PURE__ */ FormSwitch = BdApi.Webpack.getByStrings('.labelRow
 
 // arven is a dumb sutpid idiot and finding bugs i can't repro on latest canary, so this is being changed.
 // export const FormItem = BdApi.Webpack.getBySource('.fieldWrapper', { searchExports: true }) as FormItem;
-export const /** @__PURE__ */ FormItem = BdApi.Webpack.getModule(x => x.render.toString?.().includes('.fieldWrapper'), { searchExports: true }) as FormItem;
+export const /** @__PURE__ */ FormItem = BdApi.Webpack.getModule(x => x?.render?.toString?.().includes('.fieldWrapper'), { searchExports: true }) as FormItem;
 
 export const /** @__PURE__ */ FormNotice = BdApi.Webpack.getByStrings('.Types.DANGER', '.formNotice', { searchExports: true }) as FormNotice;
 export const /** @__PURE__ */ FormDivider = BdApi.Webpack.getBySource('.divider', ',style:', '"div"', 'dividerDefault', { searchExports: true }) as React.FunctionComponent<any>;

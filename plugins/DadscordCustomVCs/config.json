@@ -1,0 +1,10 @@
+{
+    "$schema": "../../config_schema.jsonc",
+    "name": "DadscordCustomVCs",
+    "description": "Set of tools to make Dadscord custom VCs better.",
+    "author": "ace.",
+    "source": "https://raw.githubusercontent.com/AceLikesGhosts/bd-plugins/master/dist/ADifferentSearch/ADifferentSearch.plugin.js",
+    "authorLink": "https://github.com/AceLikesGhosts/bd-plugins",
+    "version": "1.0.0", 
+    "authorId": "327639826075484162"
+}
