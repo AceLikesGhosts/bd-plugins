@@ -2,7 +2,7 @@
 * @name ADifferentSearch
 * @description Change the search engine used in the `Search With` feature.
 * @author ace.
-* @version 1.2.2
+* @version 1.2.3
 * @source https://raw.githubusercontent.com/AceLikesGhosts/bd-plugins/master/dist/ADifferentSearch/ADifferentSearch.plugin.js
 * @authorLink https://github.com/AceLikesGhosts/bd-plugins
 * @authorId 327639826075484162
@@ -87,7 +87,7 @@ var config_default = {
   name: "ADifferentSearch",
   description: "Change the search engine used in the `Search With` feature.",
   author: "ace.",
-  version: "1.2.2",
+  version: "1.2.3",
   source: "https://raw.githubusercontent.com/AceLikesGhosts/bd-plugins/master/dist/ADifferentSearch/ADifferentSearch.plugin.js",
   authorLink: "https://github.com/AceLikesGhosts/bd-plugins",
   authorId: "327639826075484162"
@@ -100,7 +100,7 @@ var ReactDom = BdApi.ReactDOM || BdApi.Webpack.getByKeys("createRoot");
 
 // lib/components/Form.tsx
 var FormTitle = BdApi.Webpack.getByStrings('["defaultMargin".concat', '="h5"', { searchExports: true });
-var Text = BdApi.Webpack.getBySource('case"always-white"', { searchExports: true });
+var Text = BdApi.Webpack.getBySource('case"always-white"', { searchExports: true }).x;
 var FormText = function FormText2(props) {
   const variant = props.variant || "text-sm/normal";
   return /* @__PURE__ */ React.createElement(
@@ -114,7 +114,7 @@ var FormText = function FormText2(props) {
 };
 var FormSection = BdApi.Webpack.getBySource(".titleId)&&", { searchExports: true });
 var FormSwitch = BdApi.Webpack.getByStrings(".labelRow", "useId", "DESCRIPTION", { searchExports: true });
-var FormItem = BdApi.Webpack.getModule((x) => x.render.toString?.().includes(".fieldWrapper"), { searchExports: true });
+var FormItem = BdApi.Webpack.getModule((x) => x?.render?.toString?.().includes(".fieldWrapper"), { searchExports: true });
 var FormNotice = BdApi.Webpack.getByStrings(".Types.DANGER", ".formNotice", { searchExports: true });
 var FormDivider = BdApi.Webpack.getBySource(".divider", ",style:", '"div"', "dividerDefault", { searchExports: true });
 
@@ -122,16 +122,16 @@ var FormDivider = BdApi.Webpack.getBySource(".divider", ",style:", '"div"', "div
 var TextInput_default = BdApi.Components.TextInput;
 
 // lib/components/Radio.tsx
-var RawRadioGroup = BdApi.Webpack.getByStrings("itemInfoClassName:", "radioItemClassName", "titleId", { searchExports: true });
 function RadioItem(props) {
   return /* @__PURE__ */ React.createElement(
     FormItem,
     {
       ...props
     },
-    /* @__PURE__ */ React.createElement(RawRadioGroup, { ...props })
+    /* @__PURE__ */ React.createElement(BdApi.Components.RadioInput, { ...props })
   );
 }
+var Radio_default = BdApi.Components.RadioInput;
 
 // plugins/ADifferentSearch/Settings.tsx
 function TextInput(props) {

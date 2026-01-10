@@ -24,25 +24,16 @@ export interface RadioGroupProps<T> {
     'aria-labelledby'?: unknown;
 }
 
-interface RadioGroup {
-    <T>(props: RadioGroupProps<T>): JSX.Element;
-    Sizes: {
-        MEDIUM: string;
-        NONE: string;
-        NOT_SET: string;
-        SMALL: string;
-    };
-}
-
-const RawRadioGroup = BdApi.Webpack.getByStrings('itemInfoClassName:', 'radioItemClassName', 'titleId', { searchExports: true }) as RadioGroup;
 export function RadioItem<T>(props: RadioGroupProps<T> & FormItemProps): JSX.Element {
     return (
         <FormItem
             {...props}
         >
-            <RawRadioGroup {...props} />
+            {/* @ts-expect-error I DON'T CARE */}
+            <BdApi.Components.RadioInput {...props} />
         </FormItem>
     );
 }
 
-export default RawRadioGroup;
+// export default RawRadioGroup;
+export default BdApi.Components.RadioInput;

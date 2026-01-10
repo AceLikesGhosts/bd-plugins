@@ -162,7 +162,7 @@ export const /** @__PURE__ */ FormTitle = BdApi.Webpack.getByStrings('["defaultM
 
 // thanks vencord
 import { React } from '.';
-const Text /** @__PURE__ */ = BdApi.Webpack.getBySource('case"always-white"', { searchExports: true });
+const Text /** @__PURE__ */ = BdApi.Webpack.getBySource('case"always-white"', { searchExports: true }).x;
 export const /** @__PURE__ */ FormText = function FormText(props: any) {
     const variant = props.variant || "text-sm/normal";
     return (

@@ -58,7 +58,7 @@ export default function Settings(): React.ReactNode {
                     name: k,
                     value: DefaultProvidedSearchEngines[k]
                 }))}
-                onChange={((e) => {
+                onChange={((e: any) => {
                     setSearchEngineName(e.name!.toString());
                     setSearchEngineURL(e.value.toString());
                 })}
