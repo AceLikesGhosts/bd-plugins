@@ -4,7 +4,7 @@
 * @author ace.
 * @source https://raw.githubusercontent.com/AceLikesGhosts/bd-plugins/master/dist/ADifferentSearch/ADifferentSearch.plugin.js
 * @authorLink https://github.com/AceLikesGhosts/bd-plugins
-* @version 1.0.0
+* @version 1.0.1
 * @authorId 327639826075484162
 */
     
@@ -96,7 +96,7 @@ var config_default = {
   author: "ace.",
   source: "https://raw.githubusercontent.com/AceLikesGhosts/bd-plugins/master/dist/ADifferentSearch/ADifferentSearch.plugin.js",
   authorLink: "https://github.com/AceLikesGhosts/bd-plugins",
-  version: "1.0.0",
+  version: "1.0.1",
   authorId: "327639826075484162"
 };
 
