@@ -89,12 +89,11 @@ var ReactDom = BdApi.ReactDOM || BdApi.Webpack.getByKeys("createRoot");
 
 // lib/components/Form.tsx
 var FormTitle = BdApi.Webpack.getByStrings('["defaultMargin".concat', '="h5"', { searchExports: true });
-var Text = BdApi.Webpack.getBySource('case"always-white"', { searchExports: true });
+var Text = BdApi.Webpack.getBySource('case"always-white"', { searchExports: true }).E;
 var FormSection = BdApi.Webpack.getBySource(".titleId)&&", { searchExports: true });
-var FormSwitch = BdApi.Webpack.getByStrings(".labelRow", "useId", "DESCRIPTION", { searchExports: true });
-var FormItem = BdApi.Webpack.getModule((x) => x.render.toString?.().includes(".fieldWrapper"), { searchExports: true });
-var FormNotice = BdApi.Webpack.getByStrings(".Types.DANGER", ".formNotice", { searchExports: true });
-var FormDivider = BdApi.Webpack.getBySource(".divider", ",style:", '"div"', "dividerDefault", { searchExports: true });
+var FormItem = BdApi.Webpack.getBySource("forwardRef", "titleClassName", "data-migration-pending").e;
+{
+}
 
 // lib/components/TextInput.tsx
 var TextInput_default = BdApi.Components.TextInput;

@@ -98,7 +98,7 @@ var React = BdApi.React;
 var ReactDom = BdApi.ReactDOM || BdApi.Webpack.getByKeys("createRoot");
 
 // lib/modules/Dispatcher.ts
-var Dispatcher_default = /* @__PURE__ */ BdApi.Webpack.getByKeys("dispatch", "subscribe", "register");
+var Dispatcher_default = /* @__PURE__ */ BdApi.Webpack.getByKeys("dispatch", "subscribe", "register", { searchExports: true });
 
 // plugins/ARestoreBlockedUserList/patches/friendsTabList.tsx
 var patchFriendsTabList = () => {

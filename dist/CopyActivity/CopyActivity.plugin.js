@@ -2,7 +2,7 @@
 * @name CopyActivity
 * @description .
 * @author ace.
-* @version 1.0.3
+* @version 1.0.4
 * @source https://raw.githubusercontent.com/AceLikesGhosts/bd-plugins/master/dist/CopyActivity/CopyActivity.plugin.js
 * @authorLink https://github.com/AceLikesGhosts/bd-plugins
 * @authorId 327639826075484162
@@ -97,7 +97,7 @@ var config_default = {
   name: "CopyActivity",
   description: ".",
   author: "ace.",
-  version: "1.0.3",
+  version: "1.0.4",
   source: "https://raw.githubusercontent.com/AceLikesGhosts/bd-plugins/master/dist/CopyActivity/CopyActivity.plugin.js",
   authorLink: "https://github.com/AceLikesGhosts/bd-plugins",
   authorId: "327639826075484162"
@@ -120,7 +120,7 @@ var PresenceStore_default = /* @__PURE__ */ BdApi.Webpack.getStore("PresenceStor
 var Lodash_default = /* @__PURE__ */ BdApi.Webpack.getByKeys("debounce");
 
 // lib/modules/Dispatcher.ts
-var Dispatcher_default = /* @__PURE__ */ BdApi.Webpack.getByKeys("dispatch", "subscribe", "register");
+var Dispatcher_default = /* @__PURE__ */ BdApi.Webpack.getByKeys("dispatch", "subscribe", "register", { searchExports: true });
 
 // plugins/CopyActivity/util.ts
 function applyActivity(activity) {

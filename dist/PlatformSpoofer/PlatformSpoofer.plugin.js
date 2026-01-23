@@ -128,24 +128,23 @@ var ReactDom = BdApi.ReactDOM || BdApi.Webpack.getByKeys("createRoot");
 
 // lib/components/Form.tsx
 var FormTitle = BdApi.Webpack.getByStrings('["defaultMargin".concat', '="h5"', { searchExports: true });
-var Text = BdApi.Webpack.getBySource('case"always-white"', { searchExports: true });
+var Text = BdApi.Webpack.getBySource('case"always-white"', { searchExports: true }).E;
 var FormSection = BdApi.Webpack.getBySource(".titleId)&&", { searchExports: true });
-var FormSwitch = BdApi.Webpack.getByStrings(".labelRow", "useId", "DESCRIPTION", { searchExports: true });
-var FormItem = BdApi.Webpack.getModule((x) => x.render.toString?.().includes(".fieldWrapper"), { searchExports: true });
-var FormNotice = BdApi.Webpack.getByStrings(".Types.DANGER", ".formNotice", { searchExports: true });
-var FormDivider = BdApi.Webpack.getBySource(".divider", ",style:", '"div"', "dividerDefault", { searchExports: true });
+var FormItem = BdApi.Webpack.getBySource("forwardRef", "titleClassName", "data-migration-pending").e;
+{
+}
 
 // lib/components/Radio.tsx
-var RawRadioGroup = BdApi.Webpack.getByStrings("itemInfoClassName:", "radioItemClassName", "titleId", { searchExports: true });
 function RadioItem(props) {
   return /* @__PURE__ */ React.createElement(
     FormItem,
     {
       ...props
     },
-    /* @__PURE__ */ React.createElement(RawRadioGroup, { ...props })
+    /* @__PURE__ */ React.createElement(BdApi.Components.RadioInput, { ...props })
   );
 }
+var Radio_default = BdApi.Components.RadioInput;
 
 // lib/components/Flex.tsx
 var Flex_default = /* @__PURE__ */ BdApi.Webpack.getByKeys("Child", "Justify");

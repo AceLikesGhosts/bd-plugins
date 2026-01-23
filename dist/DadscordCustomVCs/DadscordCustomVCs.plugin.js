@@ -4,7 +4,7 @@
 * @author ace.
 * @source https://raw.githubusercontent.com/AceLikesGhosts/bd-plugins/master/dist/ADifferentSearch/ADifferentSearch.plugin.js
 * @authorLink https://github.com/AceLikesGhosts/bd-plugins
-* @version 1.0.1
+* @version 1.0.2
 * @authorId 327639826075484162
 */
     
@@ -96,7 +96,7 @@ var config_default = {
   author: "ace.",
   source: "https://raw.githubusercontent.com/AceLikesGhosts/bd-plugins/master/dist/ADifferentSearch/ADifferentSearch.plugin.js",
   authorLink: "https://github.com/AceLikesGhosts/bd-plugins",
-  version: "1.0.1",
+  version: "1.0.2",
   authorId: "327639826075484162"
 };
 
@@ -547,7 +547,7 @@ function Settings() {
 }
 
 // lib/modules/Dispatcher.ts
-var Dispatcher_default = /* @__PURE__ */ BdApi.Webpack.getByKeys("dispatch", "subscribe", "register");
+var Dispatcher_default = /* @__PURE__ */ BdApi.Webpack.getByKeys("dispatch", "subscribe", "register", { searchExports: true });
 
 // lib/stores/ChannelStore.ts
 var ChannelStore_default = BdApi.Webpack.getStore("ChannelStore");

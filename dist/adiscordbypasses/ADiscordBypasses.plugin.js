@@ -21,13 +21,13 @@ var __export = (target, all) => {
 };
 var __copyProps = (to, from, except, desc) => {
   if (from && typeof from === "object" || typeof from === "function") {
-    for (let key of __getOwnPropNames(from))
-      if (!__hasOwnProp.call(to, key) && key !== except)
-        __defProp(to, key, { get: () => from[key], enumerable: !(desc = __getOwnPropDesc(from, key)) || desc.enumerable });
+    for (let key2 of __getOwnPropNames(from))
+      if (!__hasOwnProp.call(to, key2) && key2 !== except)
+        __defProp(to, key2, { get: () => from[key2], enumerable: !(desc = __getOwnPropDesc(from, key2)) || desc.enumerable });
   }
   return to;
 };
-var __toCommonJS = (mod) => __copyProps(__defProp({}, "__esModule", { value: true }), mod);
+var __toCommonJS = (mod2) => __copyProps(__defProp({}, "__esModule", { value: true }), mod2);
 
 // plugins/ADiscordBypasses/index.tsx
 var index_exports = {};
@@ -83,35 +83,23 @@ var Logger = class {
   }
 };
 
-// lib/modules/AccountSwitcher.ts
-var AccountSwitcher_default = BdApi.Webpack.getModule((m) => Object.values(m)?.includes("multiaccount_cta_tooltip_seen"));
-
 // plugins/ADiscordBypasses/patches/AccountSwitcher.ts
-var AccountSwitcher_default2 = (main) => {
+var [mod, key] = BdApi.Webpack.getWithKey(BdApi.Webpack.Filters.byStrings("HAuRSM"));
+var AccountSwitcher_default = (main) => {
   main.logger.warn("Patching AccountSwitcher || UNIMPLEMENTED.");
-  let maxAccountsKey;
-  for (const key in AccountSwitcher_default) {
-    const v = AccountSwitcher_default[key];
-    if (typeof v === "number") maxAccountsKey = key;
-  }
-  if (!maxAccountsKey) {
-    main.logger.critical(`Failed to locate maxAccountsKey`, maxAccountsKey, AccountSwitcher_default);
-    return;
-  }
-  Object.defineProperty(AccountSwitcher_default, maxAccountsKey, {
-    get: () => {
-      return ADiscordBypasses.settings?.MaxAccounts ? Infinity : 5;
-    },
-    configurable: true,
-    enumerable: true
+  BdApi.Patcher.instead("test", mod, key, (_, args, res) => {
+    if (!args[0].toString().includes("HAuRSM")) {
+      return;
+    }
+    console.log("useState from HAuRSM");
   });
 };
 
 // plugins/ADiscordBypasses/patches/GuildVerification.ts
 var GuildVerification_default = (main) => {
   main.logger.info("Patching DiscordConstants (Verification).");
-  const [test, key] = BdApi.Webpack.getWithKey(BdApi.Webpack.Filters.byKeys("ACCOUNT_AGE", "MEMBER_AGE"));
-  Object.defineProperty(test, key, {
+  const [test, key2] = BdApi.Webpack.getWithKey(BdApi.Webpack.Filters.byKeys("ACCOUNT_AGE", "MEMBER_AGE"));
+  Object.defineProperty(test, key2, {
     get: () => {
       return ADiscordBypasses.settings?.Verification ? { ACCOUNT_AGE: 0, MEMBER_AGE: 0 } : { ACCOUNT_AGE: 5, MEMBER_AGE: 10 };
     },
@@ -272,12 +260,12 @@ var ReactDom = BdApi.ReactDOM || BdApi.Webpack.getByKeys("createRoot");
 
 // lib/components/Form.tsx
 var FormTitle = BdApi.Webpack.getByStrings('["defaultMargin".concat', '="h5"', { searchExports: true });
-var Text = BdApi.Webpack.getBySource('case"always-white"', { searchExports: true });
+var Text = BdApi.Webpack.getBySource('case"always-white"', { searchExports: true }).E;
 var FormSection = BdApi.Webpack.getBySource(".titleId)&&", { searchExports: true });
-var FormSwitch = BdApi.Webpack.getByStrings(".labelRow", "useId", "DESCRIPTION", { searchExports: true });
-var FormItem = BdApi.Webpack.getModule((x) => x.render.toString?.().includes(".fieldWrapper"), { searchExports: true });
-var FormNotice = BdApi.Webpack.getByStrings(".Types.DANGER", ".formNotice", { searchExports: true });
-var FormDivider = BdApi.Webpack.getBySource(".divider", ",style:", '"div"', "dividerDefault", { searchExports: true });
+var FormItem = BdApi.Webpack.getBySource("forwardRef", "titleClassName", "data-migration-pending").e;
+{
+}
+var FormSwitch = (e) => /* @__PURE__ */ React.createElement(BdApi.Components.SettingItem, { note: e.note }, /* @__PURE__ */ React.createElement(BdApi.Components.SwitchInput, { ...e, id: "zere-i-hate-you" }));
 
 // lib/components/Toasts.ts
 var Kind = {
@@ -674,7 +662,7 @@ var ADiscordBypasses = class _ADiscordBypasses {
     GuildVerification_default(this);
     StreamPreview_default(this);
     PTT_default(this);
-    AccountSwitcher_default2(this);
+    AccountSwitcher_default(this);
     Idle();
     setBadge();
   }

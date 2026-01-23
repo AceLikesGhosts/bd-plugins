@@ -2,7 +2,7 @@
 * @name AForceMute
 * @description In God we trust.
 * @author ace.
-* @version 0.0.4
+* @version 0.0.5
 */
     
 "use strict";
@@ -89,7 +89,7 @@ var config_default = {
   name: "AForceMute",
   description: "In God we trust.",
   author: "ace.",
-  version: "0.0.4"
+  version: "0.0.5"
 };
 
 // lib/stores/UserStore.ts
@@ -305,7 +305,7 @@ function PatchUserContext() {
 }
 
 // lib/modules/Dispatcher.ts
-var Dispatcher_default = /* @__PURE__ */ BdApi.Webpack.getByKeys("dispatch", "subscribe", "register");
+var Dispatcher_default = /* @__PURE__ */ BdApi.Webpack.getByKeys("dispatch", "subscribe", "register", { searchExports: true });
 
 // plugins/AForceMute/listeners/onVoiceUpdate.ts
 function onVoiceStateUpdate(event) {
