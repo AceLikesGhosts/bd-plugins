@@ -1,1 +1,1 @@
-export default BdApi.Webpack.getByStrings('"transitionToGuild - Transitioning to "', { searchExports: true }) as (guildId: string, channelId: string) => void;
+export default BdApi.Webpack.getByStrings('transitionToGuild - Transitioning to', { searchExports: true }) as (guildId: string, channelId: string) => void;
