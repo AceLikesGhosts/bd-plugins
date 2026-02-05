@@ -876,7 +876,6 @@ function handleVoiceStateUpdate(vs) {
   }
   if (vs.channelId !== null) {
     if (!VoiceStateStore_default.isInChannel(vs.channelId)) return;
-    if (vs.oldChannelId !== vs.channelId) return;
     const channel = ChannelStore_default.getChannel(vs.channelId);
     if (!ownsVoiceChat(ourId, channel?.permissionOverwrites_)) return;
     const isAutobannedFromUserId = DadscordAutoBans.settings.autoBanUserIds.has(vs.userId);
@@ -892,6 +891,7 @@ function handleVoiceStateUpdate(vs) {
       for (const filterName of DadscordAutoBans.settings.nameFiltering) {
         let regex = null;
         if (filterName.startsWith("/") && filterName.endsWith("/")) {
+          logger.log("debug: making regex");
           try {
             regex = new RegExp(filterName.slice(1, -1));
           } catch (e) {
@@ -900,19 +900,23 @@ function handleVoiceStateUpdate(vs) {
           }
         }
         for (const username of usernames) {
+          if (!username) continue;
+          logger.log("debug: looking at " + username + " | filter | " + filterName);
           if (regex) {
             if (regex.test(username)) {
+              logger.log("debug: regex matched");
               isFilteredName = true;
               break;
             }
           } else {
-            if (username?.includes(filterName)) {
+            if (username.toLowerCase().includes(filterName.toLowerCase())) {
+              logger.log("debug: str includes match");
               isFilteredName = true;
               break;
             }
           }
-          if (isFilteredName) break;
         }
+        logger.log("debug: break end");
         if (isFilteredName) break;
       }
     }

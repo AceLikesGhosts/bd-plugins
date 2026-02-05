@@ -51,7 +51,7 @@ function handleVoiceStateUpdate(vs: UserVoiceState) {
         // updates don't matter, ignore them
         // to prevent cases of allowing certain users
         // then them doing an action in the voice chat again
-        if(vs.oldChannelId !== vs.channelId) return;
+        // if(vs.oldChannelId !== vs.channelId) return;
 
         const channel = ChannelStore.getChannel(vs.channelId!);
         if(!ownsVoiceChat(ourId, channel?.permissionOverwrites_)) return;
@@ -69,10 +69,11 @@ function handleVoiceStateUpdate(vs: UserVoiceState) {
                 guildMember?.nick,
             ];
 
-
             for(const filterName of DadscordAutoBans.settings.nameFiltering) {
                 let regex: RegExp | null = null;
                 if(filterName.startsWith('/') && filterName.endsWith('/')) {
+                    logger.log('debug: making regex');
+
                     try {
                         regex = new RegExp(filterName.slice(1, -1));
                     } catch(e) {
@@ -82,23 +83,27 @@ function handleVoiceStateUpdate(vs: UserVoiceState) {
                 }
 
                 for(const username of usernames) {
+                    if(!username) continue;
+
+                    logger.log('debug: looking at ' + username + ' | filter | ' + filterName);
+
                     if(regex) {
-                        if(regex.test(username!)) {
+                        if(regex.test(username)) {
+                            logger.log('debug: regex matched');
                             isFilteredName = true;
                             break;
                         }
                     } else {
-                        if(username?.includes(filterName)) {
+                        if(username.toLowerCase().includes(filterName.toLowerCase())) {
+                            logger.log('debug: str includes match');
                             isFilteredName = true;
                             break;
                         }
                     }
-
-                    // exit early if any username is filtered
-                    if(isFilteredName) break;
                 }
 
                 // exit outer loop if the name is filtered
+                logger.log('debug: break end');
                 if(isFilteredName) break;
             }
         }
