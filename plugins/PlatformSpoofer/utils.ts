@@ -3,7 +3,6 @@ export type WeirdPropertyShit = {
     getSuperProperties(): {
         [K in keyof TPropertiesToSpoofAs]: {
             browser: TPropertiesToSpoofAs[K]['browser'];
-            os: TPropertiesToSpoofAs[K]['os'];
         }
     }[keyof TPropertiesToSpoofAs] & Record<string, unknown>;
 };
@@ -29,16 +28,15 @@ type DiscordWebSocket = {
 };
 
 export const PropertiesToSpoofAs = {
-    ios: { browser: 'Discord iOS', os: 'iOS' },
-    android: { browser: 'Discord Android', os: 'Android' },
-    web: { browser: 'Discord Web', os: 'Other' },
-    linux: { browser: 'Discord Client', os: 'Linux' },
-    win32: { browser: 'Discord Client', os: 'Windows' },
-    darwin: { browser: 'Discord Client', os: 'Mac OS X' },
-    xbox: { browser: 'Discord Embedded', os: 'Xbox' },
-    playstation: { browser: 'Discord Embedded', os: 'Playstation' }
+    ios: { browser: 'Discord iOS' },
+    android: { browser: 'Discord Android' },
+    web: { browser: 'Discord Web' },
+    desktop: { browser: 'Discord Client' },
+    xbox: { browser: 'Discord Embedded' },
+    playstation: { browser: 'Discord Embedded' },
+    vr: { browser: 'Discord VR' }
 } as const;
 
-export const propertyStuff: WeirdPropertyShit = BdApi.Webpack.getByKeys('getSuperProperties', 'getSuperPropertiesBase64', { searchExports: true });
+export const propertyStuff: WeirdPropertyShit = BdApi.Webpack.getByKeys<{ default: WeirdPropertyShit; }>('default', 'debugLogEvent').default;
 export const gameConsoleManager: GameConsoleManager = BdApi.Webpack.getByKeys('actions', 'handleAudioStateToggle', 'handleSessionsChanged');
-export const socket: DiscordWebSocket = BdApi.Webpack.getByKeys('socket', 'state', { searchExports: true }).socket;
+export const socket = BdApi.Webpack.getByKeys<{ socket: DiscordWebSocket; }>('socket', 'state', { searchExports: true }).socket;

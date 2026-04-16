@@ -96,16 +96,15 @@ var config_default = {
 
 // plugins/PlatformSpoofer/utils.ts
 var PropertiesToSpoofAs = {
-  ios: { browser: "Discord iOS", os: "iOS" },
-  android: { browser: "Discord Android", os: "Android" },
-  web: { browser: "Discord Web", os: "Other" },
-  linux: { browser: "Discord Client", os: "Linux" },
-  win32: { browser: "Discord Client", os: "Windows" },
-  darwin: { browser: "Discord Client", os: "Mac OS X" },
-  xbox: { browser: "Discord Embedded", os: "Xbox" },
-  playstation: { browser: "Discord Embedded", os: "Playstation" }
+  ios: { browser: "Discord iOS" },
+  android: { browser: "Discord Android" },
+  web: { browser: "Discord Web" },
+  desktop: { browser: "Discord Client" },
+  xbox: { browser: "Discord Embedded" },
+  playstation: { browser: "Discord Embedded" },
+  vr: { browser: "Discord VR" }
 };
-var propertyStuff = BdApi.Webpack.getByKeys("getSuperProperties", "getSuperPropertiesBase64", { searchExports: true });
+var propertyStuff = BdApi.Webpack.getByKeys("default", "debugLogEvent").default;
 var gameConsoleManager = BdApi.Webpack.getByKeys("actions", "handleAudioStateToggle", "handleSessionsChanged");
 var socket = BdApi.Webpack.getByKeys("socket", "state", { searchExports: true }).socket;
 
@@ -114,11 +113,12 @@ var PropertyManager_default = () => {
   logger.log("Patching PropertyManager (getSuperProperties");
   BdApi.Patcher.instead(config_default.name, propertyStuff, "getSuperProperties", (context, args, orig) => {
     const data = orig.apply(context, args);
-    return {
+    const spoofed = {
       ...data,
-      browser: PropertiesToSpoofAs[PlatformSpoofer.settings?.type]?.browser,
-      os: PropertiesToSpoofAs[PlatformSpoofer.settings?.type]?.os
+      browser: PropertiesToSpoofAs[PlatformSpoofer.settings?.type]?.browser
     };
+    console.log("Spoofed super properties:", spoofed);
+    return spoofed;
   });
 };
 
@@ -127,9 +127,7 @@ var React = BdApi.React;
 var ReactDom = BdApi.ReactDOM || BdApi.Webpack.getByKeys("createRoot");
 
 // lib/components/Form.tsx
-var FormTitle = BdApi.Webpack.getByStrings('["defaultMargin".concat', '="h5"', { searchExports: true });
 var Text = BdApi.Webpack.getBySource('case"always-white"', { searchExports: true }).E;
-var FormSection = BdApi.Webpack.getBySource(".titleId)&&", { searchExports: true });
 var FormItem = BdApi.Webpack.getBySource("forwardRef", "titleClassName", "data-migration-pending").e;
 {
 }
@@ -150,7 +148,7 @@ var Radio_default = BdApi.Components.RadioInput;
 var Flex_default = /* @__PURE__ */ BdApi.Webpack.getByKeys("Child", "Justify");
 
 // lib/components/Button.tsx
-var Button_default = BdApi.Webpack.getByStrings(".FILLED", "MEDIUM", "disabledButtonOverlay", { searchExports: true });
+var Button_default = BdApi.Components.Button;
 
 // plugins/PlatformSpoofer/components/Settings.tsx
 function Settings() {
@@ -167,7 +165,9 @@ function Settings() {
         name: v,
         value: v
       })),
-      onChange: (e) => setType(e.value),
+      onChange: (e) => {
+        setType(e);
+      },
       value: type
     }
   ), /* @__PURE__ */ React.createElement(Flex_default, { align: Flex_default.Direction.HORIZONTAL }, /* @__PURE__ */ React.createElement(
@@ -205,7 +205,7 @@ var GameManager_default = () => {
 
 // plugins/PlatformSpoofer/index.ts
 var DefaultSettings = {
-  type: "win32"
+  type: "desktop"
 };
 var logger = new Logger(config_default);
 var PlatformSpoofer = class _PlatformSpoofer {

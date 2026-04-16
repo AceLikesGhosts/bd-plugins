@@ -7,7 +7,7 @@ import Settings from './components/Settings';
 import PatchGameManager from './patches/GameManager';
 
 const DefaultSettings = {
-    type: 'win32'
+    type: 'desktop'
 } as { active: boolean; type: keyof TPropertiesToSpoofAs; };
 
 export const logger = new Logger(meta);

@@ -7,10 +7,14 @@ export default (): void => {
     BdApi.Patcher.instead(meta.name, propertyStuff, 'getSuperProperties', (context, args, orig) => {
         const data = orig.apply(context, args);
 
-        return {
+
+        const spoofed =  {
             ...data,
             browser: PropertiesToSpoofAs[PlatformSpoofer.settings?.type]?.browser,
-            os: PropertiesToSpoofAs[PlatformSpoofer.settings?.type]?.os
         };
+
+        console.log('Spoofed super properties:', spoofed);
+
+        return spoofed;
     });
 };

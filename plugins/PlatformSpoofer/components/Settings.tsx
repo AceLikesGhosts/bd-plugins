@@ -21,7 +21,10 @@ export default function Settings(): React.ReactNode {
                     name: v,
                     value: v
                 }))}
-                onChange={((e) => setType(e.value as keyof typeof PropertiesToSpoofAs))}
+                onChange={((e) => {
+                    // wrong type! nice!
+                    setType(e as any as keyof typeof PropertiesToSpoofAs);
+                })}
                 value={type}
             />
 

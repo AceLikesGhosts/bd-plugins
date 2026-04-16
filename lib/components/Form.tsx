@@ -148,7 +148,7 @@ export interface FormNotice extends React.FunctionComponent<FormNoticeProps> {
 }
 
 
-export const /** @__PURE__ */ FormTitle = BdApi.Webpack.getByStrings('["defaultMargin".concat', '="h5"', { searchExports: true }) as FormTitle;
+// export const /** @__PURE__ */ FormTitle = BdApi.Webpack.getByStrings('["defaultMargin".concat', '="h5"', { searchExports: true }) as FormTitle;
 
 // thanks vencord
 import { React } from '.';
@@ -165,7 +165,20 @@ export const /** @__PURE__ */ FormText = function FormText(props: any) {
     );
 } as any;
 
-export const /** @__PURE__ */ FormSection = BdApi.Webpack.getBySource('.titleId)&&', { searchExports: true }) as FormSection;
+export const /** @__PURE__  */ FormTitle = (...props: Parameters<typeof Text>) => {
+    const variant = props[0].variant || "text-lg/normal";
+    return (
+        <Text
+            variant={variant}
+            {...props[0]}
+        >
+            {props[0].children}
+        </Text>
+    );
+};
+
+// this is dead, sucks to suck
+// export const /** @__PURE__ */ FormSection = BdApi.Webpack.getBySource('.titleId)&&', { searchExports: true }) as FormSection;
 
 
 
