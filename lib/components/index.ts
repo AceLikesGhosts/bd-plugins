@@ -1,4 +1,3 @@
-export const RawComponents: Record<string, any> = /** @__PURE__ */ BdApi.Webpack.getByKeys('ConfirmModal', 'ToastPosition', 'Text');
 export const Margins = /** @__PURE__ */ BdApi.Webpack.getByKeys('marginBottom40', 'marginTop4') as MarginsClasses;
 export const React = /** @__PURE__ */ BdApi.React;
 // temporary until newer version BD releases where
