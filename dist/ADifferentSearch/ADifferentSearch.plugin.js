@@ -2,7 +2,7 @@
 * @name ADifferentSearch
 * @description Change the search engine used in the `Search With` feature.
 * @author ace.
-* @version 1.2.5
+* @version 1.2.6
 * @source https://raw.githubusercontent.com/AceLikesGhosts/bd-plugins/master/dist/ADifferentSearch/ADifferentSearch.plugin.js
 * @authorLink https://github.com/AceLikesGhosts/bd-plugins
 * @authorId 327639826075484162
@@ -87,7 +87,7 @@ var config_default = {
   name: "ADifferentSearch",
   description: "Change the search engine used in the `Search With` feature.",
   author: "ace.",
-  version: "1.2.5",
+  version: "1.2.6",
   source: "https://raw.githubusercontent.com/AceLikesGhosts/bd-plugins/master/dist/ADifferentSearch/ADifferentSearch.plugin.js",
   authorLink: "https://github.com/AceLikesGhosts/bd-plugins",
   authorId: "327639826075484162"
@@ -96,7 +96,7 @@ var config_default = {
 // lib/components/index.ts
 var Margins = /* @__PURE__ */ BdApi.Webpack.getByKeys("marginBottom40", "marginTop4");
 var React = BdApi.React;
-var ReactDom = BdApi.ReactDOM || BdApi.Webpack.getByKeys("createRoot");
+var ReactDom = BdApi.ReactDOM || /* @__PURE__ */ BdApi.Webpack.getByKeys("createRoot");
 
 // lib/components/Form.tsx
 var Text = BdApi.Webpack.getBySource('case"always-white"', { searchExports: true }).E;
@@ -228,20 +228,21 @@ var ADifferentSearch = class _ADifferentSearch {
       ...DefaultSettings,
       ...BdApi.Data.load(config_default.name, "settings")
     };
-    const [mod, key] = BdApi.Webpack.getWithKey(
-      BdApi.Webpack.Filters.byStrings("search-google")
-    );
-    BdApi.Patcher.after(config_default.name, mod, key, (_, args, ret) => {
-      if (!args[0] || typeof args[0] !== "string" || !Array.isArray(ret) || !ret[0]) {
-        return;
-      }
-      ret[0].props.label = `Search with ${capitalise(_ADifferentSearch.settings.searchEngineName)}`;
-      BdApi.Patcher.instead(config_default.name, ret[0].props, "action", () => {
-        window.open(
-          _ADifferentSearch.settings.searchEngineURL + args[0]
-        );
+    (async () => {
+      await BdApi.Webpack.waitForModule(BdApi.Webpack.Filters.byStrings("search-google"));
+      const [mod, key] = BdApi.Webpack.getWithKey(BdApi.Webpack.Filters.byStrings("search-google"));
+      BdApi.Patcher.after(config_default.name, mod, key, (_, args, ret) => {
+        if (!args[0] || typeof args[0] !== "string" || !Array.isArray(ret) || !ret[0]) {
+          return;
+        }
+        ret[0].props.label = `Search with ${capitalise(_ADifferentSearch.settings.searchEngineName)}`;
+        BdApi.Patcher.instead(config_default.name, ret[0].props, "action", () => {
+          window.open(
+            _ADifferentSearch.settings.searchEngineURL + args[0]
+          );
+        });
       });
-    });
+    })();
   }
   stop() {
     logger.info("stopped");

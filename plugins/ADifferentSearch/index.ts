@@ -26,27 +26,29 @@ export default class ADifferentSearch implements Plugin {
             ...BdApi.Data.load(meta.name, 'settings')
         };
 
-        const [mod, key] = BdApi.Webpack.getWithKey(
-            BdApi.Webpack.Filters.byStrings('search-google'),
-        );
+        (async () => {
+            // HACK: until Arven/Doggy/someone smarter than me replies with the way to do
+            // this in a lazy/async way without two queries
+            await BdApi.Webpack.waitForModule(BdApi.Webpack.Filters.byStrings('search-google'));
+            const [mod, key] = BdApi.Webpack.getWithKey(BdApi.Webpack.Filters.byStrings('search-google'));
+            BdApi.Patcher.after(meta.name, mod, key, (_, args, ret) => {
+                if(
+                    !args[0] ||
+                    typeof args[0] !== 'string' ||
+                    !Array.isArray(ret) ||
+                    !ret[0]
+                ) {
+                    return;
+                }
 
-        BdApi.Patcher.after(meta.name, mod, key, (_, args, ret) => {
-            if(
-                !args[0] || 
-                typeof args[0] !== 'string' || 
-                !Array.isArray(ret) ||
-                !ret[0]
-            ) {
-                return;
-            }
-
-            ret[0].props.label = `Search with ${ capitalise(ADifferentSearch.settings.searchEngineName) }`;
-            BdApi.Patcher.instead(meta.name, ret[0].props, 'action', () => {
-                window.open(
-                    ADifferentSearch.settings.searchEngineURL + args[0]
-                );
+                ret[0].props.label = `Search with ${ capitalise(ADifferentSearch.settings.searchEngineName) }`;
+                BdApi.Patcher.instead(meta.name, ret[0].props, 'action', () => {
+                    window.open(
+                        ADifferentSearch.settings.searchEngineURL + args[0]
+                    );
+                });
             });
-        });
+        })();
     }
 
     public stop(): void {

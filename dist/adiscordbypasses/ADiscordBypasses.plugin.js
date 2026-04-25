@@ -21,18 +21,18 @@ var __export = (target, all) => {
 };
 var __copyProps = (to, from, except, desc) => {
   if (from && typeof from === "object" || typeof from === "function") {
-    for (let key2 of __getOwnPropNames(from))
-      if (!__hasOwnProp.call(to, key2) && key2 !== except)
-        __defProp(to, key2, { get: () => from[key2], enumerable: !(desc = __getOwnPropDesc(from, key2)) || desc.enumerable });
+    for (let key of __getOwnPropNames(from))
+      if (!__hasOwnProp.call(to, key) && key !== except)
+        __defProp(to, key, { get: () => from[key], enumerable: !(desc = __getOwnPropDesc(from, key)) || desc.enumerable });
   }
   return to;
 };
-var __toCommonJS = (mod2) => __copyProps(__defProp({}, "__esModule", { value: true }), mod2);
+var __toCommonJS = (mod) => __copyProps(__defProp({}, "__esModule", { value: true }), mod);
 
 // plugins/ADiscordBypasses/index.tsx
 var index_exports = {};
 __export(index_exports, {
-  DefaultSettings: () => DefaultSettings,
+  DefaultSettings: () => DefaultSettings2,
   default: () => ADiscordBypasses
 });
 module.exports = __toCommonJS(index_exports);
@@ -83,17 +83,242 @@ var Logger = class {
   }
 };
 
+// plugins/ADifferentSearch/config.json
+var config_default = {
+  $schema: "../../config_schema.jsonc",
+  name: "ADifferentSearch",
+  description: "Change the search engine used in the `Search With` feature.",
+  author: "ace.",
+  version: "1.2.6",
+  source: "https://raw.githubusercontent.com/AceLikesGhosts/bd-plugins/master/dist/ADifferentSearch/ADifferentSearch.plugin.js",
+  authorLink: "https://github.com/AceLikesGhosts/bd-plugins",
+  authorId: "327639826075484162"
+};
+
+// lib/components/index.ts
+var Margins = /* @__PURE__ */ BdApi.Webpack.getByKeys("marginBottom40", "marginTop4");
+var React = BdApi.React;
+var ReactDom = BdApi.ReactDOM || /* @__PURE__ */ BdApi.Webpack.getByKeys("createRoot");
+
+// lib/components/Form.tsx
+var Text = BdApi.Webpack.getBySource('case"always-white"', { searchExports: true }).E;
+var FormText = function FormText2(props) {
+  const variant = props.variant || "text-sm/normal";
+  return /* @__PURE__ */ React.createElement(
+    Text,
+    {
+      variant,
+      ...props
+    },
+    props.children
+  );
+};
+function FormItem({ children }) {
+  return /* @__PURE__ */ React.createElement("div", null, /* @__PURE__ */ React.createElement("div", { style: { paddingTop: "4px", position: "relative" } }, children));
+}
+var FormSwitch = (e) => (
+  // @ts-expect-error
+  /* @__PURE__ */ React.createElement(BdApi.Components.SettingItem, { note: e.note }, /* @__PURE__ */ React.createElement(BdApi.Components.SwitchInput, { ...e, id: "zere-i-hate-you" }))
+);
+
+// lib/components/TextInput.tsx
+var TextInput_default = BdApi.Components.TextInput;
+
+// lib/components/Radio.tsx
+function RadioItem(props) {
+  return /* @__PURE__ */ React.createElement(
+    FormItem,
+    {
+      ...props
+    },
+    /* @__PURE__ */ React.createElement(BdApi.Components.RadioInput, { ...props })
+  );
+}
+var Radio_default = BdApi.Components.RadioInput;
+
+// plugins/ADifferentSearch/Settings.tsx
+function TextInput(props) {
+  return /* @__PURE__ */ React.createElement(
+    FormItem,
+    {
+      style: {
+        width: "50%"
+      },
+      className: Margins.marginBottom20,
+      ...props
+    },
+    /* @__PURE__ */ React.createElement(
+      TextInput_default,
+      {
+        ...props
+      }
+    )
+  );
+}
+var DefaultProvidedSearchEngines = {
+  startpage: "https://startpage.com/sp/search?query=",
+  duckduckgo: "https://duckduckgo.com/?t=h_&q=",
+  searX: "https://searx.be/search?q=",
+  google: "https://google.com/search?q=",
+  bing: "https://bing.com/search?q=",
+  yandex: "https://yandex.com/search?text=",
+  perplexity: "https://perplexity.ai/search?q=",
+  yahoo: "https://yahoo.com/search?q=",
+  aol: "https://search.aol.com/aol/search?q=",
+  brave: "https://search.brave.com/search?q="
+};
+function Settings() {
+  const [searchEngineName, setSearchEngineName] = React.useState(ADifferentSearch.settings.searchEngineName);
+  const [searchEngineURL, setSearchEngineURL] = React.useState(ADifferentSearch.settings.searchEngineURL);
+  React.useEffect(() => {
+    ADifferentSearch.settings = {
+      searchEngineName,
+      searchEngineURL
+    };
+    BdApi.Data.save(config_default.name, "settings", ADifferentSearch.settings);
+  }, [
+    searchEngineName,
+    searchEngineURL
+  ]);
+  return /* @__PURE__ */ React.createElement("div", null, /* @__PURE__ */ React.createElement(
+    RadioItem,
+    {
+      title: "Search Engine",
+      options: Object.keys(DefaultProvidedSearchEngines).map((k) => ({
+        name: k,
+        value: DefaultProvidedSearchEngines[k]
+      })),
+      onChange: (e) => {
+        setSearchEngineName(e.name.toString());
+        setSearchEngineURL(e.value.toString());
+      },
+      className: Margins.marginBottom20,
+      value: searchEngineURL
+    }
+  ), /* @__PURE__ */ React.createElement(FormText, { className: Margins.marginBottom20 }, "or manually provide a search engine"), /* @__PURE__ */ React.createElement(
+    TextInput,
+    {
+      title: "Search Engine Name",
+      value: searchEngineName,
+      onChange: (e) => {
+        setSearchEngineName(e);
+      }
+    }
+  ), /* @__PURE__ */ React.createElement(
+    TextInput,
+    {
+      title: "Search Engine URL",
+      value: searchEngineURL,
+      onChange: (e) => {
+        setSearchEngineURL(e);
+      }
+    }
+  ));
+}
+
+// plugins/ADifferentSearch/index.ts
+var logger = new Logger(config_default);
+var DefaultSettings = {
+  searchEngineName: "startpage",
+  searchEngineURL: "https://startpage.com/sp/search?query="
+};
+var capitalise = (str) => str[0].toUpperCase() + str.slice(1, str.length);
+var ADifferentSearch = class _ADifferentSearch {
+  static {
+    this.settings = DefaultSettings;
+  }
+  start() {
+    logger.info("started");
+    logger.info("Loading settings.");
+    _ADifferentSearch.settings = {
+      ...DefaultSettings,
+      ...BdApi.Data.load(config_default.name, "settings")
+    };
+    (async () => {
+      await BdApi.Webpack.waitForModule(BdApi.Webpack.Filters.byStrings("search-google"));
+      const [mod, key] = BdApi.Webpack.getWithKey(BdApi.Webpack.Filters.byStrings("search-google"));
+      BdApi.Patcher.after(config_default.name, mod, key, (_, args, ret) => {
+        if (!args[0] || typeof args[0] !== "string" || !Array.isArray(ret) || !ret[0]) {
+          return;
+        }
+        ret[0].props.label = `Search with ${capitalise(_ADifferentSearch.settings.searchEngineName)}`;
+        BdApi.Patcher.instead(config_default.name, ret[0].props, "action", () => {
+          window.open(
+            _ADifferentSearch.settings.searchEngineURL + args[0]
+          );
+        });
+      });
+    })();
+  }
+  stop() {
+    logger.info("stopped");
+    logger.info("Saving settings.");
+    BdApi.Data.save(config_default.name, "settings", _ADifferentSearch.settings);
+    logger.info("Unpatching");
+    BdApi.Patcher.unpatchAll(config_default.name);
+  }
+  getSettingsPanel() {
+    return Settings;
+  }
+};
+
 // plugins/ADiscordBypasses/patches/AccountSwitcher.ts
-var [mod, key] = BdApi.Webpack.getWithKey(BdApi.Webpack.Filters.byStrings("HAuRSM"));
-var AccountSwitcher_default = (main) => {
+var AccountSwitcher_default = async (main) => {
   main.logger.warn("Patching AccountSwitcher || UNIMPLEMENTED.");
+  const modalMod = await BdApi.Webpack.waitForModule(BdApi.Webpack.Filters.byKeys("Modal"));
+  if (!modalMod.Modal) {
+    main.logger.critical("Failed to find Modal module for AccountSwitcher patch", modalMod);
+    return;
+  }
+  main.logger.log("Found Modal module for AccountSwitcher patch", modalMod);
+  const discordI18nMod = await BdApi.Webpack.waitForModule(BdApi.Webpack.Filters.byKeys("intl"));
+  main.logger.log("Found i18n module for AccountSwitcher patch", discordI18nMod);
+  const lazyAddAccountModal = await BdApi.Webpack.waitForModule(BdApi.Webpack.Filters.bySource('type:"LOGIN_RESET",isMultiAccount:!0'));
+  main.logger.debug("Found add account lazy modal object", lazyAddAccountModal);
+  let openAddAccountModalLazy = null;
+  for (const key in lazyAddAccountModal) {
+    if (typeof lazyAddAccountModal[key] !== "function") continue;
+    const funcStr = lazyAddAccountModal[key].toString();
+    if (!funcStr.includes("Promise.all")) continue;
+    if (funcStr.split("n.e").length !== 4) continue;
+    main.logger.debug("Found add account lazy modal function", { key, funcStr });
+    openAddAccountModalLazy = lazyAddAccountModal[key];
+    break;
+  }
+  BdApi.Patcher.before(config_default.name, modalMod, "Modal", (_, args) => {
+    main.logger.log("Modal props", args[0]);
+    const props = args[0];
+    if (!props || typeof props !== "object" || !props.subtitle || typeof props.subtitle !== "string" || !props.subtitle.includes(discordI18nMod.intl.string(discordI18nMod.t["+1Uk3c"]))) {
+      return;
+    }
+    main.logger.log("Found AccountSwitcher Modal", props);
+    if (!("actions" in props)) {
+      main.logger.warn("AccountSwitcher Modal does not have actions prop, cannot patch", props);
+      return;
+    }
+    const lookingForActionString = discordI18nMod.intl.string(discordI18nMod.t["9g2mqT"]);
+    for (const action of props.actions) {
+      if (action.text !== lookingForActionString) {
+        continue;
+      }
+      const cancel = BdApi.Patcher.instead(config_default.name, action, "onClick", (ctx, args2, orig) => {
+        if (!openAddAccountModalLazy) {
+          main.logger.error("Add Account modal function not found, reverting to original");
+          return orig.apply(ctx, args2);
+        }
+        main.logger.log("Opening add account modal");
+        openAddAccountModalLazy();
+        cancel();
+      });
+    }
+  });
 };
 
 // plugins/ADiscordBypasses/patches/GuildVerification.ts
 var GuildVerification_default = (main) => {
   main.logger.info("Patching DiscordConstants (Verification).");
-  const [test, key2] = BdApi.Webpack.getWithKey(BdApi.Webpack.Filters.byKeys("ACCOUNT_AGE", "MEMBER_AGE"));
-  Object.defineProperty(test, key2, {
+  const [test, key] = BdApi.Webpack.getWithKey(BdApi.Webpack.Filters.byKeys("ACCOUNT_AGE", "MEMBER_AGE"));
+  Object.defineProperty(test, key, {
     get: () => {
       return ADiscordBypasses.settings?.Verification ? { ACCOUNT_AGE: 0, MEMBER_AGE: 0 } : { ACCOUNT_AGE: 5, MEMBER_AGE: 10 };
     },
@@ -103,7 +328,7 @@ var GuildVerification_default = (main) => {
 };
 
 // plugins/ADiscordBypasses/config.json
-var config_default = {
+var config_default2 = {
   $schema: "../../config_schema.jsonc",
   name: "ADiscordBypasses",
   description: "A simple rewrite of Tharki's DiscordBypasses.",
@@ -122,19 +347,19 @@ var IdleStore_default = BdApi.Webpack.getStore("IdleStore");
 // plugins/ADiscordBypasses/patches/Idle.ts
 function Idle() {
   BdApi.Patcher.instead(
-    config_default.name,
+    config_default2.name,
     IdleStore_default,
     "getIdleSince",
     (_, args, res) => ADiscordBypasses.settings?.Idle ? null : res(...args)
   );
   BdApi.Patcher.instead(
-    config_default.name,
+    config_default2.name,
     IdleStore_default,
     "isAFK",
     (_, args, res) => ADiscordBypasses.settings?.Idle ? false : res(...args)
   );
   BdApi.Patcher.instead(
-    config_default.name,
+    config_default2.name,
     IdleStore_default,
     "isIdle",
     (_, args, res) => ADiscordBypasses.settings?.Idle ? false : res(...args)
@@ -177,11 +402,11 @@ function setBadge() {
   if (!ADiscordBypasses.settings?.electronBadge) return;
   ElectronModule_default.setBadge(0);
   ElectronModule_default.setSystemTrayIcon("DEFAULT");
-  BdApi.Patcher.before(config_default.name, ElectronModule_default, "setBadge", (_, args) => {
+  BdApi.Patcher.before(config_default2.name, ElectronModule_default, "setBadge", (_, args) => {
     if (ADiscordBypasses.settings?.electronBadge) args[0] = 0;
     return args;
   });
-  BdApi.Patcher.before(config_default.name, ElectronModule_default, "setSystemTrayIcon", (_, args) => {
+  BdApi.Patcher.before(config_default2.name, ElectronModule_default, "setSystemTrayIcon", (_, args) => {
     if (ADiscordBypasses.settings?.electronBadge && args[0] === "UNREAD") args[0] = "DEFAULT";
     return args;
   });
@@ -247,41 +472,20 @@ var Timeout_default = (main) => {
   );
 };
 
-// lib/components/index.ts
-var RawComponents = /* @__PURE__ */ BdApi.Webpack.getByKeys("ConfirmModal", "ToastPosition", "Text");
-var React = BdApi.React;
-var ReactDom = BdApi.ReactDOM || BdApi.Webpack.getByKeys("createRoot");
-
-// lib/components/Form.tsx
-var Text = BdApi.Webpack.getBySource('case"always-white"', { searchExports: true }).E;
-function FormItem({ children }) {
-  return /* @__PURE__ */ React.createElement("div", null, /* @__PURE__ */ React.createElement("div", { style: { paddingTop: "4px", position: "relative" } }, children));
-}
-var FormSwitch = (e) => (
-  // @ts-expect-error
-  /* @__PURE__ */ React.createElement(BdApi.Components.SettingItem, { note: e.note }, /* @__PURE__ */ React.createElement(BdApi.Components.SwitchInput, { ...e, id: "zere-i-hate-you" }))
-);
-
 // lib/components/Toasts.ts
-var Kind = {
-  MESSAGE: 0,
-  SUCCESS: 1,
-  FAILURE: 2,
-  CUSTOM: 3,
-  CLIP: 4
-};
-var Position = {
-  TOP: 0,
-  BOTTOM: 1
-};
-var toast = (content, kind = Kind.SUCCESS, opts = void 0) => {
-  const props = RawComponents.createToast(content, kind, opts);
-  RawComponents.showToast(props);
-};
+var ToastKind = /* @__PURE__ */ ((ToastKind2) => {
+  ToastKind2["Default"] = "";
+  ToastKind2["Info"] = "info";
+  ToastKind2["Success"] = "success";
+  ToastKind2["Danger"] = "danger";
+  ToastKind2["Error"] = "error";
+  ToastKind2["Warning"] = "warning";
+  ToastKind2["Warn"] = "warn";
+  return ToastKind2;
+})(ToastKind || {});
 var Toasts_default = {
-  toast,
-  Kind,
-  Position
+  toast: BdApi.UI.showToast,
+  Kind: ToastKind
 };
 
 // plugins/ADiscordBypasses/components/CloseButton.tsx
@@ -495,7 +699,7 @@ var ImagePickerItem = class extends React.Component {
 };
 
 // plugins/ADiscordBypasses/components/Settings.tsx
-function Settings() {
+function Settings2() {
   const [nsfw, setNSFW] = React.useState(ADiscordBypasses.settings.NSFW);
   const [callTimeout, setCallTimeout] = React.useState(ADiscordBypasses.settings.CallTimeout);
   const [PTT, setPTT] = React.useState(ADiscordBypasses.settings.PTT);
@@ -628,7 +832,7 @@ function Settings() {
 }
 
 // plugins/ADiscordBypasses/index.tsx
-var DefaultSettings = {
+var DefaultSettings2 = {
   PTT: false,
   CallTimeout: false,
   NSFW: false,
@@ -650,7 +854,7 @@ var ADiscordBypasses = class _ADiscordBypasses {
   }
   start() {
     this.logger.log("started");
-    _ADiscordBypasses.settings = BdApi.Data.load("ADiscordBypasses", "settings") || DefaultSettings;
+    _ADiscordBypasses.settings = BdApi.Data.load("ADiscordBypasses", "settings") || DefaultSettings2;
     NSFWPatch_default(this);
     SpotifyPremium_default(this);
     Timeout_default(this);
@@ -667,6 +871,6 @@ var ADiscordBypasses = class _ADiscordBypasses {
     BdApi.Patcher.unpatchAll("ADiscordBypasses");
   }
   getSettingsPanel() {
-    return Settings;
+    return Settings2;
   }
 };
