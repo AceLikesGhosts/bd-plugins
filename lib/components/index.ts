@@ -2,8 +2,8 @@ export const Margins = /** @__PURE__ */ BdApi.Webpack.getByKeys('marginBottom40'
 export const React = /** @__PURE__ */ BdApi.React;
 // temporary until newer version BD releases where
 // they fix their query for react19
-export const ReactDom = /** @__PURE__ */ BdApi.ReactDOM || (
-	BdApi.Webpack.getByKeys('createRoot') as {
+export const ReactDom = /** @__PURE__ */ BdApi.ReactDOM || /** @__PURE__ */ (
+	/** @__PURE__ */ BdApi.Webpack.getByKeys('createRoot') as {
 		createRoot: (d: any) => { render(d: any): any; };
 	}
 );
