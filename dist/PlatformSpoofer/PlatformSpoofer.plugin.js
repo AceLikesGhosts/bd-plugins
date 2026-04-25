@@ -2,7 +2,7 @@
 * @name PlatformSpoofer
 * @description Allows for spoofing what device you are using to Discord's WebSocket.
 * @author ace.
-* @version 3.0.8
+* @version 3.0.9
 * @source https://raw.githubusercontent.com/AceLikesGhosts/bd-plugins/master/dist/PlatformSpoofer/PlatformSpoofer.plugin.js
 * @authorLink https://github.com/AceLikesGhosts/bd-plugins
 * @authorId 327639826075484162
@@ -88,7 +88,7 @@ var config_default = {
   name: "PlatformSpoofer",
   description: "Allows for spoofing what device you are using to Discord's WebSocket.",
   author: "ace.",
-  version: "3.0.8",
+  version: "3.0.9",
   source: "https://raw.githubusercontent.com/AceLikesGhosts/bd-plugins/master/dist/PlatformSpoofer/PlatformSpoofer.plugin.js",
   authorLink: "https://github.com/AceLikesGhosts/bd-plugins",
   authorId: "327639826075484162"
@@ -106,7 +106,7 @@ var PropertiesToSpoofAs = {
 };
 var propertyStuff = BdApi.Webpack.getByKeys("default", "debugLogEvent").default;
 var gameConsoleManager = BdApi.Webpack.getByKeys("actions", "handleAudioStateToggle", "handleSessionsChanged");
-var socket = BdApi.Webpack.getByKeys("socket", "state", { searchExports: true }).socket;
+var socket = BdApi.Webpack.getByKeys("getSocket")?.getSocket();
 
 // plugins/PlatformSpoofer/patches/PropertyManager.ts
 var PropertyManager_default = () => {
@@ -128,8 +128,8 @@ var ReactDom = BdApi.ReactDOM || BdApi.Webpack.getByKeys("createRoot");
 
 // lib/components/Form.tsx
 var Text = BdApi.Webpack.getBySource('case"always-white"', { searchExports: true }).E;
-var FormItem = BdApi.Webpack.getBySource("forwardRef", "titleClassName", "data-migration-pending").e;
-{
+function FormItem({ children }) {
+  return /* @__PURE__ */ React.createElement("div", null, /* @__PURE__ */ React.createElement("div", { style: { paddingTop: "4px", position: "relative" } }, children));
 }
 
 // lib/components/Radio.tsx

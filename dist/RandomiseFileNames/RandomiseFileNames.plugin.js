@@ -57,13 +57,14 @@ var React = BdApi.React;
 var ReactDom = BdApi.ReactDOM || BdApi.Webpack.getByKeys("createRoot");
 
 // lib/components/Form.tsx
-var FormTitle = BdApi.Webpack.getByStrings('["defaultMargin".concat', '="h5"', { searchExports: true });
 var Text = BdApi.Webpack.getBySource('case"always-white"', { searchExports: true }).E;
-var FormSection = BdApi.Webpack.getBySource(".titleId)&&", { searchExports: true });
-var FormItem = BdApi.Webpack.getBySource("forwardRef", "titleClassName", "data-migration-pending").e;
-{
+function FormItem({ children }) {
+  return /* @__PURE__ */ React.createElement("div", null, /* @__PURE__ */ React.createElement("div", { style: { paddingTop: "4px", position: "relative" } }, children));
 }
-var FormSwitch = (e) => /* @__PURE__ */ React.createElement(BdApi.Components.SettingItem, { note: e.note }, /* @__PURE__ */ React.createElement(BdApi.Components.SwitchInput, { ...e, id: "zere-i-hate-you" }));
+var FormSwitch = (e) => (
+  // @ts-expect-error
+  /* @__PURE__ */ React.createElement(BdApi.Components.SettingItem, { note: e.note }, /* @__PURE__ */ React.createElement(BdApi.Components.SwitchInput, { ...e, id: "zere-i-hate-you" }))
+);
 
 // lib/components/TextInput.tsx
 var TextInput_default = BdApi.Components.TextInput;

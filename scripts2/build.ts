@@ -110,7 +110,7 @@ async function buildSource({ header, inputPath, outFilePath, sourceMaps, watch }
             sourcemap: sourceMaps,
             format: 'cjs',
             bundle: true,
-            external: ['fs', 'path']
+            external: ['fs', 'path'],
         });
 
         await build.watch();

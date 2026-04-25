@@ -39,4 +39,4 @@ export const PropertiesToSpoofAs = {
 
 export const propertyStuff: WeirdPropertyShit = BdApi.Webpack.getByKeys<{ default: WeirdPropertyShit; }>('default', 'debugLogEvent').default;
 export const gameConsoleManager: GameConsoleManager = BdApi.Webpack.getByKeys('actions', 'handleAudioStateToggle', 'handleSessionsChanged');
-export const socket = BdApi.Webpack.getByKeys<{ socket: DiscordWebSocket; }>('socket', 'state', { searchExports: true }).socket;
+export const socket = BdApi.Webpack.getByKeys<{ getSocket(): DiscordWebSocket | undefined; }>('getSocket')?.getSocket() as DiscordWebSocket | undefined;

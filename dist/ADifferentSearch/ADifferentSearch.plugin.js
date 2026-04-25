@@ -2,7 +2,7 @@
 * @name ADifferentSearch
 * @description Change the search engine used in the `Search With` feature.
 * @author ace.
-* @version 1.2.4
+* @version 1.2.5
 * @source https://raw.githubusercontent.com/AceLikesGhosts/bd-plugins/master/dist/ADifferentSearch/ADifferentSearch.plugin.js
 * @authorLink https://github.com/AceLikesGhosts/bd-plugins
 * @authorId 327639826075484162
@@ -87,7 +87,7 @@ var config_default = {
   name: "ADifferentSearch",
   description: "Change the search engine used in the `Search With` feature.",
   author: "ace.",
-  version: "1.2.4",
+  version: "1.2.5",
   source: "https://raw.githubusercontent.com/AceLikesGhosts/bd-plugins/master/dist/ADifferentSearch/ADifferentSearch.plugin.js",
   authorLink: "https://github.com/AceLikesGhosts/bd-plugins",
   authorId: "327639826075484162"
@@ -99,7 +99,6 @@ var React = BdApi.React;
 var ReactDom = BdApi.ReactDOM || BdApi.Webpack.getByKeys("createRoot");
 
 // lib/components/Form.tsx
-var FormTitle = BdApi.Webpack.getByStrings('["defaultMargin".concat', '="h5"', { searchExports: true });
 var Text = BdApi.Webpack.getBySource('case"always-white"', { searchExports: true }).E;
 var FormText = function FormText2(props) {
   const variant = props.variant || "text-sm/normal";
@@ -112,9 +111,8 @@ var FormText = function FormText2(props) {
     props.children
   );
 };
-var FormSection = BdApi.Webpack.getBySource(".titleId)&&", { searchExports: true });
-var FormItem = BdApi.Webpack.getBySource("forwardRef", "titleClassName", "data-migration-pending").e;
-{
+function FormItem({ children }) {
+  return /* @__PURE__ */ React.createElement("div", null, /* @__PURE__ */ React.createElement("div", { style: { paddingTop: "4px", position: "relative" } }, children));
 }
 
 // lib/components/TextInput.tsx

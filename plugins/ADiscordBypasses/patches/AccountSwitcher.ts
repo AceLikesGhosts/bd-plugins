@@ -1,5 +1,4 @@
 import ADiscordBypasses from '..';
-import config from '../config.json';
 // import AccountSwitcherModule from '@lib/modules/AccountSwitcher';
 
 // const AccountSwitcherPanelThing = BdApi.Webpack.getByStrings('HAuRSM', { searchExports: true });
@@ -8,13 +7,13 @@ const [mod, key] = BdApi.Webpack.getWithKey(BdApi.Webpack.Filters.byStrings('HAu
 export default (main: ADiscordBypasses): void => {
     main.logger.warn('Patching AccountSwitcher || UNIMPLEMENTED.');
 
-    BdApi.Patcher.instead('test', mod, key, (_, args, res) => {
-        if(!args[0].toString().includes('HAuRSM')) {
-            return;
-        }
+    // BdApi.Patcher.instead('test', mod, key, (_, args, res) => {
+    //     if(!args[0].toString().includes('HAuRSM')) {
+    //         return;
+    //     }
 
-        console.log('useState from HAuRSM');
-    });
+    //     console.log('useState from HAuRSM');
+    // });
 
     // BdApi.Patcher.instead(config.name, mod, key, (_, args, res) =>
     //     ADiscordBypasses.settings?.Idle ? false : res(...args)

@@ -2,7 +2,7 @@
 * @name ADiscordBypasses
 * @description A simple rewrite of Tharki's DiscordBypasses.
 * @author ace.
-* @version 2.0.8
+* @version 2.0.9
 * @source https://raw.githubusercontent.com/AceLikesGhosts/a-bd-plugins/master/dist/ADiscordBypasses/ADiscordBypasses.plugin.js
 * @authorLink https://github.com/AceLikesGhosts/a-bd-plugins
 * @website https://github.com/AceLikesGhosts/a-bd-plugins
@@ -87,12 +87,6 @@ var Logger = class {
 var [mod, key] = BdApi.Webpack.getWithKey(BdApi.Webpack.Filters.byStrings("HAuRSM"));
 var AccountSwitcher_default = (main) => {
   main.logger.warn("Patching AccountSwitcher || UNIMPLEMENTED.");
-  BdApi.Patcher.instead("test", mod, key, (_, args, res) => {
-    if (!args[0].toString().includes("HAuRSM")) {
-      return;
-    }
-    console.log("useState from HAuRSM");
-  });
 };
 
 // plugins/ADiscordBypasses/patches/GuildVerification.ts
@@ -114,7 +108,7 @@ var config_default = {
   name: "ADiscordBypasses",
   description: "A simple rewrite of Tharki's DiscordBypasses.",
   author: "ace.",
-  version: "2.0.8",
+  version: "2.0.9",
   source: "https://raw.githubusercontent.com/AceLikesGhosts/a-bd-plugins/master/dist/ADiscordBypasses/ADiscordBypasses.plugin.js",
   authorLink: "https://github.com/AceLikesGhosts/a-bd-plugins",
   website: "https://github.com/AceLikesGhosts/a-bd-plugins",
@@ -259,13 +253,14 @@ var React = BdApi.React;
 var ReactDom = BdApi.ReactDOM || BdApi.Webpack.getByKeys("createRoot");
 
 // lib/components/Form.tsx
-var FormTitle = BdApi.Webpack.getByStrings('["defaultMargin".concat', '="h5"', { searchExports: true });
 var Text = BdApi.Webpack.getBySource('case"always-white"', { searchExports: true }).E;
-var FormSection = BdApi.Webpack.getBySource(".titleId)&&", { searchExports: true });
-var FormItem = BdApi.Webpack.getBySource("forwardRef", "titleClassName", "data-migration-pending").e;
-{
+function FormItem({ children }) {
+  return /* @__PURE__ */ React.createElement("div", null, /* @__PURE__ */ React.createElement("div", { style: { paddingTop: "4px", position: "relative" } }, children));
 }
-var FormSwitch = (e) => /* @__PURE__ */ React.createElement(BdApi.Components.SettingItem, { note: e.note }, /* @__PURE__ */ React.createElement(BdApi.Components.SwitchInput, { ...e, id: "zere-i-hate-you" }));
+var FormSwitch = (e) => (
+  // @ts-expect-error
+  /* @__PURE__ */ React.createElement(BdApi.Components.SettingItem, { note: e.note }, /* @__PURE__ */ React.createElement(BdApi.Components.SwitchInput, { ...e, id: "zere-i-hate-you" }))
+);
 
 // lib/components/Toasts.ts
 var Kind = {

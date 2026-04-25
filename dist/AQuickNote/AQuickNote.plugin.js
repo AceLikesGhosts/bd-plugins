@@ -88,11 +88,20 @@ var React = BdApi.React;
 var ReactDom = BdApi.ReactDOM || BdApi.Webpack.getByKeys("createRoot");
 
 // lib/components/Form.tsx
-var FormTitle = BdApi.Webpack.getByStrings('["defaultMargin".concat', '="h5"', { searchExports: true });
 var Text = BdApi.Webpack.getBySource('case"always-white"', { searchExports: true }).E;
-var FormSection = BdApi.Webpack.getBySource(".titleId)&&", { searchExports: true });
-var FormItem = BdApi.Webpack.getBySource("forwardRef", "titleClassName", "data-migration-pending").e;
-{
+var FormTitle = (...props) => {
+  const variant = props[0].variant || "text-lg/normal";
+  return /* @__PURE__ */ React.createElement(
+    Text,
+    {
+      variant,
+      ...props[0]
+    },
+    props[0].children
+  );
+};
+function FormItem({ children }) {
+  return /* @__PURE__ */ React.createElement("div", null, /* @__PURE__ */ React.createElement("div", { style: { paddingTop: "4px", position: "relative" } }, children));
 }
 
 // lib/components/TextInput.tsx

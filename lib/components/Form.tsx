@@ -148,12 +148,12 @@ export interface FormNotice extends React.FunctionComponent<FormNoticeProps> {
 }
 
 
-// export const /** @__PURE__ */ FormTitle = BdApi.Webpack.getByStrings('["defaultMargin".concat', '="h5"', { searchExports: true }) as FormTitle;
+// export const FormTitle = /** @__PURE__ */ BdApi.Webpack.getByStrings('["defaultMargin".concat', '="h5"', { searchExports: true }) as FormTitle;
 
 // thanks vencord
 import { React } from '.';
-const Text /** @__PURE__ */ = BdApi.Webpack.getBySource('case"always-white"', { searchExports: true }).E;
-export const /** @__PURE__ */ FormText = function FormText(props: any) {
+const Text = /** @__PURE__ */ BdApi.Webpack.getBySource('case"always-white"', { searchExports: true }).E;
+export const FormText = /** @__PURE__ */ function FormText(props: any) {
     const variant = props.variant || "text-sm/normal";
     return (
         <Text
@@ -165,7 +165,7 @@ export const /** @__PURE__ */ FormText = function FormText(props: any) {
     );
 } as any;
 
-export const /** @__PURE__  */ FormTitle = (...props: Parameters<typeof Text>) => {
+export const FormTitle = /** @__PURE__  */ (...props: Parameters<typeof Text>) => {
     const variant = props[0].variant || "text-lg/normal";
     return (
         <Text
@@ -178,29 +178,37 @@ export const /** @__PURE__  */ FormTitle = (...props: Parameters<typeof Text>) =
 };
 
 // this is dead, sucks to suck
-// export const /** @__PURE__ */ FormSection = BdApi.Webpack.getBySource('.titleId)&&', { searchExports: true }) as FormSection;
+// export const FormSection = /** @__PURE__ */ BdApi.Webpack.getBySource('.titleId)&&', { searchExports: true }) as FormSection;
 
 
 
 // arven is a dumb sutpid idiot and finding bugs i can't repro on latest canary, so this is being changed.
 // export const FormItem = BdApi.Webpack.getBySource('.fieldWrapper', { searchExports: true }) as FormItem;
 
-// const /** @__PURE__ */ FormWrapper = Object.keys(BdApi.Webpack.getByKeys('fieldWrapper'))[0];
-export const /** @__PURE__ */ FormItem = BdApi.Webpack.getBySource('forwardRef', 'titleClassName', 'data-migration-pending').e as FormItem;
+// const FormWrapper = /** @__PURE__ */ Object.keys(BdApi.Webpack.getByKeys('fieldWrapper'))[0];
+// export const FormItem = /** @__PURE__ */ BdApi.Webpack.getBySource('forwardRef', 'titleClassName', 'data-migration-pending').e as FormItem;
+export function FormItem({ children }: {
+    children: JSX.Element;
+}) {
+    return <div>
+        <div style={{ paddingTop: '4px', position: 'relative' }}>
+            {children}
+        </div>
+    </div>;
+}
 
-// export const /** @__PURE__ */ FormSwitch = BdApi.Webpack.getByStrings('.labelRow', 'useId', 'DESCRIPTION', { searchExports: true }) as React.FunctionComponent<FormSwitchProps>;
-
-{/* @ts-expect-error ok */ }
-
+// export const FormSwitch = /** @__PURE__ */ BdApi.Webpack.getByStrings('.labelRow', 'useId', 'DESCRIPTION', { searchExports: true }) as React.FunctionComponent<FormSwitchProps>;
 
 export const FormSwitch = (e: FormSwitchProps) => (
+    // @ts-expect-error
     <BdApi.Components.SettingItem note={e.note}>
+        {/* @ts-expect-error */}
         <BdApi.Components.SwitchInput {...e} id='zere-i-hate-you' />
     </BdApi.Components.SettingItem>
-) as React.FunctionComponent<FormSwitchProps>;
+);
 
-// export const /** @__PURE__ */ FormDivider = BdApi.Webpack.getBySource('.divider', ',style:', '"div"', 'dividerDefault', { searchExports: true }) as React.FunctionComponent<any>;
-export const /** @__PURE__ */ FormDivider = <div
+// export const FormDivider = /** @__PURE__ */ BdApi.Webpack.getBySource('.divider', ',style:', '"div"', 'dividerDefault', { searchExports: true }) as React.FunctionComponent<any>;
+export const FormDivider = /** @__PURE__ */ <div
     style={{
         borderTop: 'thin solid var(--border-subtle)',
         height: '1px',
