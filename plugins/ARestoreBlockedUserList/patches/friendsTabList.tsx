@@ -31,7 +31,7 @@ type FriendsListButtonThing = React.ComponentClass<
     }
 >;
 
-export const patchFriendsTabList = () => {
+export const patchFriendsTabList = async () => {
     // const friendsTabList = BdApi.Webpack.getByPrototypeKeys('renderChildren', 'render', { searchExports: true });
     // const [module, key] = BdApi.Webpack.getWithKey(
     //     BdApi.Webpack.Filters.byPrototypeKeys('renderChildren', 'render')
@@ -44,6 +44,15 @@ export const patchFriendsTabList = () => {
     );
 
     const TablistItem = (friendsTablistItem as any).Item as FriendsListButtonThing;
+    // ot2tSp
+    const discordI18nMod = await BdApi.Webpack.waitForModule<{
+        intl: {
+            string: (key: string) => string;
+        };
+        t: Record<string, string>;
+    }>(BdApi.Webpack.Filters.byKeys('intl'));
+    const blockedTextI18ned = discordI18nMod.intl.string(discordI18nMod.t['ot2tSp']);
+    const friendsAriaLabelI18ned = discordI18nMod.intl.string(discordI18nMod.t['FsbKOz']);
 
     BdApi.Patcher.after(
         meta.name,
@@ -51,7 +60,7 @@ export const patchFriendsTabList = () => {
         'render',
         (_, __, ret: FriendsListTabListReturnType) => {
             if(!ret || !ret.props) return;
-            if(ret.props['aria-label'] !== 'Friends') return;
+            if(ret.props['aria-label'] !== friendsAriaLabelI18ned) return;
             if(!Array.isArray(ret.props.children)) return;
 
             const pendingPos = ret.props.children.findIndex((value) => value.props && value.props.id === 'PENDING');
@@ -61,7 +70,7 @@ export const patchFriendsTabList = () => {
                 0,
                 <TablistItem
                     {...ret.props.children[0].props}
-                    aria-label="Blocked"
+                    aria-label={blockedTextI18ned}
                     key={'.$BLOCKED'}
                     id='BLOCKED'
                     onItemSelect={((e) => {
@@ -71,7 +80,7 @@ export const patchFriendsTabList = () => {
                         });
                     })}
                 >
-                    Blocked
+                    {blockedTextI18ned}
                 </TablistItem>
             );
         }

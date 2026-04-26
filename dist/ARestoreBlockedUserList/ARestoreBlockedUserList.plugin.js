@@ -2,7 +2,7 @@
 * @name ARestoreBlockedUserList
 * @description Adds back the section to view blocked users into your friends list area.
 * @author ace.
-* @version 1.0.0
+* @version 1.1.0
 * @source https://raw.githubusercontent.com/AceLikesGhosts/bd-plugins/master/dist/ABlockedUserList/ABlockedUserList.plugin.js
 * @authorLink https://github.com/AceLikesGhosts/bd-plugins
 * @authorId 327639826075484162
@@ -87,7 +87,7 @@ var config_default = {
   name: "ARestoreBlockedUserList",
   description: "Adds back the section to view blocked users into your friends list area.",
   author: "ace.",
-  version: "1.0.0",
+  version: "1.1.0",
   source: "https://raw.githubusercontent.com/AceLikesGhosts/bd-plugins/master/dist/ABlockedUserList/ABlockedUserList.plugin.js",
   authorLink: "https://github.com/AceLikesGhosts/bd-plugins",
   authorId: "327639826075484162"
@@ -95,25 +95,28 @@ var config_default = {
 
 // lib/components/index.ts
 var React = BdApi.React;
-var ReactDom = BdApi.ReactDOM || BdApi.Webpack.getByKeys("createRoot");
+var ReactDom = BdApi.ReactDOM || /* @__PURE__ */ BdApi.Webpack.getByKeys("createRoot");
 
 // lib/modules/Dispatcher.ts
 var Dispatcher_default = /* @__PURE__ */ BdApi.Webpack.getByKeys("dispatch", "subscribe", "register", { searchExports: true });
 
 // plugins/ARestoreBlockedUserList/patches/friendsTabList.tsx
-var patchFriendsTabList = () => {
+var patchFriendsTabList = async () => {
   const friendsTablistItem = BdApi.Webpack.getModule(
     (m) => Object.keys(m).includes("Item") && !m.SearchBar,
     { searchExports: true }
   );
   const TablistItem = friendsTablistItem.Item;
+  const discordI18nMod = await BdApi.Webpack.waitForModule(BdApi.Webpack.Filters.byKeys("intl"));
+  const blockedTextI18ned = discordI18nMod.intl.string(discordI18nMod.t["ot2tSp"]);
+  const friendsAriaLabelI18ned = discordI18nMod.intl.string(discordI18nMod.t["FsbKOz"]);
   BdApi.Patcher.after(
     config_default.name,
     friendsTablistItem.prototype,
     "render",
     (_, __, ret) => {
       if (!ret || !ret.props) return;
-      if (ret.props["aria-label"] !== "Friends") return;
+      if (ret.props["aria-label"] !== friendsAriaLabelI18ned) return;
       if (!Array.isArray(ret.props.children)) return;
       const pendingPos = ret.props.children.findIndex((value) => value.props && value.props.id === "PENDING");
       ret.props.children.splice(
@@ -123,7 +126,7 @@ var patchFriendsTabList = () => {
           TablistItem,
           {
             ...ret.props.children[0].props,
-            "aria-label": "Blocked",
+            "aria-label": blockedTextI18ned,
             key: ".$BLOCKED",
             id: "BLOCKED",
             onItemSelect: (e) => {
@@ -133,7 +136,7 @@ var patchFriendsTabList = () => {
               });
             }
           },
-          "Blocked"
+          blockedTextI18ned
         )
       );
     }
@@ -147,8 +150,10 @@ var FriendsStore_default = BdApi.Webpack.getStore("FriendsStore");
 var RelationshipStore_default = BdApi.Webpack.getStore("RelationshipStore");
 
 // plugins/ARestoreBlockedUserList/patches/analyticProvider.tsx
-var patchAnalyticsContext = () => {
+var patchAnalyticsContext = async () => {
   const analyticsContext = BdApi.Webpack.getByKeys("Pages", "Sections", "Objects", "ObjectTypes", "defaultProps", { searchExports: true });
+  const discordI18nMod = await BdApi.Webpack.waitForModule(BdApi.Webpack.Filters.byKeys("intl"));
+  const blockedTextI18ned = discordI18nMod.intl.string(discordI18nMod.t["ot2tSp"]);
   BdApi.Patcher.before(
     config_default.name,
     analyticsContext.prototype,
@@ -166,7 +171,7 @@ var patchAnalyticsContext = () => {
         blockedSection.props,
         "renderSection",
         (_, __, ret) => {
-          const blockedUserStr = `Blocked users \u2014 ${blockedUsersIds.length}`;
+          const blockedUserStr = `${blockedTextI18ned} \u2014 ${blockedUsersIds.length}`;
           ret.key = blockedUserStr;
           ret.props.children.props.title = blockedUserStr;
         }

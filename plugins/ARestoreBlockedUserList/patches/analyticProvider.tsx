@@ -30,12 +30,23 @@ type AnalyticsContextThisContext = {
     };
 };
 
-export const patchAnalyticsContext = () => {
+export const patchAnalyticsContext = async () => {
     const analyticsContext = BdApi.Webpack.getByKeys('Pages', 'Sections', 'Objects', 'ObjectTypes', 'defaultProps', { searchExports: true });
     // const SectionComponent = BdApi.Webpack.getByRegex(/renderRow:\w,renderSection:\w/) as FCSectionComponent;
 
     // NOTE: this currently does not change the drop down context menu resulting in the menu there
     // saying "Remove Friend", not bothered to fix it right now!
+
+    // ot2tSp
+    const discordI18nMod = await BdApi.Webpack.waitForModule<{
+        intl: {
+            string: (key: string) => string;
+        };
+        t: Record<string, string>;
+    }>(BdApi.Webpack.Filters.byKeys('intl'));
+    const blockedTextI18ned = discordI18nMod.intl.string(discordI18nMod.t['ot2tSp']);
+
+
     BdApi.Patcher.before(
         meta.name,
         (analyticsContext as any).prototype as Record<PropertyKey, (this: AnalyticsContextThisContext) => unknown>,
@@ -57,7 +68,7 @@ export const patchAnalyticsContext = () => {
                 'renderSection',
                 (_, __, ret) => {
                     // TODO: use discord i18n
-                    const blockedUserStr = `Blocked users — ${ blockedUsersIds.length }`;
+                    const blockedUserStr = `${ blockedTextI18ned } — ${ blockedUsersIds.length }`;
                     ret.key = blockedUserStr;
                     ret.props.children.props.title = blockedUserStr;
                 }
