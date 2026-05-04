@@ -229,8 +229,7 @@ var ADifferentSearch = class _ADifferentSearch {
       ...BdApi.Data.load(config_default.name, "settings")
     };
     (async () => {
-      await BdApi.Webpack.waitForModule(BdApi.Webpack.Filters.byStrings("search-google"));
-      const [mod, key] = BdApi.Webpack.getWithKey(BdApi.Webpack.Filters.byStrings("search-google"));
+      const [mod, key] = BdApi.Webpack.getWithKey((m) => true, { target: await BdApi.Webpack.waitForModule(BdApi.Webpack.Filters.byStrings("search-google")) });
       BdApi.Patcher.after(config_default.name, mod, key, (_, args, ret) => {
         if (!args[0] || typeof args[0] !== "string" || !Array.isArray(ret) || !ret[0]) {
           return;

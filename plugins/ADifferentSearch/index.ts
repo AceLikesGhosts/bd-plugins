@@ -27,10 +27,7 @@ export default class ADifferentSearch implements Plugin {
         };
 
         (async () => {
-            // HACK: until Arven/Doggy/someone smarter than me replies with the way to do
-            // this in a lazy/async way without two queries
-            await BdApi.Webpack.waitForModule(BdApi.Webpack.Filters.byStrings('search-google'));
-            const [mod, key] = BdApi.Webpack.getWithKey(BdApi.Webpack.Filters.byStrings('search-google'));
+            const [mod, key] = BdApi.Webpack.getWithKey(m => true, { target: await BdApi.Webpack.waitForModule(BdApi.Webpack.Filters.byStrings('search-google')) });
             BdApi.Patcher.after(meta.name, mod, key, (_, args, ret) => {
                 if(
                     !args[0] ||
