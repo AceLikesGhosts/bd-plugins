@@ -52,6 +52,7 @@ export const patchFriendsTabList = async () => {
         t: Record<string, string>;
     }>(BdApi.Webpack.Filters.byKeys('intl'));
     const blockedTextI18ned = discordI18nMod.intl.string(discordI18nMod.t['ot2tSp']);
+    const ignoredTextI18ned = discordI18nMod.intl.string(discordI18nMod.t['nDdxOG']);
     const friendsAriaLabelI18ned = discordI18nMod.intl.string(discordI18nMod.t['FsbKOz']);
 
     BdApi.Patcher.after(
@@ -81,6 +82,20 @@ export const patchFriendsTabList = async () => {
                     })}
                 >
                     {blockedTextI18ned}
+                </TablistItem>,
+                <TablistItem
+                    {...ret.props.children[0].props}
+                    aria-label={ignoredTextI18ned}
+                    key={'.$IGNORED'}
+                    id='IGNORED'
+                    onItemSelect={(e) => {
+                        Dispatcher.dispatch({
+                            type: 'FRIENDS_SET_SECTION',
+                            section: e
+                        });
+                    }}
+                >
+                    {ignoredTextI18ned}
                 </TablistItem>
             );
         }

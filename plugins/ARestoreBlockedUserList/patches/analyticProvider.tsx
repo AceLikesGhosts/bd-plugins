@@ -45,7 +45,7 @@ export const patchAnalyticsContext = async () => {
         t: Record<string, string>;
     }>(BdApi.Webpack.Filters.byKeys('intl'));
     const blockedTextI18ned = discordI18nMod.intl.string(discordI18nMod.t['ot2tSp']);
-
+    const ignoredTextI18ned = discordI18nMod.intl.string(discordI18nMod.t['nDdxOG']);
 
     BdApi.Patcher.before(
         meta.name,
@@ -55,31 +55,68 @@ export const patchAnalyticsContext = async () => {
             if(!ctx || !ctx.props) return;
             if(!Array.isArray(ctx.props.children)) return;
 
-            const blockedSection = ctx.props.children.find(
-                (child) => (child as any as SectionComponentProps).props?.sectionFilter === 'BLOCKED'
-            );
-
-            if(!blockedSection) return;
-
-            const blockedUsersIds = RelationshipStore.getBlockedIDs();
-            BdApi.Patcher.after(
-                meta.name,
-                blockedSection.props as { renderSection: () => { key: string; props: { children: { props: { title: string; }; }; }; }; },
-                'renderSection',
-                (_, __, ret) => {
-                    // TODO: use discord i18n
-                    const blockedUserStr = `${ blockedTextI18ned } — ${ blockedUsersIds.length }`;
-                    ret.key = blockedUserStr;
-                    ret.props.children.props.title = blockedUserStr;
+            const foundSection = ctx.props.children.find(
+                (child) => {
+                    const sectFilter = (child as any as SectionComponentProps).props?.sectionFilter;
+                    return sectFilter === 'BLOCKED' || sectFilter === 'IGNORED';
                 }
             );
 
-            // TODO: useMemo or something to prevent doing this every time
-            blockedSection.props.rows = [
-                FriendsStore.getState().rows._rows.filter(
-                    (user) => blockedUsersIds.includes(user.userId)
-                )
-            ];
+            if(!foundSection) return;
+
+            switch(foundSection.props.sectionFilter) {
+                case 'BLOCKED': {
+                    const blockedUsersIds = RelationshipStore.getBlockedIDs();
+                    BdApi.Patcher.after(
+                        meta.name,
+                        foundSection.props as { renderSection: () => { key: string; props: { children: { props: { title: string; }; }; }; }; },
+                        'renderSection',
+                        (_, __, ret) => {
+                            // TODO: use discord i18n
+                            const blockedUserStr = `${ blockedTextI18ned } — ${ blockedUsersIds.length }`;
+                            ret.key = blockedUserStr;
+                            ret.props.children.props.title = blockedUserStr;
+                        }
+                    );
+
+                    // TODO: useMemo or something to prevent doing this every time
+                    foundSection.props.rows = [
+                        FriendsStore.getState().rows._rows.filter(
+                            (user) => blockedUsersIds.includes(user.userId)
+                        )
+                    ];
+
+                    return;
+                }
+                case 'IGNORED': {
+                    const ignoredUserIds = RelationshipStore.getIgnoredIDs();
+                    BdApi.Patcher.after(
+                        meta.name,
+                        foundSection.props as { renderSection: () => { key: string; props: { children: { props: { title: string; }; }; }; }; },
+                        'renderSection',
+                        (_, __, ret) => {
+                            // TODO: use discord i18n
+                            const ignoredUserStr = `${ ignoredTextI18ned } — ${ ignoredUserIds.length }`;
+                            ret.key = ignoredUserStr;
+                            ret.props.children.props.title = ignoredUserStr;
+                        }
+                    );
+
+                    // TODO: useMemo or something to prevent doing this every time
+                    foundSection.props.rows = [
+                        FriendsStore.getState().rows._rows.filter(
+                            (user) => ignoredUserIds.includes(user.userId)
+                        )
+                    ];
+
+                    return;
+                }
+                default: {
+                    throw new Error("invalid section id")
+                }
+            }
+
+
         }
     );
 };

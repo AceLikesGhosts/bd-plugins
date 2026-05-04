@@ -2,7 +2,7 @@
 * @name ARestoreBlockedUserList
 * @description Adds back the section to view blocked users into your friends list area.
 * @author ace.
-* @version 1.1.0
+* @version 1.2.0
 * @source https://raw.githubusercontent.com/AceLikesGhosts/bd-plugins/master/dist/ABlockedUserList/ABlockedUserList.plugin.js
 * @authorLink https://github.com/AceLikesGhosts/bd-plugins
 * @authorId 327639826075484162
@@ -87,7 +87,7 @@ var config_default = {
   name: "ARestoreBlockedUserList",
   description: "Adds back the section to view blocked users into your friends list area.",
   author: "ace.",
-  version: "1.1.0",
+  version: "1.2.0",
   source: "https://raw.githubusercontent.com/AceLikesGhosts/bd-plugins/master/dist/ABlockedUserList/ABlockedUserList.plugin.js",
   authorLink: "https://github.com/AceLikesGhosts/bd-plugins",
   authorId: "327639826075484162"
@@ -109,6 +109,7 @@ var patchFriendsTabList = async () => {
   const TablistItem = friendsTablistItem.Item;
   const discordI18nMod = await BdApi.Webpack.waitForModule(BdApi.Webpack.Filters.byKeys("intl"));
   const blockedTextI18ned = discordI18nMod.intl.string(discordI18nMod.t["ot2tSp"]);
+  const ignoredTextI18ned = discordI18nMod.intl.string(discordI18nMod.t["nDdxOG"]);
   const friendsAriaLabelI18ned = discordI18nMod.intl.string(discordI18nMod.t["FsbKOz"]);
   BdApi.Patcher.after(
     config_default.name,
@@ -137,6 +138,22 @@ var patchFriendsTabList = async () => {
             }
           },
           blockedTextI18ned
+        ),
+        /* @__PURE__ */ React.createElement(
+          TablistItem,
+          {
+            ...ret.props.children[0].props,
+            "aria-label": ignoredTextI18ned,
+            key: ".$IGNORED",
+            id: "IGNORED",
+            onItemSelect: (e) => {
+              Dispatcher_default.dispatch({
+                type: "FRIENDS_SET_SECTION",
+                section: e
+              });
+            }
+          },
+          ignoredTextI18ned
         )
       );
     }
@@ -154,6 +171,7 @@ var patchAnalyticsContext = async () => {
   const analyticsContext = BdApi.Webpack.getByKeys("Pages", "Sections", "Objects", "ObjectTypes", "defaultProps", { searchExports: true });
   const discordI18nMod = await BdApi.Webpack.waitForModule(BdApi.Webpack.Filters.byKeys("intl"));
   const blockedTextI18ned = discordI18nMod.intl.string(discordI18nMod.t["ot2tSp"]);
+  const ignoredTextI18ned = discordI18nMod.intl.string(discordI18nMod.t["nDdxOG"]);
   BdApi.Patcher.before(
     config_default.name,
     analyticsContext.prototype,
@@ -161,26 +179,56 @@ var patchAnalyticsContext = async () => {
     (ctx) => {
       if (!ctx || !ctx.props) return;
       if (!Array.isArray(ctx.props.children)) return;
-      const blockedSection = ctx.props.children.find(
-        (child) => child.props?.sectionFilter === "BLOCKED"
-      );
-      if (!blockedSection) return;
-      const blockedUsersIds = RelationshipStore_default.getBlockedIDs();
-      BdApi.Patcher.after(
-        config_default.name,
-        blockedSection.props,
-        "renderSection",
-        (_, __, ret) => {
-          const blockedUserStr = `${blockedTextI18ned} \u2014 ${blockedUsersIds.length}`;
-          ret.key = blockedUserStr;
-          ret.props.children.props.title = blockedUserStr;
+      const foundSection = ctx.props.children.find(
+        (child) => {
+          const sectFilter = child.props?.sectionFilter;
+          return sectFilter === "BLOCKED" || sectFilter === "IGNORED";
         }
       );
-      blockedSection.props.rows = [
-        FriendsStore_default.getState().rows._rows.filter(
-          (user) => blockedUsersIds.includes(user.userId)
-        )
-      ];
+      if (!foundSection) return;
+      switch (foundSection.props.sectionFilter) {
+        case "BLOCKED": {
+          const blockedUsersIds = RelationshipStore_default.getBlockedIDs();
+          BdApi.Patcher.after(
+            config_default.name,
+            foundSection.props,
+            "renderSection",
+            (_, __, ret) => {
+              const blockedUserStr = `${blockedTextI18ned} \u2014 ${blockedUsersIds.length}`;
+              ret.key = blockedUserStr;
+              ret.props.children.props.title = blockedUserStr;
+            }
+          );
+          foundSection.props.rows = [
+            FriendsStore_default.getState().rows._rows.filter(
+              (user) => blockedUsersIds.includes(user.userId)
+            )
+          ];
+          return;
+        }
+        case "IGNORED": {
+          const ignoredUserIds = RelationshipStore_default.getIgnoredIDs();
+          BdApi.Patcher.after(
+            config_default.name,
+            foundSection.props,
+            "renderSection",
+            (_, __, ret) => {
+              const ignoredUserStr = `${ignoredTextI18ned} \u2014 ${ignoredUserIds.length}`;
+              ret.key = ignoredUserStr;
+              ret.props.children.props.title = ignoredUserStr;
+            }
+          );
+          foundSection.props.rows = [
+            FriendsStore_default.getState().rows._rows.filter(
+              (user) => ignoredUserIds.includes(user.userId)
+            )
+          ];
+          return;
+        }
+        default: {
+          throw new Error("invalid section id");
+        }
+      }
     }
   );
 };
