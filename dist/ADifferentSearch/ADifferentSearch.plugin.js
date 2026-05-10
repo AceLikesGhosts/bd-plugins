@@ -2,7 +2,7 @@
 * @name ADifferentSearch
 * @description Change the search engine used in the `Search With` feature.
 * @author ace.
-* @version 1.2.6
+* @version 1.2.7
 * @source https://raw.githubusercontent.com/AceLikesGhosts/bd-plugins/master/dist/ADifferentSearch/ADifferentSearch.plugin.js
 * @authorLink https://github.com/AceLikesGhosts/bd-plugins
 * @authorId 327639826075484162
@@ -87,7 +87,7 @@ var config_default = {
   name: "ADifferentSearch",
   description: "Change the search engine used in the `Search With` feature.",
   author: "ace.",
-  version: "1.2.6",
+  version: "1.2.7",
   source: "https://raw.githubusercontent.com/AceLikesGhosts/bd-plugins/master/dist/ADifferentSearch/ADifferentSearch.plugin.js",
   authorLink: "https://github.com/AceLikesGhosts/bd-plugins",
   authorId: "327639826075484162"
@@ -229,8 +229,9 @@ var ADifferentSearch = class _ADifferentSearch {
       ...BdApi.Data.load(config_default.name, "settings")
     };
     (async () => {
-      const [mod, key] = BdApi.Webpack.getWithKey((m) => true, { target: await BdApi.Webpack.waitForModule(BdApi.Webpack.Filters.byStrings("search-google")) });
-      BdApi.Patcher.after(config_default.name, mod, key, (_, args, ret) => {
+      const mod = await BdApi.Webpack.waitForModule(BdApi.Webpack.Filters.byStrings("search-google"), { raw: true });
+      const key = Object.keys(mod.exports).find((k) => typeof mod.exports[k] === "function" && mod.exports[k].toString().includes("search-google"));
+      BdApi.Patcher.after(config_default.name, mod.exports, key, (_, args, ret) => {
         if (!args[0] || typeof args[0] !== "string" || !Array.isArray(ret) || !ret[0]) {
           return;
         }

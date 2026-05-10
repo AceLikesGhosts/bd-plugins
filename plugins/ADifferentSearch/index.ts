@@ -27,8 +27,14 @@ export default class ADifferentSearch implements Plugin {
         };
 
         (async () => {
-            const [mod, key] = BdApi.Webpack.getWithKey(m => true, { target: await BdApi.Webpack.waitForModule(BdApi.Webpack.Filters.byStrings('search-google')) });
-            BdApi.Patcher.after(meta.name, mod, key, (_, args, ret) => {
+            // dear squid, doggsyboosty, and arven.
+            // i hate you.
+            // stop breaking API and making me do bullshit like this.
+            // how dare you break an API with a semver MINOR update.
+            // fuck you.
+            const mod = await BdApi.Webpack.waitForModule(BdApi.Webpack.Filters.byStrings('search-google'), { raw: true });
+            const key = Object.keys(mod.exports).find(k => typeof mod.exports[k] === 'function' && mod.exports[k].toString().includes('search-google'))!;
+            BdApi.Patcher.after(meta.name, mod.exports, key, (_, args, ret) => {
                 if(
                     !args[0] ||
                     typeof args[0] !== 'string' ||
