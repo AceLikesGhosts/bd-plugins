@@ -1,10 +1,10 @@
 /**
 * @name ImageOCR
-* @description OCR images from galleries.
+* @description OCR images.
 * @author ace.
 * @source https://raw.githubusercontent.com/AceLikesGhosts/bd-plugins/master/dist/ImageOCR/ImageOCR.plugin.js
 * @authorLink https://github.com/AceLikesGhosts/bd-plugins
-* @version 0.0.1
+* @version 1.0.0
 * @authorId 327639826075484162
 */
     
@@ -1356,7 +1356,7 @@ var require_src = __commonJS({
 // plugins/ImageOCR/index.tsx
 var index_exports = {};
 __export(index_exports, {
-  default: () => DadscordAutoBans,
+  default: () => ImageOCR,
   logger: () => logger,
   meta: () => config_default
 });
@@ -1442,11 +1442,11 @@ function filterDeclarations(module2, filter) {
 var config_default = {
   $schema: "../../config_schema.jsonc",
   name: "ImageOCR",
-  description: "OCR images from galleries.",
+  description: "OCR images.",
   author: "ace.",
   source: "https://raw.githubusercontent.com/AceLikesGhosts/bd-plugins/master/dist/ImageOCR/ImageOCR.plugin.js",
   authorLink: "https://github.com/AceLikesGhosts/bd-plugins",
-  version: "0.0.1",
+  version: "1.0.0",
   authorId: "327639826075484162"
 };
 
@@ -1470,93 +1470,98 @@ async function closeWorker() {
   cache.clear();
   inFlight.clear();
 }
+var normalizeUrl = (url) => url.substring(0, url.lastIndexOf("?"));
+function inflight(url) {
+  return inFlight.get(normalizeUrl(url));
+}
+function get(url) {
+  return cache.get(normalizeUrl(url));
+}
 async function ocr(url) {
+  console.log("ocring: ", url);
   const now = Date.now();
-  const cached = cache.get(url);
+  const cached = cache.get(normalizeUrl(url));
   if (cached && cached.expiresAt > now) {
     return cached.text;
   }
-  const existing = inFlight.get(url);
+  const existing = inFlight.get(normalizeUrl(url));
   if (existing) return existing;
   const task = (async () => {
     try {
       const w = await getWorker();
       const { data } = await w.recognize(url);
       const text = data.text ?? "";
-      cache.set(url, {
+      cache.set(normalizeUrl(url), {
         text,
         expiresAt: Date.now() + TTL
       });
       return text;
     } finally {
-      inFlight.delete(url);
+      inFlight.delete(normalizeUrl(url));
     }
   })();
-  inFlight.set(url, task);
+  inFlight.set(normalizeUrl(url), task);
   return task;
 }
 
 // plugins/ImageOCR/index.tsx
 var logger = new Logger(config_default);
-var DadscordAutoBans = class {
+var ImageOCR = class {
   start() {
     logger.log("loading settings");
-    const mediaGalleryRendererThing = BdApi.Webpack.getModule(
-      BdApi.Webpack.Filters.combine(
-        BdApi.Webpack.Filters.bySource("ZOOM_IN_IMAGE_PRESSED", "isDiscordAssetUrl"),
-        // to remove the memo that shows up with this. why it shows up? don't fucking know. retarded.
-        BdApi.Webpack.Filters.not(BdApi.Webpack.Filters.byKeys("type"))
-      ),
-      { raw: true }
-    );
-    const mediaGalleryRendererThingTarget = filterDeclarations(mediaGalleryRendererThing, (f) => f?.type && f?.type?.toString()?.includes("disableArrowKeySeek"));
-    BdApi.Patcher.after(config_default.name, mediaGalleryRendererThingTarget, "type", (ctx, [props], ret) => {
-      const media = props.media;
-      if (!media || media.type !== "IMAGE") {
-        return;
-      }
-      void ocr(media.proxyUrl);
-    });
-    const mediaViewerModal = BdApi.Webpack.getModule(BdApi.Webpack.Filters.bySource("MEDIA_MODAL_CLOSE", "MediaViewerModal"), { raw: true });
-    const mediaViewTarget = filterDeclarations(mediaViewerModal, (f) => f?.type && f?.type?.toString()?.includes("keyboardModeEnabled"));
-    BdApi.Patcher.after(config_default.name, mediaViewTarget, "type", (ctx, [props], ret) => {
-      const orig = ret.props.children;
-      const proxyUrl = props.item.proxyUrl;
-      ret.props.children = (...args) => {
-        const origRet = orig.call(ctx, ...args);
-        origRet.props.children.splice(0, 0, /* @__PURE__ */ React.createElement(
-          Tooltip_default,
-          {
-            text: "Copy OCR",
-            children: (...args2) => {
-              return /* @__PURE__ */ React.createElement(
-                "div",
-                {
-                  ...args2,
-                  onClick: async () => {
-                    if (inFlight.has(proxyUrl)) {
-                      BdApi.UI.showToast("Image is currently being OCR'd.");
-                      return;
+    (async () => {
+      const imageWrapper = await BdApi.Webpack.waitForModule(BdApi.Webpack.Filters.bySource("imageWrapper", "RESPONSIVE"));
+      BdApi.Patcher.after(config_default.name, imageWrapper._, "render", (ctx, [props], ret) => {
+        if (!props.src) {
+          return;
+        }
+        void ocr(props.src);
+      });
+      logger.log("getting mediaViewerModal");
+      const mediaViewerModal = await BdApi.Webpack.waitForModule(BdApi.Webpack.Filters.bySource("MEDIA_MODAL_CLOSE", "MediaViewerModal"), { raw: true });
+      const mediaViewTarget = filterDeclarations(mediaViewerModal, (f) => f?.type && f?.type?.toString()?.includes("keyboardModeEnabled"));
+      BdApi.Patcher.after(config_default.name, mediaViewTarget, "type", (ctx, [props], ret) => {
+        const orig = ret.props.children;
+        const proxyUrl = props.item.proxyUrl || props.item.url;
+        ret.props.children = (...args) => {
+          const origRet = orig.call(ctx, ...args);
+          origRet.props.children.splice(0, 0, /* @__PURE__ */ React.createElement(
+            Tooltip_default,
+            {
+              text: "Copy OCR",
+              children: (...args2) => {
+                return /* @__PURE__ */ React.createElement(
+                  "div",
+                  {
+                    ...args2,
+                    onClick: async () => {
+                      if (inflight(proxyUrl)) {
+                        BdApi.UI.showToast("Image is currently being OCR'd.");
+                        return;
+                      }
+                      navigator.clipboard.writeText(get(proxyUrl)?.text);
+                      BdApi.UI.showToast("Copied to clipboard.", {
+                        type: "success"
+                      });
                     }
-                    navigator.clipboard.writeText(cache.get(proxyUrl)?.text);
-                    BdApi.UI.showToast("Copied to clipboard.", {
-                      type: "success"
-                    });
-                  }
-                },
-                /* @__PURE__ */ React.createElement(FormText, null, "Copy OCR")
-              );
+                  },
+                  /* @__PURE__ */ React.createElement(FormText, null, "Copy OCR")
+                );
+              }
             }
-          }
-        ));
-        return origRet;
-      };
-    });
+          ));
+          return origRet;
+        };
+      });
+    })();
   }
   async stop() {
     logger.log("saving settings");
     BdApi.Patcher.unpatchAll(config_default.name);
     cache.clear();
-    await closeWorker();
+    async () => {
+      logger.log("stopping ocr");
+      await closeWorker();
+    };
   }
 };

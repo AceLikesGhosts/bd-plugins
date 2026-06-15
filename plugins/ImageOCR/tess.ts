@@ -30,14 +30,25 @@ export async function closeWorker() {
     inFlight.clear();
 }
 
+const normalizeUrl = (url: string) => url.substring(0, url.lastIndexOf('?'));
+
+export function inflight(url: string) {
+    return inFlight.get(normalizeUrl(url));
+}
+
+export function get(url: string) {
+    return cache.get(normalizeUrl(url));
+}
+
 export async function ocr(url: string): Promise<string> {
+    console.log('ocring: ', url);
     const now = Date.now();
-    const cached = cache.get(url);
+    const cached = cache.get(normalizeUrl(url));
     if(cached && cached.expiresAt > now) {
         return cached.text;
     }
 
-    const existing = inFlight.get(url);
+    const existing = inFlight.get(normalizeUrl(url));
     if(existing) return existing;
 
     const task = (async () => {
@@ -47,18 +58,18 @@ export async function ocr(url: string): Promise<string> {
 
             const text = data.text ?? '';
 
-            cache.set(url, {
+            cache.set(normalizeUrl(url), {
                 text,
                 expiresAt: Date.now() + TTL
             });
 
             return text;
         } finally {
-            inFlight.delete(url);
+            inFlight.delete(normalizeUrl(url));
         }
     })();
 
-    inFlight.set(url, task);
+    inFlight.set(normalizeUrl(url), task);
 
     return task;
 }

@@ -1,10 +1,10 @@
 {
     "$schema": "../../config_schema.jsonc",
     "name": "ImageOCR",
-    "description": "OCR images from galleries.",
+    "description": "OCR images.",
     "author": "ace.",
     "source": "https://raw.githubusercontent.com/AceLikesGhosts/bd-plugins/master/dist/ImageOCR/ImageOCR.plugin.js",
     "authorLink": "https://github.com/AceLikesGhosts/bd-plugins",
-    "version": "0.0.1", 
+    "version": "1.0.0", 
     "authorId": "327639826075484162"
 }
