@@ -1,5 +1,6 @@
 import { React } from '@lib/components/index';
 import Dispatcher from '@lib/modules/Dispatcher';
+import RelationshipStore from '@lib/stores/RelationshipStore';
 import meta from '../config.json';
 
 type FriendsListTabListReturnType = {
@@ -54,6 +55,8 @@ export const patchFriendsTabList = async () => {
     const blockedTextI18ned = discordI18nMod.intl.string(discordI18nMod.t['ot2tSp']);
     const ignoredTextI18ned = discordI18nMod.intl.string(discordI18nMod.t['nDdxOG']);
     const friendsAriaLabelI18ned = discordI18nMod.intl.string(discordI18nMod.t['FsbKOz']);
+    const blockedUsersIds = RelationshipStore.getBlockedIDs();
+    const ignoredUserIds = RelationshipStore.getIgnoredIDs();
 
     BdApi.Patcher.after(
         meta.name,
@@ -69,7 +72,7 @@ export const patchFriendsTabList = async () => {
             ret.props.children.splice(
                 pendingPos + 1,
                 0,
-                <TablistItem
+                {blockedUsersIds ? <TablistItem
                     {...ret.props.children[0].props}
                     aria-label={blockedTextI18ned}
                     key={'.$BLOCKED'}
@@ -82,8 +85,8 @@ export const patchFriendsTabList = async () => {
                     })}
                 >
                     {blockedTextI18ned}
-                </TablistItem>,
-                <TablistItem
+                </TablistItem> : null},
+                {ignoredUserIds ? <TablistItem
                     {...ret.props.children[0].props}
                     aria-label={ignoredTextI18ned}
                     key={'.$IGNORED'}
@@ -96,7 +99,7 @@ export const patchFriendsTabList = async () => {
                     }}
                 >
                     {ignoredTextI18ned}
-                </TablistItem>
+                </TablistItem> : null}
             );
         }
     );
