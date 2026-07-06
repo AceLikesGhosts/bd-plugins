@@ -6,7 +6,7 @@ import meta from '../config.json';
 type FriendsListTabListReturnType = {
     props: {
         'aria-label': 'Friends';
-        children: FriendsListTabChild[];
+        children: (FriendsListTabChild | null)[];
     };
 };
 
@@ -67,13 +67,12 @@ export const patchFriendsTabList = async () => {
             if(ret.props['aria-label'] !== friendsAriaLabelI18ned) return;
             if(!Array.isArray(ret.props.children)) return;
 
-            const pendingPos = ret.props.children.findIndex((value) => value.props && value.props.id === 'PENDING');
-
+            const pendingPos = ret.props.children.findIndex((value) => value?.props && value?.props.id === 'PENDING');
             ret.props.children.splice(
                 pendingPos + 1,
                 0,
-                {blockedUsersIds ? <TablistItem
-                    {...ret.props.children[0].props}
+                ((blockedUsersIds ?? []).length > 0 ? <TablistItem
+                    {...ret.props.children[0]!.props}
                     aria-label={blockedTextI18ned}
                     key={'.$BLOCKED'}
                     id='BLOCKED'
@@ -85,9 +84,9 @@ export const patchFriendsTabList = async () => {
                     })}
                 >
                     {blockedTextI18ned}
-                </TablistItem> : null},
-                {ignoredUserIds ? <TablistItem
-                    {...ret.props.children[0].props}
+                </TablistItem> : null),
+                ((ignoredUserIds ?? []).length > 0 ? <TablistItem
+                    {...ret.props.children[0]!.props}
                     aria-label={ignoredTextI18ned}
                     key={'.$IGNORED'}
                     id='IGNORED'
@@ -99,7 +98,7 @@ export const patchFriendsTabList = async () => {
                     }}
                 >
                     {ignoredTextI18ned}
-                </TablistItem> : null}
+                </TablistItem> : null)
             );
         }
     );
