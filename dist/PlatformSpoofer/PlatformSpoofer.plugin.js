@@ -2,7 +2,7 @@
 * @name PlatformSpoofer
 * @description Allows for spoofing what device you are using to Discord's WebSocket.
 * @author ace.
-* @version 3.0.9
+* @version 3.0.10
 * @source https://raw.githubusercontent.com/AceLikesGhosts/bd-plugins/master/dist/PlatformSpoofer/PlatformSpoofer.plugin.js
 * @authorLink https://github.com/AceLikesGhosts/bd-plugins
 * @authorId 327639826075484162
@@ -88,7 +88,7 @@ var config_default = {
   name: "PlatformSpoofer",
   description: "Allows for spoofing what device you are using to Discord's WebSocket.",
   author: "ace.",
-  version: "3.0.9",
+  version: "3.0.10",
   source: "https://raw.githubusercontent.com/AceLikesGhosts/bd-plugins/master/dist/PlatformSpoofer/PlatformSpoofer.plugin.js",
   authorLink: "https://github.com/AceLikesGhosts/bd-plugins",
   authorId: "327639826075484162"
@@ -124,10 +124,10 @@ var PropertyManager_default = () => {
 
 // lib/components/index.ts
 var React = BdApi.React;
-var ReactDom = BdApi.ReactDOM || BdApi.Webpack.getByKeys("createRoot");
+var ReactDom = BdApi.ReactDOM || /* @__PURE__ */ BdApi.Webpack.getByKeys("createRoot");
 
 // lib/components/Form.tsx
-var Text = BdApi.Webpack.getBySource('case"always-white"', { searchExports: true }).E;
+var Text = BdApi.Webpack.getBySource("data-text-variant", "fontScaling").E;
 function FormItem({ children }) {
   return /* @__PURE__ */ React.createElement("div", null, /* @__PURE__ */ React.createElement("div", { style: { paddingTop: "4px", position: "relative" } }, children));
 }

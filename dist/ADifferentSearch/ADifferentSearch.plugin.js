@@ -2,7 +2,7 @@
 * @name ADifferentSearch
 * @description Change the search engine used in the `Search With` feature.
 * @author ace.
-* @version 1.2.7
+* @version 1.2.8
 * @source https://raw.githubusercontent.com/AceLikesGhosts/bd-plugins/master/dist/ADifferentSearch/ADifferentSearch.plugin.js
 * @authorLink https://github.com/AceLikesGhosts/bd-plugins
 * @authorId 327639826075484162
@@ -87,7 +87,7 @@ var config_default = {
   name: "ADifferentSearch",
   description: "Change the search engine used in the `Search With` feature.",
   author: "ace.",
-  version: "1.2.7",
+  version: "1.2.8",
   source: "https://raw.githubusercontent.com/AceLikesGhosts/bd-plugins/master/dist/ADifferentSearch/ADifferentSearch.plugin.js",
   authorLink: "https://github.com/AceLikesGhosts/bd-plugins",
   authorId: "327639826075484162"
@@ -99,7 +99,7 @@ var React = BdApi.React;
 var ReactDom = BdApi.ReactDOM || /* @__PURE__ */ BdApi.Webpack.getByKeys("createRoot");
 
 // lib/components/Form.tsx
-var Text = BdApi.Webpack.getBySource('case"always-white"', { searchExports: true }).E;
+var Text = BdApi.Webpack.getBySource("data-text-variant", "fontScaling").E;
 var FormText = function FormText2(props) {
   const variant = props.variant || "text-sm/normal";
   return /* @__PURE__ */ React.createElement(

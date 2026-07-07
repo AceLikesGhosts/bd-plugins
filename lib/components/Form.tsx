@@ -152,7 +152,9 @@ export interface FormNotice extends React.FunctionComponent<FormNoticeProps> {
 
 // thanks vencord
 import { React } from '.';
-const Text = /** @__PURE__ */ BdApi.Webpack.getBySource('case"always-white"', { searchExports: true }).E;
+
+// thanks doggsybootsy ur so kawaii desu
+const Text = /** @__PURE__ */ BdApi.Webpack.getBySource('data-text-variant', 'fontScaling').E;
 export const FormText = /** @__PURE__ */ function FormText(props: any) {
     const variant = props.variant || "text-sm/normal";
     return (

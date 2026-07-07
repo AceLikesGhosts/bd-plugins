@@ -2,7 +2,7 @@
 * @name ADiscordBypasses
 * @description A simple rewrite of Tharki's DiscordBypasses.
 * @author ace.
-* @version 2.0.9
+* @version 2.0.10
 * @source https://raw.githubusercontent.com/AceLikesGhosts/a-bd-plugins/master/dist/ADiscordBypasses/ADiscordBypasses.plugin.js
 * @authorLink https://github.com/AceLikesGhosts/a-bd-plugins
 * @website https://github.com/AceLikesGhosts/a-bd-plugins
@@ -89,7 +89,7 @@ var config_default = {
   name: "ADifferentSearch",
   description: "Change the search engine used in the `Search With` feature.",
   author: "ace.",
-  version: "1.2.6",
+  version: "1.2.8",
   source: "https://raw.githubusercontent.com/AceLikesGhosts/bd-plugins/master/dist/ADifferentSearch/ADifferentSearch.plugin.js",
   authorLink: "https://github.com/AceLikesGhosts/bd-plugins",
   authorId: "327639826075484162"
@@ -101,7 +101,7 @@ var React = BdApi.React;
 var ReactDom = BdApi.ReactDOM || /* @__PURE__ */ BdApi.Webpack.getByKeys("createRoot");
 
 // lib/components/Form.tsx
-var Text = BdApi.Webpack.getBySource('case"always-white"', { searchExports: true }).E;
+var Text = BdApi.Webpack.getBySource("data-text-variant", "fontScaling").E;
 var FormText = function FormText2(props) {
   const variant = props.variant || "text-sm/normal";
   return /* @__PURE__ */ React.createElement(
@@ -235,9 +235,9 @@ var ADifferentSearch = class _ADifferentSearch {
       ...BdApi.Data.load(config_default.name, "settings")
     };
     (async () => {
-      await BdApi.Webpack.waitForModule(BdApi.Webpack.Filters.byStrings("search-google"));
-      const [mod, key] = BdApi.Webpack.getWithKey(BdApi.Webpack.Filters.byStrings("search-google"));
-      BdApi.Patcher.after(config_default.name, mod, key, (_, args, ret) => {
+      const mod = await BdApi.Webpack.waitForModule(BdApi.Webpack.Filters.byStrings("search-google"), { raw: true });
+      const key = Object.keys(mod.exports).find((k) => typeof mod.exports[k] === "function" && mod.exports[k].toString().includes("search-google"));
+      BdApi.Patcher.after(config_default.name, mod.exports, key, (_, args, ret) => {
         if (!args[0] || typeof args[0] !== "string" || !Array.isArray(ret) || !ret[0]) {
           return;
         }
@@ -333,7 +333,7 @@ var config_default2 = {
   name: "ADiscordBypasses",
   description: "A simple rewrite of Tharki's DiscordBypasses.",
   author: "ace.",
-  version: "2.0.9",
+  version: "2.0.10",
   source: "https://raw.githubusercontent.com/AceLikesGhosts/a-bd-plugins/master/dist/ADiscordBypasses/ADiscordBypasses.plugin.js",
   authorLink: "https://github.com/AceLikesGhosts/a-bd-plugins",
   website: "https://github.com/AceLikesGhosts/a-bd-plugins",

@@ -54,10 +54,10 @@ var config_default = {
 // lib/components/index.ts
 var Margins = /* @__PURE__ */ BdApi.Webpack.getByKeys("marginBottom40", "marginTop4");
 var React = BdApi.React;
-var ReactDom = BdApi.ReactDOM || BdApi.Webpack.getByKeys("createRoot");
+var ReactDom = BdApi.ReactDOM || /* @__PURE__ */ BdApi.Webpack.getByKeys("createRoot");
 
 // lib/components/Form.tsx
-var Text = BdApi.Webpack.getBySource('case"always-white"', { searchExports: true }).E;
+var Text = BdApi.Webpack.getBySource("data-text-variant", "fontScaling").E;
 function FormItem({ children }) {
   return /* @__PURE__ */ React.createElement("div", null, /* @__PURE__ */ React.createElement("div", { style: { paddingTop: "4px", position: "relative" } }, children));
 }

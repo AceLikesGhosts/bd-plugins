@@ -4,7 +4,7 @@
 * @author ace.
 * @source https://raw.githubusercontent.com/AceLikesGhosts/bd-plugins/master/dist/ADifferentSearch/ADifferentSearch.plugin.js
 * @authorLink https://github.com/AceLikesGhosts/bd-plugins
-* @version 1.0.3
+* @version 1.0.4
 * @authorId 327639826075484162
 */
     
@@ -96,13 +96,13 @@ var config_default = {
   author: "ace.",
   source: "https://raw.githubusercontent.com/AceLikesGhosts/bd-plugins/master/dist/ADifferentSearch/ADifferentSearch.plugin.js",
   authorLink: "https://github.com/AceLikesGhosts/bd-plugins",
-  version: "1.0.3",
+  version: "1.0.4",
   authorId: "327639826075484162"
 };
 
 // lib/components/index.ts
 var React = BdApi.React;
-var ReactDom = BdApi.ReactDOM || BdApi.Webpack.getByKeys("createRoot");
+var ReactDom = BdApi.ReactDOM || /* @__PURE__ */ BdApi.Webpack.getByKeys("createRoot");
 
 // lib/components/Flex.tsx
 var Flex_default = /* @__PURE__ */ BdApi.Webpack.getByKeys("Child", "Justify");

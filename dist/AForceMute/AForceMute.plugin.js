@@ -2,7 +2,7 @@
 * @name AForceMute
 * @description In God we trust.
 * @author ace.
-* @version 0.0.5
+* @version 0.0.6
 */
     
 "use strict";
@@ -89,7 +89,7 @@ var config_default = {
   name: "AForceMute",
   description: "In God we trust.",
   author: "ace.",
-  version: "0.0.5"
+  version: "0.0.6"
 };
 
 // lib/stores/UserStore.ts
@@ -103,7 +103,7 @@ var UserUpdates_default = BdApi.Webpack.getByKeys("setServerMute");
 
 // lib/components/index.ts
 var React = BdApi.React;
-var ReactDom = BdApi.ReactDOM || BdApi.Webpack.getByKeys("createRoot");
+var ReactDom = BdApi.ReactDOM || /* @__PURE__ */ BdApi.Webpack.getByKeys("createRoot");
 
 // lib/stores/ChannelStore.ts
 var ChannelStore_default = BdApi.Webpack.getStore("ChannelStore");

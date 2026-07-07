@@ -85,10 +85,10 @@ var Logger = class {
 // lib/components/index.ts
 var Margins = /* @__PURE__ */ BdApi.Webpack.getByKeys("marginBottom40", "marginTop4");
 var React = BdApi.React;
-var ReactDom = BdApi.ReactDOM || BdApi.Webpack.getByKeys("createRoot");
+var ReactDom = BdApi.ReactDOM || /* @__PURE__ */ BdApi.Webpack.getByKeys("createRoot");
 
 // lib/components/Form.tsx
-var Text = BdApi.Webpack.getBySource('case"always-white"', { searchExports: true }).E;
+var Text = BdApi.Webpack.getBySource("data-text-variant", "fontScaling").E;
 var FormTitle = (...props) => {
   const variant = props[0].variant || "text-lg/normal";
   return /* @__PURE__ */ React.createElement(

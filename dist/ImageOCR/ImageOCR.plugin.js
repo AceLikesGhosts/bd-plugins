@@ -4,7 +4,7 @@
 * @author ace.
 * @source https://raw.githubusercontent.com/AceLikesGhosts/bd-plugins/master/dist/ImageOCR/ImageOCR.plugin.js
 * @authorLink https://github.com/AceLikesGhosts/bd-plugins
-* @version 1.0.0
+* @version 1.0.1
 * @authorId 327639826075484162
 */
     
@@ -1367,7 +1367,7 @@ var React = BdApi.React;
 var ReactDom = BdApi.ReactDOM || /* @__PURE__ */ BdApi.Webpack.getByKeys("createRoot");
 
 // lib/components/Form.tsx
-var Text = BdApi.Webpack.getBySource('case"always-white"', { searchExports: true }).E;
+var Text = BdApi.Webpack.getBySource("data-text-variant", "fontScaling").E;
 var FormText = function FormText2(props) {
   const variant = props.variant || "text-sm/normal";
   return /* @__PURE__ */ React.createElement(
@@ -1446,7 +1446,7 @@ var config_default = {
   author: "ace.",
   source: "https://raw.githubusercontent.com/AceLikesGhosts/bd-plugins/master/dist/ImageOCR/ImageOCR.plugin.js",
   authorLink: "https://github.com/AceLikesGhosts/bd-plugins",
-  version: "1.0.0",
+  version: "1.0.1",
   authorId: "327639826075484162"
 };
 
