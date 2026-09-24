@@ -54,7 +54,8 @@ export const patchFriendsTabList = async () => {
     }>(BdApi.Webpack.Filters.byKeys('intl'));
     const blockedTextI18ned = discordI18nMod.intl.string(discordI18nMod.t['ot2tSp']);
     const ignoredTextI18ned = discordI18nMod.intl.string(discordI18nMod.t['nDdxOG']);
-    const friendsAriaLabelI18ned = discordI18nMod.intl.string(discordI18nMod.t['FsbKOz']);
+    // const friendsAriaLabelI18ned = discordI18nMod.intl.string(discordI18nMod.t['FsbKOz']);
+    const friendsAriaLabelI18ned = discordI18nMod.intl.string(discordI18nMod.t['TdEu5X']);
     const blockedUsersIds = RelationshipStore.getBlockedIDs();
     const ignoredUserIds = RelationshipStore.getIgnoredIDs();
 

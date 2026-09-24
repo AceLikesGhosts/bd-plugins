@@ -2,7 +2,7 @@
 * @name ARestoreBlockedUserList
 * @description Adds back the section to view blocked users into your friends list area.
 * @author ace.
-* @version 1.3.1
+* @version 1.3.2
 * @source https://raw.githubusercontent.com/AceLikesGhosts/bd-plugins/master/dist/ABlockedUserList/ABlockedUserList.plugin.js
 * @authorLink https://github.com/AceLikesGhosts/bd-plugins
 * @authorId 327639826075484162
@@ -87,7 +87,7 @@ var config_default = {
   name: "ARestoreBlockedUserList",
   description: "Adds back the section to view blocked users into your friends list area.",
   author: "ace.",
-  version: "1.3.1",
+  version: "1.3.2",
   source: "https://raw.githubusercontent.com/AceLikesGhosts/bd-plugins/master/dist/ABlockedUserList/ABlockedUserList.plugin.js",
   authorLink: "https://github.com/AceLikesGhosts/bd-plugins",
   authorId: "327639826075484162"
@@ -113,7 +113,7 @@ var patchFriendsTabList = async () => {
   const discordI18nMod = await BdApi.Webpack.waitForModule(BdApi.Webpack.Filters.byKeys("intl"));
   const blockedTextI18ned = discordI18nMod.intl.string(discordI18nMod.t["ot2tSp"]);
   const ignoredTextI18ned = discordI18nMod.intl.string(discordI18nMod.t["nDdxOG"]);
-  const friendsAriaLabelI18ned = discordI18nMod.intl.string(discordI18nMod.t["FsbKOz"]);
+  const friendsAriaLabelI18ned = discordI18nMod.intl.string(discordI18nMod.t["TdEu5X"]);
   const blockedUsersIds = RelationshipStore_default.getBlockedIDs();
   const ignoredUserIds = RelationshipStore_default.getIgnoredIDs();
   BdApi.Patcher.after(
