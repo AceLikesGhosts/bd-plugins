@@ -1,0 +1,117 @@
+import { React } from '@lib/components';
+import AVCStalker, { logger } from '..';
+import UserStore from '@lib/stores/UserStore';
+import VoiceStateStore from '@lib/stores/VoiceStateStore';
+import openModalFor from '../components/modal';
+import { joinCall } from '../util';
+import { avoidFromVoiceState, avoidingPeople, followingPeople } from '../voiceState/Following';
+import type { Cancel } from 'betterdiscord';
+import type { User } from '@lib/stores/UserStore';
+const { Item } = BdApi.ContextMenu;
+
+export default function PatchUserContext(): Cancel {
+    logger.info('Patched UserContext');
+
+    
+    function findVCAndJoin(id: string): void {
+        const vs = VoiceStateStore.getVoiceStateForUser(id);
+        if(!vs || !vs.channelId) return;
+        
+        logger.info(`${ id } was already in a vc when we said to start following so joining their call (${ vs.channelId })`);
+        joinCall(vs);
+    }
+    
+    function avoidNow(id: string): void {
+        const vs = VoiceStateStore.getVoiceStateForUser(id);
+        if(!vs || !vs.channelId) return;
+        
+        const VSs = VoiceStateStore.getVoiceStatesForChannel(vs.channelId);
+        if(!VSs) return;
+        
+        Object.keys(VSs).forEach((id) => {
+            if(UserStore.getCurrentUser().id === id) {
+                logger.info(`${ id } was already in a vc when we said to start avoiding so trying to find call (${ vs.channelId })`);
+                avoidFromVoiceState(vs);
+                return;
+            }
+        });
+    }
+    
+    return BdApi.ContextMenu.patch('user-context', (res: { props: { children: React.ReactElement[]; }; }, props: { user: User; }) => {
+        const us = UserStore.getCurrentUser().id;
+        const id = props.user.id;
+
+        if(id === us) return;
+
+        const isFollowing = followingPeople.has(id);
+        const isAvoiding = avoidingPeople.has(id);
+
+        const followButton = <Item
+            label={isFollowing ? 'Unfollow' : 'Follow'}
+            id='follow-call'
+            action={(() => {
+                if(isFollowing) followingPeople.delete(id);
+                else {
+                    logger.info(`now following ${ id }`);
+                    followingPeople.add(id);
+
+                    findVCAndJoin(id);
+                }
+            })}
+        />;
+
+        const avoidButton = <Item
+            label={isAvoiding ? 'Stop Avoiding' : 'Avoid'}
+            id='avoid-user'
+            action={(() => {
+                if(isAvoiding) avoidingPeople.delete(id);
+                else {
+                    logger.info(`now avoiding ${ id }`);
+                    avoidingPeople.add(id);
+
+                    avoidNow(id);
+                }
+            })}
+        />;
+
+        // TODO: stop wasting resources by creating this even if we don't render it!
+        const logButton = <Item
+            label={'Open Voice Logs'}
+            id='voice-logs'
+            action={(() => {
+                logger.info(`opened voice state logs for: `, id);
+                openModalFor(id);
+            })}
+        />;
+
+        const isWhitelisted = AVCStalker.settings.vcLogging.whitelisted.includes(id);
+        // TODO: stop wasting resources by creating this even if we don't render it!
+        const whitelistButton = <Item
+            label={isWhitelisted ? 'Remove From Whitelist' : 'Add To Whitelist'}
+            id='whitelist-button'
+            action={(() => {
+                logger.info(`${ isWhitelisted ? 'removed' : 'added' } ${ id } to whitelisted (vclogs)`);
+                if(isWhitelisted) AVCStalker.settings.vcLogging.whitelisted.splice(AVCStalker.settings.vcLogging.whitelisted.indexOf(id), 1);
+                else AVCStalker.settings.vcLogging.whitelisted.push(id);
+            })}
+        />;
+
+        if(AVCStalker.settings.contextMenu.individual) {
+            res.props.children.push(followButton);
+            if(AVCStalker.settings.contextMenu.showAvoidButton) res.props.children.push(avoidButton);
+            if(AVCStalker.settings.contextMenu.showLogButton) res.props.children.push(logButton);
+            if(AVCStalker.settings.contextMenu.showWhitelistButton) res.props.children.push(whitelistButton);
+        }
+        else res.props.children.push(
+            <Item
+                label={AVCStalker.settings.contextMenu.name}
+                id='vcstalker-group'
+            >
+                {followButton}
+                {AVCStalker.settings.contextMenu.showAvoidButton ? avoidButton : void 0}
+                {AVCStalker.settings.contextMenu.showLogButton ? logButton : void 0}
+                {AVCStalker.settings.contextMenu.showWhitelistButton ? whitelistButton : void 0}
+            </Item>
+        );
+    });
+}

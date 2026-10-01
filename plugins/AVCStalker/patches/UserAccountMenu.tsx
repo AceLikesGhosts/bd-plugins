@@ -1,0 +1,40 @@
+import { React, ReactDom } from '@lib/components';
+import ClearFollowing from '../components/ClearFollowing';
+import { logger } from '..';
+
+export default function PatchUserAccountMenu(): void {
+    // TODO: make this an actual patch, because this is SHIT dom manip and is
+    // fucking DISGUSTING!
+    const muteButton = document.querySelector('[aria-label="Mute"]');
+
+    let container: Element = document.getElementById('ClearFollowing')!;
+    if(!container) {
+        logger.info(`Failed to find 'container' making new one`);
+        container = document.createElement('div');
+        container.setAttribute('id', 'ClearFollowing');
+    }
+
+    // TODO: this is shit, and language dependent, TOO BAD!
+    const statusContainer = document.querySelector('[aria-label="Set Status"]') as { style?: Record<string, unknown>; };
+    if(!statusContainer) {
+        logger.critical('Failed to find statusContainer with query "[aria-label="Set Status"]", expected HTMLElement but recieved ', statusContainer);
+        return;
+    }
+
+    if(statusContainer?.style?.minWidth !== '87px') {
+        statusContainer!.style!.minWidth = '87px';
+    }
+
+    logger.info(`inserting container 'beforebegin' on element`, muteButton);
+    muteButton?.insertAdjacentElement('beforebegin', container);
+
+    // react18, stable at the moment
+    if(typeof ReactDom.render !== 'undefined') {
+        BdApi.ReactDOM.render(<ClearFollowing />, container);
+        //@ts-expect-error don't care
+    } else if(typeof ReactDom.createRoot !== 'undefined') {
+        //@ts-expect-error don't care
+        const root = ReactDom.createRoot(container);
+        root.render(<ClearFollowing />);
+    }
+}

@@ -1,0 +1,12 @@
+{
+    "$schema": "../../config_schema.jsonc",
+    "name": "AVCStalker",
+    "description": "In God we trust.",
+    "author": "ace.",
+    "version": "4.2.6",
+    "source": "https://raw.githubusercontent.com/AceLikesGhosts/bd-plugins/master/dist/AVCStalker/AVCStalker.plugin.js",
+    "authorLink": "https://github.com/AceLikesGhosts/bd-plugins",
+    "website": "https://github.com/AceLikesGhosts/bd-plugins",
+    "updateLink": "https://github.com/AceLikesGhosts/bd-plugins",
+    "authorId": "327639826075484162"
+}
