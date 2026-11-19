@@ -83,9 +83,16 @@ var Logger = class {
 };
 
 // lib/components/index.ts
-var Margins = /* @__PURE__ */ BdApi.Webpack.getByKeys("marginBottom40", "marginTop4");
+var Margins = /* @__PURE__ */ RemapOldKeysFromSource("marginBottom40", "marginBottom20", "marginTop4");
 var React = BdApi.React;
 var ReactDom = BdApi.ReactDOM || /* @__PURE__ */ BdApi.Webpack.getByKeys("createRoot");
+function RemapOldKeysFromSource(...keys) {
+  const map = {};
+  for (let i = 0; i < keys.length; i++) {
+    map[keys[i]] = (a) => a?.toString?.()?.includes?.(keys[i]);
+  }
+  return BdApi.Webpack.getBySource(...keys, { map });
+}
 
 // lib/components/Form.tsx
 var Text = BdApi.Webpack.getBySource("data-text-variant", "fontScaling").E;

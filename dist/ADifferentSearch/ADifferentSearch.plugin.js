@@ -2,7 +2,7 @@
 * @name ADifferentSearch
 * @description Change the search engine used in the `Search With` feature.
 * @author ace.
-* @version 1.2.8
+* @version 1.2.10
 * @source https://raw.githubusercontent.com/AceLikesGhosts/bd-plugins/master/dist/ADifferentSearch/ADifferentSearch.plugin.js
 * @authorLink https://github.com/AceLikesGhosts/bd-plugins
 * @authorId 327639826075484162
@@ -87,16 +87,23 @@ var config_default = {
   name: "ADifferentSearch",
   description: "Change the search engine used in the `Search With` feature.",
   author: "ace.",
-  version: "1.2.8",
+  version: "1.2.10",
   source: "https://raw.githubusercontent.com/AceLikesGhosts/bd-plugins/master/dist/ADifferentSearch/ADifferentSearch.plugin.js",
   authorLink: "https://github.com/AceLikesGhosts/bd-plugins",
   authorId: "327639826075484162"
 };
 
 // lib/components/index.ts
-var Margins = /* @__PURE__ */ BdApi.Webpack.getByKeys("marginBottom40", "marginTop4");
+var Margins = /* @__PURE__ */ RemapOldKeysFromSource("marginBottom40", "marginBottom20", "marginTop4");
 var React = BdApi.React;
 var ReactDom = BdApi.ReactDOM || /* @__PURE__ */ BdApi.Webpack.getByKeys("createRoot");
+function RemapOldKeysFromSource(...keys) {
+  const map = {};
+  for (let i = 0; i < keys.length; i++) {
+    map[keys[i]] = (a) => a?.toString?.()?.includes?.(keys[i]);
+  }
+  return BdApi.Webpack.getBySource(...keys, { map });
+}
 
 // lib/components/Form.tsx
 var Text = BdApi.Webpack.getBySource("data-text-variant", "fontScaling").E;
